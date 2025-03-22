@@ -22,8 +22,11 @@ Note: Scale: 1-20.
 
 I'm adding my own analysis of the data: 
 After each Response Question, trying to scale and measure the Understandability and Sentiment:
-**Undestandability:**
-**_Understood; Neutral; Didn't Understand_**
+**Understandability:**
+* _Understood_
+* _Neutral_*
+* _Didn't Understand_*
 
-Sentiment:
-_Positive; Negative_
+**Sentiment:**
+* _Positive_ 
+* _Negative_
