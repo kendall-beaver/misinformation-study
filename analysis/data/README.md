@@ -11,6 +11,7 @@ Data used for manuscript: TBD
 
 ## Structure of the data
 Note: Columns should have information about units, number of levels, or format where appropriate.
+Note: Scale: 1-20. 
 #### data1.csv
 ###### Data set #1
 * Column1: Column with no data because it does not exist
@@ -18,3 +19,11 @@ Note: Columns should have information about units, number of levels, or format w
 * Column3: A third column with no data
 
 ***
+
+I'm adding my own analysis of the data: 
+After each Response Question, trying to scale and measure the Understandability and Sentiment:
+Undestandability: 
+Understood; Neutral; Didn't Understand
+
+Sentiment:
+Positive; Negative
