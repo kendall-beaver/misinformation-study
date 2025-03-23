@@ -43,10 +43,10 @@ After each Response Question, trying to scale and measure the Understandability 
 **GROUP** - 
 
 *4 Group types:*
-    * *Control Group (Audio): 21*
-    * *Control Group (Visual): 22*
-    * *Test Group (Audio): 28*
-    * *Test Group (Visual): 28*
+* *Control Group (Audio): 21*
+* *Control Group (Visual): 22*
+* *Test Group (Audio): 28*
+* *Test Group (Visual): 28*
 
 ## DEMOGRAPHIC INFO
 
@@ -96,6 +96,8 @@ After each Response Question, trying to scale and measure the Understandability 
 1. **QQ3** - *Describe a situation in which supporting friends would be more important than telling the truth.*
 
 ## GCBS DATA
+
+Participants rated items on a 5-point Likert-type scale, with a qualitative label associated with each point *(1: definitely not true; 2: probably not true; 3: not sure/cannot decide; 4: probably true; 5: definitely true)*.
 
 There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
 
@@ -157,20 +159,20 @@ Participants were asked to categorize the following news headlines as either 'Fa
 ## IT-MIST DATA
 
 **PART 1**
-1. **First 10 Items _1** - *MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag*
-1. **First 10 Items _2** - *Germany Decriminalizes Possession of Child Porn*
-1. **First 10 Items _3** - *Walmart to Sell Chicken Nuggets Shaped Like Guns*
-1. **First 10 Items _4** - *Army’s New 'Holistic Medics' Treat Gunshot Wounds with Crystals, Essential Oils*
-1. **First 10 Items _5** - *Recent Study Disproves Link Between Sun Exposure and Skin Cancer*
-1. **First 10 Items _6** - *Federal Study Finds that Refugees Bring in More in Government Revenues Than They Cost*
-1. **First 10 Items _7** - *PEW Study Finds Most Americans Support a $15 Minimum Wage*
-1. **First 10 Items _8** - *The Majority of Americans Believe Marijuana Should Be Legal*
-1. **First 10 Items _9** - *Teen Drug Use Lowered After the Pandemic*
-1. **First 10 Items _10** - *2023 Recorded Highest Global Temperatures Since 1850*
+1. **First 10 Items _1** - *"MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag"*
+1. **First 10 Items _2** - *"Germany Decriminalizes Possession of Child Porn"*
+1. **First 10 Items _3** - *"Walmart to Sell Chicken Nuggets Shaped Like Guns"*
+1. **First 10 Items _4** - *"Army’s New 'Holistic Medics' Treat Gunshot Wounds with Crystals, Essential Oils"*
+1. **First 10 Items _5** - *"Recent Study Disproves Link Between Sun Exposure and Skin Cancer"*
+1. **First 10 Items _6** - *"Federal Study Finds that Refugees Bring in More in Government Revenues Than They Cost"*
+1. **First 10 Items _7** - *"PEW Study Finds Most Americans Support a $15 Minimum Wage"*
+1. **First 10 Items _8** - *"The Majority of Americans Believe Marijuana Should Be Legal"*
+1. **First 10 Items _9** - *"Teen Drug Use Lowered After the Pandemic"*
+1. **First 10 Items _10** - *"2023 Recorded Highest Global Temperatures Since 1850"*
 
 **PART 2**
-1. **Last 10 Items _1** - *Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells*
-1. **Last 10 Items _2** - *Studies Show that Women with Big Butts Are Smarter and Healthier*
+1. **Last 10 Items _1** - *"Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells"*
+1. **Last 10 Items _2** - *"Studies Show that Women with Big Butts Are Smarter and Healthier"*
 1. **Last 10 Items _3** - *"Researchers Discover that Octopus Genomes Contain Alien DNA"*
 1. **Last 10 Items _4** - *"Democrats Are Trying to Change ‘Mother’s Day’ to ‘Birthing People’s Day'"*
 1. **Last 10 Items _5** - *"Scientists Show Quartz Crystal is 'Neither a Solid nor a Liquid'*
