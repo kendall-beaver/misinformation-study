@@ -159,3 +159,10 @@ After each Response Question, trying to scale and measure the Understandability 
 1. ITMIST PRE SCORE
 1. ITMIST POST SCORE
 1. ITMIST CHANGE
+
+## AD RESPONSE QUESTIONS
+
+1. Question 1
+1. Question 2
+1. Question 3
+1. Comments
