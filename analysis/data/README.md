@@ -33,6 +33,10 @@ After each Response Question, trying to scale and measure the Understandability 
 * _Negative_
 
 # **Variables**
+
+## **Participant ID**
+* Participant ID: 1-99
+
 ## **Group**
 
 **Group Type**
