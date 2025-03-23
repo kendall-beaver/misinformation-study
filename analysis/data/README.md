@@ -40,10 +40,9 @@ After each Response Question, trying to scale and measure the Understandability 
 
 Total: 99
 
-Age
-<br><br>
-Gender
-<br><br>
-Citizenship
+*Age*
+*Gender*
 
-Ethnicity
+**Citizenship**
+
+_Ethnicity_
