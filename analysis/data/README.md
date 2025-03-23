@@ -32,5 +32,10 @@ After each Response Question, trying to scale and measure the Understandability 
 * _Positive_ 
 * _Negative_
 
-Amount of Participants:
-Test group (visual): 48
+**Group:**
+Control Group (Audio): 21
+Control Group (Visual): 22
+Test Group (Audio): 28
+Test Group (Visual): 28
+Total: 99
+
