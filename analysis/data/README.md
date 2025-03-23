@@ -101,6 +101,10 @@ After the researchers started by factor analyzing 75 different conspiracist beli
 
 This is a 15-item, 5-factor measure of generic conspiracist beliefs, the go-to measure of conspiracist ideation among conspiracy theory researchers. It captures the full breadth of conspiracist ideation, and has proven to be a reliable, criterion-valid, and construct-valid measure of conspiracist ideation.  Studies using the GCB-15 regularly find that over 90 % of the variance in its scores can be attributed to true variation in conspiracist ideation (e.g., Bensley et al., 2020, Denovan et al., 2020, March and Springer, 2019, Swami et al., 2014), indicating that most of its items are tapping similar content.
 
+People who score high on the GCB-15 are more likely to be uncomfortable with uncertainty (Alper et al., 2020); believe the world is dangerous (Moulding et al., 2016); suffer from paranoia, delusions, and hallucinations (Brotherton et al., 2013, Dagnall et al., 2015); believe in ghosts and other phantasms (Lantian et al., 2016, Majima and Nakamura, 2020); and fall for pseudo-profound bullshit (Hart & Graether, 2018; Pennycook et al., 2015). People scoring high on the GCB-15 are, for example, no more likely to be extraverted than their non-conspiratorial counterparts.
+
+5 factors: *GM, government malfeasance, ET, extraterrestrial cover-up, MG, malevolent global conspiracy, PW, personal wellbeing, CI, control of information, FUF, first unrotated factor.*
+
 Participants rated items on a 5-point Likert-type scale, with a qualitative label associated with each point *(1: definitely not true; 2: probably not true; 3: not sure/cannot decide; 4: probably true; 5: definitely true)*.
 
 Beliefs About the World
