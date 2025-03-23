@@ -41,8 +41,9 @@ After each Response Question, trying to scale and measure the Understandability 
 Total: 99
 
 **Age**
+
 **Gender**
 
 **Citizenship**
 
-**Ethnicity**
+**Ethnicity** & **Ethnicity_6_TEXT (Used to distinguish a mix of ethnicities)**
