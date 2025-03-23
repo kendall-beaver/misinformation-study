@@ -53,8 +53,8 @@ After each Response Question, trying to scale and measure the Understandability 
 1. **Gender**
 1. **Citizenship**
 1. **Ethnicity** 
-1. **Ethnicity_6_TEXT** - Used to list an additional ethnicity
-1. **Religion**
+1. **Ethnicity_6_TEXT:** Used to list an additional ethnicity
+1. **Religion**: 
 1. **Religion_11_TEXT**
 1. **Politics**
 1. **Politics_5_TEXT**
@@ -82,19 +82,17 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## QUALITATIVE QUESTIONS					
 
-1. QQ1 - *What are some reasons you think people are attracted to radical groups?*
-1. QQ2 - *What are some reasons you think people believe false ideas circulating online?*
-1. QQ3 - *Describe a situation in which supporting friends would be more important than telling the truth.*
-1. QQ1 - *What are some reasons you think people are attracted to radical groups?*
-1. QQ2 - *What are some reasons you think people believe false ideas circulating online?*
-1. QQ3 - *Describe a situation in which supporting friends would be more important than telling the truth.*
+1. **QQ1** - *What are some reasons you think people are attracted to radical groups?*
+1. **QQ2** - *What are some reasons you think people believe false ideas circulating online?*
+1. **QQ3** - *Describe a situation in which supporting friends would be more important than telling the truth.*
+1. **QQ1** - *What are some reasons you think people are attracted to radical groups?*
+1. **QQ2** - *What are some reasons you think people believe false ideas circulating online?*
+1. **QQ3** - *Describe a situation in which supporting friends would be more important than telling the truth.*
 
 ## GCBS DATA																
 
 1. First Seven Items _1 - 
     "The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."	
-
-The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement."
 
 A small, secret group of people is responsible for making all major world decisions, such as going to war.
 
@@ -116,8 +114,8 @@ Experiments involving new drugs or technologies are routinely carried out on the
 1. First Seven Items _3 - *"Secret organizations communicate with extraterrestrials, but keep this fact from the public."*
 1. First Seven Items _4 - *"The spread of most viruses and/or diseases is the result of the deliberate, concealed efforts of some organization."*
 1. First Seven Items _5 - "Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public."
-1. First Seven Items _6
-1. First Seven Items _7
+1. First Seven Items _6 - The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement.
+1. **First Seven Items _7**: 
 1. Last Eight Items _1
 1. Last Eight Items _2
 1. Last Eight Items _3
