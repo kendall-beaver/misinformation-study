@@ -92,7 +92,7 @@ _*NOTE: Please consider the following items in the context of American governmen
 
 ## MIST-20 DATA
 
-Participants were asked to categorize the following news headlines as either **_'Fake News'_** or **_'Real News'_**, considering each headline in the context of American government, media, institutions, etc.
+Participants were asked to categorize the following news headlines as either _'Fake News'_ or _'Real News'_, considering each headline in the context of American government, media, institutions, etc.
 
 **PART 1**
 1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"* (FAKE)
@@ -123,7 +123,7 @@ Participants were asked to categorize the following news headlines as either **_
 
 ## IT-MIST DATA
 
-Participants were asked to categorize the following news headlines as either **_'Fake News'_** or **_'Real News'_**, considering each headline in the context of American government, media, institutions, etc.
+Participants were asked to categorize the following news headlines as either _'Fake News'_ or _'Real News'_, considering each headline in the context of American government, media, institutions, etc.
 
 **PART 1**
 1. **First 10 Items _1** - *"MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag"* (FAKE)
