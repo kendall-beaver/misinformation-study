@@ -95,8 +95,8 @@ There is often debate about whether or not the public is told the whole truth ab
 Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', considering each headline in the context of American government, media, institutions, etc.
 
 **PART 1**
-1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"*
-1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"*
+1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"* (FAKE)
+1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"* **(FAKE)**
 1. **First 10 Items _3** - *"New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary"*
 1. **First 10 Items _4** - *"The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques"*
 1. **First 10 Items _5** - *"Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report"*
