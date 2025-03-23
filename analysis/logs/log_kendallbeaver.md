@@ -28,7 +28,9 @@ Write anything that you think would be important for YOU later on.
 
 ### Date: 
 Week number, today's date, etc. 
-
+3/16 - 3/22
+Began editing this file. The hard stuff is getting everything organized.
+I want to compare my findings with Diana's findings, and possibly the demographic information to the main YouGov study.
 
 ### Number of hours: 
 A quantity of hours, maybe towards specific tasks. 
