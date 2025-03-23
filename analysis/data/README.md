@@ -36,7 +36,7 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## Study Data
 
-1. **Participant ID**
+**1. Participant ID**
     _Ranges from 1-99_
 
 1. **Group Type** - 4 types:
