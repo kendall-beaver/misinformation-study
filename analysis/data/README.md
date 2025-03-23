@@ -34,20 +34,20 @@ After each Response Question, trying to scale and measure the Understandability 
 
 # **Variables**
 
-## Study Data
+## ID
 
-1. **Participant ID**
+1. **PARTICIPANT ID**
     _Ranges from 1-99_
 
-1. **Group Type** - 4 types:
+## GROUP
+
+1. **GROUP** - 4 types:
     1. Control Group (Audio): 21
     1. Control Group (Visual): 22
     1. Test Group (Audio): 28
     1. Test Group (Visual): 28
 
-## **Group**
-
-## Demographic Info
+## DEMOGRAPHIC INFO
 
 1. **Age**
 1. **Gender**
@@ -59,7 +59,7 @@ After each Response Question, trying to scale and measure the Understandability 
 1. **Politics**
 1. **Politics_5_TEXT**
 
-## Social Media Habits			
+## SOCIAL MEDIA HABITS		
 
 1. _Platforms_
 1. *Platforms_6_TEXT*
