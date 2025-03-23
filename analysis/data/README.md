@@ -82,12 +82,12 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## QUALITATIVE QUESTIONS					
 
-1. QQ1
-1. QQ2
-1. QQ3
-1. QQ1
-1. QQ2
-1. QQ3
+1. QQ1 - *What are some reasons you think people are attracted to radical groups?*
+1. QQ2 - *What are some reasons you think people believe false ideas circulating online?*
+1. QQ3 - *Describe a situation in which supporting friends would be more important than telling the truth.*
+1. QQ1 - *What are some reasons you think people are attracted to radical groups?*
+1. QQ2 - *What are some reasons you think people believe false ideas circulating online?*
+1. QQ3 - *Describe a situation in which supporting friends would be more important than telling the truth.*
 
 ## GCBS DATA																
 
