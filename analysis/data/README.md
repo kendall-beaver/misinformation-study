@@ -116,26 +116,26 @@ Please categorize the following news headlines as either 'Fake News' or 'Real Ne
 
 *NOTE: Please consider the following items in the context of American government, media, institutions, etc.
 
-1. **First 10 Items _1** - Government Officials Have Manipulated Stock Prices to Hide Scandals
-1. **First 10 Items _2** - The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda
-1. **First 10 Items _3**
-1. **First 10 Items _4**
-1. **First 10 Items _5**
-1. **First 10 Items _6**
-1. **First 10 Items _7**
-1. **First 10 Items _8**
-1. **First 10 Items _9**
-1. **First 10 Items _10**
-1. **Last 10 Items _1**
-1. **Last 10 Items _2**
-1. **Last 10 Items _3**
-1. **Last 10 Items _4**
-1. **Last 10 Items _5**
-1. **Last 10 Items _6**
-1. **Last 10 Items _7**
-1. **Last 10 Items _8**
-1. **Last 10 Items _9**
-1. **Last 10 Items _10**
+1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"*
+1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"*
+1. **First 10 Items _3** - *"New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary"*
+1. **First 10 Items _4** - *"The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques"*
+1. **First 10 Items _5** - *"Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report"*
+1. **First 10 Items _6** - *"Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It"*
+1. **First 10 Items _7** - *"One-in-Three Worldwide Lack Confidence in NGOs (Non-governmental Organizations devoted to social causes)"*
+1. **First 10 Items _8** - *"Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000"*
+1. **First 10 Items _9** - *" "*
+1. **First 10 Items _10** - *" "*
+1. **Last 10 Items _1** - *" "*
+1. **Last 10 Items _2** - *" "*
+1. **Last 10 Items _3** - *" "*
+1. **Last 10 Items _4** - *" "*
+1. **Last 10 Items _5** - *" "*
+1. **Last 10 Items _6** - *" "*
+1. **Last 10 Items _7** - *" "*
+1. **Last 10 Items _8** - *" "*
+1. **Last 10 Items _9** - *" "*
+1. **Last 10 Items _10** - *" "*
 1. **MIST-20 PRE SCORE**
 1. **MIST-20 POST SCORE**
 1. **MIST-20 CHANGE**
