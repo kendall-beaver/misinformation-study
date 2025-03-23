@@ -22,7 +22,7 @@ Note: Scale: 1-20.
 
 I'm adding my own analysis of the data: 
 After each Response Question, trying to scale and measure the Understandability and Sentiment:
-\
+\\
 **Understandability:**
 * _Understood_
 * _Neutral_
@@ -33,9 +33,12 @@ After each Response Question, trying to scale and measure the Understandability 
 * _Negative_
 
 **Group:**
-Control Group (Audio): 21
-Control Group (Visual): 22
-Test Group (Audio): 28
-Test Group (Visual): 28
+* Control Group (Audio): 21
+* Control Group (Visual): 22
+* Test Group (Audio): 28
+* Test Group (Visual): 28
 Total: 99
-
+Age
+Gender
+Citizenship
+Ethnicity
