@@ -36,14 +36,14 @@ After each Response Question, trying to scale and measure the Understandability 
 * Control Group (Audio): 21
 * Control Group (Visual): 22
 * Test Group (Audio): 28
-* Test Group (Visual): 28 <br>
+* Test Group (Visual): 28
+
 Total: 99
+
 Age
 <br><br>
 Gender
 <br><br>
 Citizenship
-
-\\
 
 Ethnicity
