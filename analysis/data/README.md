@@ -110,7 +110,7 @@ Participants rated items on a 5-point Likert-type scale, with a qualitative labe
 Beliefs About the World
 
 There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true [on the
-following scale: Definitely not true; Probably not true; Not sure/cannot decide; Probably true; Definitely true].
+following scale: **Definitely not true (1); Probably not true (2); Not sure/cannot decide (3); Probably true (4); Definitely true (5)].**
 
 *NOTE: Please consider the following items in the context of American government, media, institutions, etc.
 
