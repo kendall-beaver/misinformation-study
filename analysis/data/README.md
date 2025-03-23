@@ -107,6 +107,9 @@ People who score high on the GCB-15 are more likely to be uncomfortable with unc
 
 Participants rated items on a 5-point Likert-type scale, with a qualitative label associated with each point *(1: definitely not true; 2: probably not true; 3: not sure/cannot decide; 4: probably true; 5: definitely true)*.
 
+Conspiracist ideation cannot be described simply in terms of the Big-5 personality dimensions. As
+expected, GCB scores were unrelated to the remaining Big-5 traits of extraversion and neuroticism, as well as the related traits of sensation seeking and emotional intelligence. The GCB is either independent of other theoretically unrelated psychological constructs or is at most only weakly associated with them.
+
 Beliefs About the World
 
 There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true [on the
