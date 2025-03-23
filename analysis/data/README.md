@@ -79,6 +79,16 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## PODCAST LISTENING HABITS
 
+1. Frequency
+1. Top 3 Entertainment_1
+1. Top 3 Entertainment_2
+1. Top 3 Entertainment_3
+1. Top 3 Educational _1
+1. Top 3 Educational _2
+1. Top 3 Educational _3
+1. Ad-Free
+1. Ad Skipping 
+1. Recommendation
 
 
 
