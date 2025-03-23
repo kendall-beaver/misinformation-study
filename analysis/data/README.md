@@ -48,6 +48,7 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## DEMOGRAPHIC INFO
 
+## Part 1:
 1. **Age** - *What is your current age?*
 1. **Gender** - *Which of the following best describes your gender identity?*
 1. **Citizenship** - *Are you a U.S. citizen?*
