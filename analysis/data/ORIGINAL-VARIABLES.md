@@ -96,27 +96,27 @@ Participants were asked to categorize the following news headlines as either 'Fa
 
 **PART 1**
 1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"* (FAKE)
-1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"* **(FAKE)**
-1. **First 10 Items _3** - *"New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary"*
-1. **First 10 Items _4** - *"The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques"*
-1. **First 10 Items _5** - *"Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report"*
-1. **First 10 Items _6** - *"Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It"*
-1. **First 10 Items _7** - *"One-in-Three Worldwide Lack Confidence in NGOs (Non-governmental Organizations devoted to social causes)"*
-1. **First 10 Items _8** - *"Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000"*
-1. **First 10 Items _9** - *"International Relations Experts and US Public Agree: America Is Less Respected Globally"*
-1. **First 10 Items _10** - *"Hyatt Will Remove Small Bottles from Hotel Bathrooms by 2021"*
+1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"* (FAKE)
+1. **First 10 Items _3** - *"New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary"* (FAKE)
+1. **First 10 Items _4** - *"The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques"* (FAKE)
+1. **First 10 Items _5** - *"Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report"* (FAKE)
+1. **First 10 Items _6** - *"Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It"* (REAL)
+1. **First 10 Items _7** - *"One-in-Three Worldwide Lack Confidence in NGOs (Non-governmental Organizations devoted to social causes)"* (REAL)
+1. **First 10 Items _8** - *"Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000"* (REAL)
+1. **First 10 Items _9** - *"International Relations Experts and US Public Agree: America Is Less Respected Globally"* (REAL)
+1. **First 10 Items _10** - *"Hyatt Will Remove Small Bottles from Hotel Bathrooms by 2021"* (REAL)
 
 **PART 2**
-1. **Last 10 Items _1** - *"Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins"*
-1. **Last 10 Items _2** - *"New Study: Clear Relationship Between Eye Color and Intelligence"*
-1. **Last 10 Items _3** - *"The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply"*
-1. **Last 10 Items _4** - *"Ebola Virus 'Caused by US Nuclear Weapons Testing', New Study Says"*
-1. **Last 10 Items _5** - *"Government Officials Have Illegally Manipulated the Weather to Cause Devastating Storms"*
-1. **Last 10 Items _6** - *"Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality"*
-1. **Last 10 Items _7** - *"Republicans Divided in Views of Trump’s Conduct, Democrats Are Broadly Critical"*
-1. **Last 10 Items _8** - *"Democrats More Supportive than Republicans of Federal Spending for Scientific Research"*
-1. **Last 10 Items _9** - *"Global Warming Age Gap: Younger Americans Most Worried"*
-1. **Last 10 Items _10** - *"US Support for Legal Marijuana Steady in Past Year"*
+1. **Last 10 Items _1** - *"Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins"* (FAKE)
+1. **Last 10 Items _2** - *"New Study: Clear Relationship Between Eye Color and Intelligence"* (FAKE)
+1. **Last 10 Items _3** - *"The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply"* (FAKE)
+1. **Last 10 Items _4** - *"Ebola Virus 'Caused by US Nuclear Weapons Testing', New Study Says"* (FAKE)
+1. **Last 10 Items _5** - *"Government Officials Have Illegally Manipulated the Weather to Cause Devastating Storms"* (FAKE)
+1. **Last 10 Items _6** - *"Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality"* (REAL)
+1. **Last 10 Items _7** - *"Republicans Divided in Views of Trump’s Conduct, Democrats Are Broadly Critical"* (REAL)
+1. **Last 10 Items _8** - *"Democrats More Supportive than Republicans of Federal Spending for Scientific Research"* (REAL)
+1. **Last 10 Items _9** - *"Global Warming Age Gap: Younger Americans Most Worried"* (REAL)
+1. **Last 10 Items _10** - *"US Support for Legal Marijuana Steady in Past Year"* (REAL)
 1. **MIST-20 PRE SCORE**
 1. **MIST-20 POST SCORE**
 1. **MIST-20 CHANGE**
@@ -124,7 +124,7 @@ Participants were asked to categorize the following news headlines as either 'Fa
 ## IT-MIST DATA
 
 **PART 1**
-1. **First 10 Items _1** - *"MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag"*
+1. **First 10 Items _1** - *"MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag"* 
 1. **First 10 Items _2** - *"Germany Decriminalizes Possession of Child Porn"*
 1. **First 10 Items _3** - *"Walmart to Sell Chicken Nuggets Shaped Like Guns"*
 1. **First 10 Items _4** - *"Army’s New 'Holistic Medics' Treat Gunshot Wounds with Crystals, Essential Oils"*
