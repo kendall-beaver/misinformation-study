@@ -34,10 +34,10 @@ After each Response Question, trying to scale and measure the Understandability 
 
 # **Variables**
 
-## **Participant ID**
-* Participant ID: 1-99
+## Study Data
 
-## **Group**
+**Participant ID**
+* Participant ID: 1-99
 
 **Group Type:**
 * Control Group (Audio): 21
@@ -45,7 +45,11 @@ After each Response Question, trying to scale and measure the Understandability 
 * Test Group (Audio): 28
 * Test Group (Visual): 28
 
-# **Age**
+## **Group**
+
+## Demographic Info
+
+**Age**
 
 **Gender**
 
@@ -53,5 +57,5 @@ After each Response Question, trying to scale and measure the Understandability 
 
 **Ethnicity** 
 
-**Ethnicity_6_TEXT (Used for a mix ethnicities)**
+**Ethnicity_6_TEXT** - Used to list an additional ethnicity
 
