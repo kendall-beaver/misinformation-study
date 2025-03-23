@@ -36,9 +36,9 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## Study Data
 
-**Participant ID** - Ranges from 1-99
+1. **Participant ID** - Ranges from 1-99
 
-**Group Type:** - 4 types:
+1. **Group Type:** - 4 types:
 1. Control Group (Audio): 21
 1. Control Group (Visual): 22
 1. Test Group (Audio): 28
