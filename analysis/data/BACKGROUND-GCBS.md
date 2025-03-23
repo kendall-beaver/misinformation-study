@@ -13,3 +13,6 @@ Participants rated items on a 5-point Likert-type scale, with a qualitative labe
 
 Conspiracist ideation cannot be described simply in terms of the Big-5 personality dimensions. As
 expected, GCB scores were unrelated to the remaining Big-5 traits of extraversion and neuroticism, as well as the related traits of sensation seeking and emotional intelligence. The GCB is either independent of other theoretically unrelated psychological constructs or is at most only weakly associated with them.
+
+The GCBS uses a likert scale with no reverse coding, so “Strongly Agree” always indicates the highest level of conspiracy belief for each item. And a higher overall score across items indicates a generally higher level of conspiracist belief. For our results, I converted answers into a 5 point scale with “Strongly Agree” being worth 5 points. 
+
