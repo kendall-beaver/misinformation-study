@@ -69,9 +69,9 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## Social Media Habits			
 
-1. **Platforms*
+1. _Platforms_
 1. *Platforms_6_TEXT*
-1. **Time Spent*
+1. _Time Spent_
 1. _Utility_
 
 ## PODCAST LISTENING HABITS
