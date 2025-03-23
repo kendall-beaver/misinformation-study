@@ -49,35 +49,35 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## DEMOGRAPHIC INFO
 
-1. **Age**
-1. **Gender**
-1. **Citizenship**
-1. **Ethnicity** 
-1. **Ethnicity_6_TEXT:** Used to list an additional ethnicity
-1. **Religion**: 
-1. **Religion_11_TEXT**
-1. **Politics**
-1. **Politics_5_TEXT**
+1. **Age** - *What is your current age?*
+1. **Gender** - *Which of the following best describes your gender identity?*
+1. **Citizenship** - *Are you a U.S. citizen?*
+1. **Ethnicity** - *Which of the following most accurately describes your ethnicity? (Choose all that apply) - Selected Choice*
+1. **Ethnicity_6_TEXT** *Which of the following most accurately describes your ethnicity? (Choose all that apply) - Other (please specify) - Text*
+1. **Religion** - *Which of the following best describes your religious affiliation? - Selected Choice*
+1. **Religion_11_TEXT** - *Which of the following best describes your religious affiliation? - Other (please specify) - Text*
+1. **Politics** - *Which of the following best describes your political affiliation? - Selected Choice*
+1. **Politics_5_TEXT** - *Which of the following best describes your political affiliation? - Other (please specify) - Text*
 
 ## SOCIAL MEDIA HABITS		
 
-1. **Platforms**
-1. **Platforms_6_TEXT**
-1. **Time Spent**
-1. **Utility**
+1. **Platforms** - *Which of the following social media platforms are you active on (meaning you use them at least once a week)? [Choose all that apply] - Selected Choice*
+1. **Platforms_6_TEXT** - *Which of the following social media platforms are you active on (meaning you use them at least once a week)? [Choose all that apply] - Other (please specify) - Text*
+1. **Time Spent** - *On an average day, how long do you spend on social media (across all platforms you use)?*
+1. **Utility** - *Please choose the answer that is most accurate for you. "I use social media to get _____ of my information on current events/politics/news"*
 
 ## PODCAST LISTENING HABITS
 
-1. **Frequency**
-1. **Top 3 Entertainment_1**
-1. **Top 3 Entertainment_2**
-1. **Top 3 Entertainment_3**
-1. **Top 3 Educational _1**
-1. **Top 3 Educational _2**
-1. **Top 3 Educational _3**
-1. **Ad-Free**
-1. **Ad Skipping** 
-1. **Recommendation**
+1. **Frequency** - *How often do you tune in (either by listening or watching) to podcasts?*
+1. **Top 3 Entertainment_1** - *Please list the Top 3 podcasts you tune in to for entertainment. - Podcast #1*
+1. **Top 3 Entertainment_2** - *Please list the Top 3 podcasts you tune in to for entertainment. - Podcast #2*
+1. **Top 3 Entertainment_3** - *Please list the Top 3 podcasts you tune in to for entertainment. - Podcast #3*
+1. **Top 3 Educational _1** - *Please list the Top 3 podcasts you tune in to for information/education. - Podcast #1*
+1. **Top 3 Educational _2** - *Please list the Top 3 podcasts you tune in to for information/education. - Podcast #2*
+1. **Top 3 Educational _3** - *Please list the Top 3 podcasts you tune in to for information/education. - Podcast #3*
+1. **Ad-Free** - *Of the podcasts you tune in to, how many do you tune in to ad-free? (meaning there are entirely no ads, not just that you skip past them)*
+1. **Ad Skipping** - *For the podcasts you tune in to that include ads, which statement is most accurate?*
+1. **Recommendation** - *If you tune in to a podcast episode with information you find interesting or important, how likely are you to recommend that episode to your friends and/or family?*
 
 ## QUALITATIVE QUESTIONS					
 
@@ -90,7 +90,10 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## GCBS DATA
 
-These are statements.
+There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc.
 
 1. **First Seven Items _1** - *"The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."*
 1. **First Seven Items _2** - *"The power held by heads of state is second to that of small unknown groups who really control world politics."*
@@ -112,7 +115,7 @@ These are statements.
 
 ## MIST-20 DATA																						
 
-Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', in the context of American government, media, institutions, etc.
+Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', while considering each headline in the context of American government, media, institutions, etc.
 
 1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"*
 1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"*
@@ -140,33 +143,33 @@ Participants were asked to categorize the following news headlines as either 'Fa
 
 ## IT-MIST DATA																						
 
-1. **First 10 Items _1**
-1. **First 10 Items _2**
-1. **First 10 Items _3**
-1. **First 10 Items _4**
-1. **First 10 Items _5**
-1. **First 10 Items _6**
-1. **First 10 Items _7**
-1. **First 10 Items _8**
-1. **First 10 Items _9**
-1. **First 10 Items _10**
-1. **Last 10 Items _1**
-1. **Last 10 Items _2**
-1. **Last 10 Items _3**
-1. **Last 10 Items _4**
-1. **Last 10 Items _5**
-1. **Last 10 Items _6**
-1. **Last 10 Items _7**
-1. **Last 10 Items _8**
-1. **Last 10 Items _9**
-1. **Last 10 Items _10**
+1. **First 10 Items _1** - *MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag*
+1. **First 10 Items _2** - *Germany Decriminalizes Possession of Child Porn*
+1. **First 10 Items _3** - *Walmart to Sell Chicken Nuggets Shaped Like Guns*
+1. **First 10 Items _4** - *Army’s New 'Holistic Medics' Treat Gunshot Wounds with Crystals, Essential Oils*
+1. **First 10 Items _5** - *Recent Study Disproves Link Between Sun Exposure and Skin Cancer*
+1. **First 10 Items _6** - *Federal Study Finds that Refugees Bring in More in Government Revenues Than They Cost*
+1. **First 10 Items _7** - *PEW Study Finds Most Americans Support a $15 Minimum Wage*
+1. **First 10 Items _8** - *The Majority of Americans Believe Marijuana Should Be Legal*
+1. **First 10 Items _9** - *Teen Drug Use Lowered After the Pandemic*
+1. **First 10 Items _10** - *2023 Recorded Highest Global Temperatures Since 1850*
+1. **Last 10 Items _1** - *Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells*
+1. **Last 10 Items _2** - *Studies Show that Women with Big Butts Are Smarter and Healthier*
+1. **Last 10 Items _3** - *Researchers Discover that Octopus Genomes Contain Alien DNA*
+1. **Last 10 Items _4** - *Democrats Are Trying to Change ‘Mother’s Day’ to ‘Birthing People’s Day'*
+1. **Last 10 Items _5** - *Scientists Show Quartz Crystal is 'Neither a Solid nor a Liquid'*
+1. **Last 10 Items _6** - *Most Americans Believe CEOs are Vastly Overpaid*
+1. **Last 10 Items _7** - *Favorable Views of Supreme Court Fall to Historic Low*
+1. **Last 10 Items _8** - *Gen Z Voted at a Higher Rate in Its First Midterm Election than Previous Generations Did at that Age*
+1. **Last 10 Items _9** - *New Survey Shows Readers Overwhelmingly Prefer Physical Books*
+1. **Last 10 Items _10** - *Two in Five Americans Say a Civil War is at Least Somewhat Likely in the Next Decade*
 1. **ITMIST PRE SCORE**
 1. **ITMIST POST SCORE**
 1. **ITMIST CHANGE**
 
 ## AD RESPONSE QUESTIONS
 
-1. **Question 1**
-1. **Question 2**
-1. **Question 3**
-1. **Comments**
+1. **Question 1** - *What did you like most about the ad?*
+1. **Question 2** - *What did you like least about the ad?*
+1. **Question 3** - *Which words or phrases in the ad, if any, made you feel particularly good or bad?*
+1. **Comments** - *Please tell us any other thoughts you have about the ad.*
