@@ -61,6 +61,7 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## SOCIAL MEDIA HABITS		
 
+1. <u>Platforms</u>
 1. _Platforms_
 1. *Platforms_6_TEXT*
 1. _Time Spent_
