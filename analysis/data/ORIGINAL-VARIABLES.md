@@ -92,7 +92,7 @@ There is often debate about whether or not the public is told the whole truth ab
 
 ## MIST-20 DATA
 
-Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', while considering each headline in the context of American government, media, institutions, etc.
+Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', considering each headline in the context of American government, media, institutions, etc.
 
 **PART 1**
 1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"*
