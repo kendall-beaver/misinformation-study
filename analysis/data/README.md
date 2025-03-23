@@ -91,9 +91,8 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## GCBS DATA																
 
-1. First Seven Items _1 - "The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."	
-
-Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public."	
+1. First Seven Items _1 - 
+    "The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."	
 
 The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement."
 
@@ -113,10 +112,10 @@ Some UFO sightings and rumors are planned or staged in order to distract the pub
 
 Experiments involving new drugs or technologies are routinely carried out on the public without their knowledge or consent."
 
-1. First Seven Items _2 - *"The power held by heads of state is second to that of small unknown groups who really control world politics."*
+1. First Seven Items _2 - "The power held by heads of state is second to that of small unknown groups who really control world politics."
 1. First Seven Items _3 - *"Secret organizations communicate with extraterrestrials, but keep this fact from the public."*
 1. First Seven Items _4 - *"The spread of most viruses and/or diseases is the result of the deliberate, concealed efforts of some organization."*
-1. First Seven Items _5 - *"
+1. First Seven Items _5 - "Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public."
 1. First Seven Items _6
 1. First Seven Items _7
 1. Last Eight Items _1
