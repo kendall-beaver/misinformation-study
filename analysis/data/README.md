@@ -67,8 +67,9 @@ After each Response Question, trying to scale and measure the Understandability 
 1. **Time Spent** - *On an average day, how long do you spend on social media (across all platforms you use)?*
 1. **Utility** - *Please choose the answer that is most accurate for you. "I use social media to get _____ of my information on current events/politics/news"*
 
-## PODCAST LISTENING HABITS (PART 1)
+## PODCAST LISTENING HABITS
 
+**PART 1**
 1. **Frequency** - *How often do you tune in (either by listening or watching) to podcasts?*
 1. **Top 3 Entertainment_1** - *Please list the Top 3 podcasts you tune in to for entertainment. - Podcast #1*
 1. **Top 3 Entertainment_2** - *Please list the Top 3 podcasts you tune in to for entertainment. - Podcast #2*
@@ -80,23 +81,26 @@ After each Response Question, trying to scale and measure the Understandability 
 1. **Ad Skipping** - *For the podcasts you tune in to that include ads, which statement is most accurate?*
 1. **Recommendation** - *If you tune in to a podcast episode with information you find interesting or important, how likely are you to recommend that episode to your friends and/or family?*
 
-## QUALITATIVE QUESTIONS (PART 1)
+## QUALITATIVE QUESTIONS
 
-1. **QQ1** - *What are some reasons you think people are attracted to radical groups?*
-1. **QQ2** - *What are some reasons you think people believe false ideas circulating online?*
-1. **QQ3** - *Describe a situation in which supporting friends would be more important than telling the truth.*
+**PART 1**
 1. **QQ1** - *What are some reasons you think people are attracted to radical groups?*
 1. **QQ2** - *What are some reasons you think people believe false ideas circulating online?*
 1. **QQ3** - *Describe a situation in which supporting friends would be more important than telling the truth.*
 
-## GCBS DATA (PARTS 1 & 2)
+**PART 2**
+1. **QQ1** - *What are some reasons you think people are attracted to radical groups?*
+1. **QQ2** - *What are some reasons you think people believe false ideas circulating online?*
+1. **QQ3** - *Describe a situation in which supporting friends would be more important than telling the truth.*
+
+## GCBS DATA
 
 There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
 
 
 *NOTE: Please consider the following items in the context of American government, media, institutions, etc.
 
-**Part 1:**
+**PART 1**
 1. **First Seven Items _1** - *"The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."*
 1. **First Seven Items _2** - *"The power held by heads of state is second to that of small unknown groups who really control world politics."*
 1. **First Seven Items _3** - *"Secret organizations communicate with extraterrestrials, but keep this fact from the public."*
@@ -105,7 +109,7 @@ There is often debate about whether or not the public is told the whole truth ab
 1. **First Seven Items _6** - *"The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement."*
 1. **First Seven Items _7** - *"A small, secret group of people is responsible for making all major world decisions, such as going to war."*
 
-**Part 2:**
+**PART 2**
 1. **Last Eight Items _1** - *"Evidence of alien contact is being concealed from the public."*
 1. **Last Eight Items _2** - *"Technology with mind-control capacities is used on people without their knowledge."*
 1. **Last Eight Items _3** - *"New and advanced technology which would harm current industry is being suppressed."*
@@ -117,11 +121,11 @@ There is often debate about whether or not the public is told the whole truth ab
 1. **GCBS POST SCORE**
 1. **GCBS CHANGE**
 
-## MIST-20 DATA	(PARTS 1 & 2)
+## MIST-20 DATA
 
 Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', while considering each headline in the context of American government, media, institutions, etc.
 
-**Part 1:**
+**PART 1**
 1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"*
 1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"*
 1. **First 10 Items _3** - *"New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary"*
@@ -133,7 +137,7 @@ Participants were asked to categorize the following news headlines as either 'Fa
 1. **First 10 Items _9** - *"International Relations Experts and US Public Agree: America Is Less Respected Globally"*
 1. **First 10 Items _10** - *"Hyatt Will Remove Small Bottles from Hotel Bathrooms by 2021"*
 
-**Part 2:**
+**PART 2**
 1. **Last 10 Items _1** - *"Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins"*
 1. **Last 10 Items _2** - *"New Study: Clear Relationship Between Eye Color and Intelligence"*
 1. **Last 10 Items _3** - *"The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply"*
@@ -148,9 +152,9 @@ Participants were asked to categorize the following news headlines as either 'Fa
 1. **MIST-20 POST SCORE**
 1. **MIST-20 CHANGE**
 
-## IT-MIST DATA	(PARTS 1 & 2)
+## IT-MIST DATA
 
-**Part 1:**
+**PART 1**
 1. **First 10 Items _1** - *MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag*
 1. **First 10 Items _2** - *Germany Decriminalizes Possession of Child Porn*
 1. **First 10 Items _3** - *Walmart to Sell Chicken Nuggets Shaped Like Guns*
@@ -162,7 +166,7 @@ Participants were asked to categorize the following news headlines as either 'Fa
 1. **First 10 Items _9** - *Teen Drug Use Lowered After the Pandemic*
 1. **First 10 Items _10** - *2023 Recorded Highest Global Temperatures Since 1850*
 
-**Part 2:**
+**PART 2**
 1. **Last 10 Items _1** - *Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells*
 1. **Last 10 Items _2** - *Studies Show that Women with Big Butts Are Smarter and Healthier*
 1. **Last 10 Items _3** - *Researchers Discover that Octopus Genomes Contain Alien DNA*
@@ -179,6 +183,7 @@ Participants were asked to categorize the following news headlines as either 'Fa
 
 ## AD RESPONSE QUESTIONS
 
+**PART 1**
 1. **Question 1** - *What did you like most about the ad?*
 1. **Question 2** - *What did you like least about the ad?*
 1. **Question 3** - *Which words or phrases in the ad, if any, made you feel particularly good or bad?*
