@@ -91,7 +91,50 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## GCBS DATA																
 
-1. First Seven Items _1
+1. First Seven Items _1 - "There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - The power held by heads of state is second to that of small unknown groups who really control world politics."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - Secret organizations communicate with extraterrestrials, but keep this fact from the public."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - The spread of most viruses and/or diseases is the result of the deliberate, concealed efforts of some organization."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - A small, secret group of people is responsible for making all major world decisions, such as going to war."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - Evidence of alien contact is being concealed from the public."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - Technology with mind-control capacities is used on people without their knowledge."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - New and advanced technology which would harm current industry is being suppressed."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - The government regularly uses people as patsies to hide its involvement in criminal activity."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - Most significant events have been the result of the activity of a small group who secretly manipulate world events."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - Some UFO sightings and rumors are planned or staged in order to distract the public from real alien contact."	"There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true.
+
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc. - Experiments involving new drugs or technologies are routinely carried out on the public without their knowledge or consent."
+
 1. First Seven Items _2
 1. First Seven Items _3
 1. First Seven Items _4
