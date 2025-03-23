@@ -31,3 +31,6 @@ After each Response Question, trying to scale and measure the Understandability 
 **Sentiment:**
 * _Positive_ 
 * _Negative_
+
+Amount of Participants:
+Test group (visual): 48
