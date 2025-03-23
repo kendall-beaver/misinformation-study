@@ -49,23 +49,15 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## Demographic Info
 
-**Age**
-
-**Gender**
-
-**Citizenship**
-
-**Ethnicity** 
-
-**Ethnicity_6_TEXT** - Used to list an additional ethnicity
-
-**Religion**
-
-**Religion_11_TEXT**
-
-**Politics**
-
-**Politics_5_TEXT**
+1. **Age**
+1. **Gender**
+1. **Citizenship**
+1. **Ethnicity** 
+1. **Ethnicity_6_TEXT** - Used to list an additional ethnicity
+1. **Religion**
+1. **Religion_11_TEXT**
+1. **Politics**
+1. **Politics_5_TEXT**
 
 ## Social Media Habits			
 
@@ -87,8 +79,83 @@ After each Response Question, trying to scale and measure the Understandability 
 1. Ad Skipping 
 1. Recommendation
 
+## QUALITATIVE QUESTIONS					
 
+1. QQ1
+1. QQ2
+1. QQ3
+1. QQ1
+1. QQ2
+1. QQ3
 
+## GCBS DATA																
 
+1. First Seven Items _1
+1. First Seven Items _2
+1. First Seven Items _3
+1. First Seven Items _4
+1. First Seven Items _5
+1. First Seven Items _6
+1. First Seven Items _7
+1. Last Eight Items _1
+1. Last Eight Items _2
+1. Last Eight Items _3
+1. Last Eight Items _4
+1. Last Eight Items _5
+1. Last Eight Items _6
+1. Last Eight Items _7
+1. GCBS PRE SCORE
+1. GCBS POST SCORE
+1. GCBS CHANGE
 
+## MIST-20 DATA																						
 
+1. First 10 Items _1
+1. First 10 Items _2
+1. First 10 Items _3
+1. First 10 Items _4
+1. First 10 Items _5
+1. First 10 Items _6
+1. First 10 Items _7
+1. First 10 Items _8
+1. First 10 Items _9
+1. First 10 Items _10
+1. Last 10 Items _1
+1. Last 10 Items _2
+1. Last 10 Items _3
+1. Last 10 Items _4
+1. Last 10 Items _5
+1. Last 10 Items _6
+1. Last 10 Items _7
+1. Last 10 Items _8
+1. Last 10 Items _9
+1. Last 10 Items _10
+1. MIST-20 PRE SCORE
+1. MIST-20 POST SCORE
+1. MIST-20 CHANGE
+
+## IT-MIST DATA																						
+
+1. First 10 Items _1
+1. First 10 Items _2
+1. First 10 Items _3
+1. First 10 Items _4
+1. First 10 Items _5
+1. First 10 Items _6
+1. First 10 Items _7
+1. First 10 Items _8
+1. First 10 Items _9
+1. First 10 Items _10
+1. Last 10 Items _1
+1. Last 10 Items _2
+1. Last 10 Items _3
+1. Last 10 Items _4
+1. Last 10 Items _5
+1. Last 10 Items _6
+1. Last 10 Items _7
+1. Last 10 Items _8
+1. Last 10 Items _9
+1. Last 10 Items _10
+1. ITMIST PRE SCORE
+1. ITMIST POST SCORE
+1. ITMIST CHANGE
