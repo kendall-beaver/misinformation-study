@@ -112,9 +112,7 @@ These are statements.
 
 ## MIST-20 DATA																						
 
-Please categorize the following news headlines as either 'Fake News' or 'Real News'.
-
-*NOTE: Please consider the following items in the context of American government, media, institutions, etc.
+Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', in the context of American government, media, institutions, etc.
 
 1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"*
 1. **First 10 Items _2** - *"The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"*
@@ -124,18 +122,18 @@ Please categorize the following news headlines as either 'Fake News' or 'Real Ne
 1. **First 10 Items _6** - *"Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It"*
 1. **First 10 Items _7** - *"One-in-Three Worldwide Lack Confidence in NGOs (Non-governmental Organizations devoted to social causes)"*
 1. **First 10 Items _8** - *"Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000"*
-1. **First 10 Items _9** - *Headline: "International Relations Experts and US Public Agree: America Is Less Respected Globally"*
-1. **First 10 Items _10** - *Headline: "Hyatt Will Remove Small Bottles from Hotel Bathrooms by 2021"*
+1. **First 10 Items _9** - *"International Relations Experts and US Public Agree: America Is Less Respected Globally"*
+1. **First 10 Items _10** - *"Hyatt Will Remove Small Bottles from Hotel Bathrooms by 2021"*
 1. **Last 10 Items _1** - *"Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins"*
-1. **Last 10 Items _2** - *" "*
-1. **Last 10 Items _3** - *" "*
-1. **Last 10 Items _4** - *" "*
-1. **Last 10 Items _5** - *" "*
-1. **Last 10 Items _6** - *" "*
-1. **Last 10 Items _7** - *" "*
-1. **Last 10 Items _8** - *" "*
-1. **Last 10 Items _9** - *" "*
-1. **Last 10 Items _10** - *" "*
+1. **Last 10 Items _2** - *"New Study: Clear Relationship Between Eye Color and Intelligence"*
+1. **Last 10 Items _3** - *"The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply"*
+1. **Last 10 Items _4** - *"Ebola Virus 'Caused by US Nuclear Weapons Testing', New Study Says"*
+1. **Last 10 Items _5** - *"Government Officials Have Illegally Manipulated the Weather to Cause Devastating Storms"*
+1. **Last 10 Items _6** - *"Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality"*
+1. **Last 10 Items _7** - *"Republicans Divided in Views of Trump’s Conduct, Democrats Are Broadly Critical"*
+1. **Last 10 Items _8** - *"Democrats More Supportive than Republicans of Federal Spending for Scientific Research"*
+1. **Last 10 Items _9** - *"Global Warming Age Gap: Younger Americans Most Worried"*
+1. **Last 10 Items _10** - *"US Support for Legal Marijuana Steady in Past Year"*
 1. **MIST-20 PRE SCORE**
 1. **MIST-20 POST SCORE**
 1. **MIST-20 CHANGE**
