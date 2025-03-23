@@ -36,11 +36,13 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## ID
 
-1. **PARTICIPANT ID** - *Ranges from 1-99*
+**PARTICIPANT ID** - *Ranges from 1-99*
 
 ## GROUP
 
-1. **GROUP** - *4 Group types:*
+**GROUP** - 
+
+*4 Group types:*
     * *Control Group (Audio): 21*
     * *Control Group (Visual): 22*
     * *Test Group (Audio): 28*
@@ -169,14 +171,14 @@ Participants were asked to categorize the following news headlines as either 'Fa
 **PART 2**
 1. **Last 10 Items _1** - *Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells*
 1. **Last 10 Items _2** - *Studies Show that Women with Big Butts Are Smarter and Healthier*
-1. **Last 10 Items _3** - *Researchers Discover that Octopus Genomes Contain Alien DNA*
-1. **Last 10 Items _4** - *Democrats Are Trying to Change ‘Mother’s Day’ to ‘Birthing People’s Day'*
-1. **Last 10 Items _5** - *Scientists Show Quartz Crystal is 'Neither a Solid nor a Liquid'*
-1. **Last 10 Items _6** - *Most Americans Believe CEOs are Vastly Overpaid*
-1. **Last 10 Items _7** - *Favorable Views of Supreme Court Fall to Historic Low*
-1. **Last 10 Items _8** - *Gen Z Voted at a Higher Rate in Its First Midterm Election than Previous Generations Did at that Age*
-1. **Last 10 Items _9** - *New Survey Shows Readers Overwhelmingly Prefer Physical Books*
-1. **Last 10 Items _10** - *Two in Five Americans Say a Civil War is at Least Somewhat Likely in the Next Decade*
+1. **Last 10 Items _3** - *"Researchers Discover that Octopus Genomes Contain Alien DNA"*
+1. **Last 10 Items _4** - *"Democrats Are Trying to Change ‘Mother’s Day’ to ‘Birthing People’s Day'"*
+1. **Last 10 Items _5** - *"Scientists Show Quartz Crystal is 'Neither a Solid nor a Liquid'*
+1. **Last 10 Items _6** - *"Most Americans Believe CEOs are Vastly Overpaid"*
+1. **Last 10 Items _7** - *"Favorable Views of Supreme Court Fall to Historic Low"*
+1. **Last 10 Items _8** - *"Gen Z Voted at a Higher Rate in Its First Midterm Election than Previous Generations Did at that Age"*
+1. **Last 10 Items _9** - *"New Survey Shows Readers Overwhelmingly Prefer Physical Books"*
+1. **Last 10 Items _10** - *"Two in Five Americans Say a Civil War is at Least Somewhat Likely in the Next Decade"*
 1. **ITMIST PRE SCORE**
 1. **ITMIST POST SCORE**
 1. **ITMIST CHANGE**
