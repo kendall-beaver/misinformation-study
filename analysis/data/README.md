@@ -46,9 +46,9 @@ After each Response Question, trying to scale and measure the Understandability 
     * *Test Group (Audio): 28*
     * *Test Group (Visual): 28*
 
-## DEMOGRAPHIC INFO (PART 1)
+## DEMOGRAPHIC INFO
 
-**Part 1:**
+**PART 1**
 1. **Age** - *What is your current age?*
 1. **Gender** - *Which of the following best describes your gender identity?*
 1. **Citizenship** - *Are you a U.S. citizen?*
@@ -59,8 +59,9 @@ After each Response Question, trying to scale and measure the Understandability 
 1. **Politics** - *Which of the following best describes your political affiliation? - Selected Choice*
 1. **Politics_5_TEXT** - *Which of the following best describes your political affiliation? - Other (please specify) - Text*
 
-## SOCIAL MEDIA HABITS (PART 1)
+## SOCIAL MEDIA HABITS
 
+**PART 1**
 1. **Platforms** - *Which of the following social media platforms are you active on (meaning you use them at least once a week)? [Choose all that apply] - Selected Choice*
 1. **Platforms_6_TEXT** - *Which of the following social media platforms are you active on (meaning you use them at least once a week)? [Choose all that apply] - Other (please specify) - Text*
 1. **Time Spent** - *On an average day, how long do you spend on social media (across all platforms you use)?*
