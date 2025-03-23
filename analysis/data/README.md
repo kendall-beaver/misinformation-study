@@ -19,3 +19,6 @@ Note: Scale: 1-20.
 * Column3: A third column with no data
 
 ***
+
+Test ad: New Friends ad, the experimental ad that they created
+Control ad: Completely neutral of any pre-bunking or strategy techniques, so just an ad.
