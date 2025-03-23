@@ -117,7 +117,6 @@ Participants were asked to categorize the following news headlines as either **_
 1. **Last 10 Items _8** - *"Democrats More Supportive than Republicans of Federal Spending for Scientific Research"* (REAL)
 1. **Last 10 Items _9** - *"Global Warming Age Gap: Younger Americans Most Worried"* (REAL)
 1. **Last 10 Items _10** - *"US Support for Legal Marijuana Steady in Past Year"* (REAL)
-***
 1. **MIST-20 PRE SCORE**
 1. **MIST-20 POST SCORE**
 1. **MIST-20 CHANGE**
@@ -137,7 +136,6 @@ Participants were asked to categorize the following news headlines as either **_
 1. **First 10 Items _8** - *"The Majority of Americans Believe Marijuana Should Be Legal"* (REAL)
 1. **First 10 Items _9** - *"Teen Drug Use Lowered After the Pandemic"* (REAL)
 1. **First 10 Items _10** - *"2023 Recorded Highest Global Temperatures Since 1850"* (REAL)
-1. **ITMIST PRE SCORE**
 
 **PART 2**
 1. **Last 10 Items _1** - *"Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells"* (FAKE)
@@ -150,6 +148,7 @@ Participants were asked to categorize the following news headlines as either **_
 1. **Last 10 Items _8** - *"Gen Z Voted at a Higher Rate in Its First Midterm Election than Previous Generations Did at that Age"* (REAL)
 1. **Last 10 Items _9** - *"New Survey Shows Readers Overwhelmingly Prefer Physical Books"* (REAL)
 1. **Last 10 Items _10** - *"Two in Five Americans Say a Civil War is at Least Somewhat Likely in the Next Decade"* (REAL)
+1. **ITMIST PRE SCORE**
 1. **ITMIST POST SCORE**
 1. **ITMIST CHANGE**
 
