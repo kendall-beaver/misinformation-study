@@ -32,7 +32,15 @@ After each Response Question, trying to scale and measure the Understandability 
 * _Positive_ 
 * _Negative_
 
-**Group:**
+# **Group**
+## **Group Type**
+- **Control Group (Audio)**: 21
+- **Control Group (Visual)**: 22
+- **Test Group (Audio)**: 28
+- **Test Group (Visual)**: 28
+
+**Group**
+**Group Type**
 * Control Group (Audio): 21
 * Control Group (Visual): 22
 * Test Group (Audio): 28
@@ -46,4 +54,7 @@ Total: 99
 
 **Citizenship**
 
-**Ethnicity** & **Ethnicity_6_TEXT (Used to distinguish a mix of ethnicities)**
+**Ethnicity** 
+
+**Ethnicity_6_TEXT (Used for a mix ethnicities)**
+
