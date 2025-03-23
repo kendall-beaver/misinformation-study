@@ -39,15 +39,13 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## **Group**
 
-**Group Type**
+**Group Type:**
 * Control Group (Audio): 21
 * Control Group (Visual): 22
 * Test Group (Audio): 28
 * Test Group (Visual): 28
 
-Total: 99
-
-**Age**
+# **Age**
 
 **Gender**
 
