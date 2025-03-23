@@ -63,11 +63,11 @@
 
 ## GCBS DATA
 
-Beliefs About the World
+**Beliefs About the World**
 
-There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true [on the following scale: *Definitely not true (1); Probably not true (2); Not sure/cannot decide (3); Probably true (4); Definitely true (5)].*
+There is often debate about whether or not the public is told the whole truth about various important issues. This brief survey is designed to assess your beliefs about some of these subjects. Please indicate the degree to which you believe each statement is likely to be true [on the following scale: **_Definitely not true (1); Probably not true (2); Not sure/cannot decide (3); Probably true (4); Definitely true (5)._**
 
-*NOTE: Please consider the following items in the context of American government, media, institutions, etc.
+_*NOTE: Please consider the following items in the context of American government, media, institutions, etc._
 
 **PART 1**
 1. **First Seven Items _1** - *"The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."*
@@ -124,28 +124,28 @@ Participants were asked to categorize the following news headlines as either 'Fa
 ## IT-MIST DATA
 
 **PART 1**
-1. **First 10 Items _1** - *"MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag"* 
-1. **First 10 Items _2** - *"Germany Decriminalizes Possession of Child Porn"*
-1. **First 10 Items _3** - *"Walmart to Sell Chicken Nuggets Shaped Like Guns"*
-1. **First 10 Items _4** - *"Army’s New 'Holistic Medics' Treat Gunshot Wounds with Crystals, Essential Oils"*
-1. **First 10 Items _5** - *"Recent Study Disproves Link Between Sun Exposure and Skin Cancer"*
-1. **First 10 Items _6** - *"Federal Study Finds that Refugees Bring in More in Government Revenues Than They Cost"*
-1. **First 10 Items _7** - *"PEW Study Finds Most Americans Support a $15 Minimum Wage"*
-1. **First 10 Items _8** - *"The Majority of Americans Believe Marijuana Should Be Legal"*
-1. **First 10 Items _9** - *"Teen Drug Use Lowered After the Pandemic"*
-1. **First 10 Items _10** - *"2023 Recorded Highest Global Temperatures Since 1850"*
+1. **First 10 Items _1** - *"MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag"* (FAKE)
+1. **First 10 Items _2** - *"Germany Decriminalizes Possession of Child Porn"* (FAKE)
+1. **First 10 Items _3** - *"Walmart to Sell Chicken Nuggets Shaped Like Guns"* (FAKE)
+1. **First 10 Items _4** - *"Army’s New 'Holistic Medics' Treat Gunshot Wounds with Crystals, Essential Oils"* (FAKE)
+1. **First 10 Items _5** - *"Recent Study Disproves Link Between Sun Exposure and Skin Cancer"* (FAKE)
+1. **First 10 Items _6** - *"Federal Study Finds that Refugees Bring in More in Government Revenues Than They Cost"* (REAL)
+1. **First 10 Items _7** - *"PEW Study Finds Most Americans Support a $15 Minimum Wage"* (REAL)
+1. **First 10 Items _8** - *"The Majority of Americans Believe Marijuana Should Be Legal"* (REAL)
+1. **First 10 Items _9** - *"Teen Drug Use Lowered After the Pandemic"* (REAL)
+1. **First 10 Items _10** - *"2023 Recorded Highest Global Temperatures Since 1850"* (REAL)
 
 **PART 2**
-1. **Last 10 Items _1** - *"Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells"*
-1. **Last 10 Items _2** - *"Studies Show that Women with Big Butts Are Smarter and Healthier"*
-1. **Last 10 Items _3** - *"Researchers Discover that Octopus Genomes Contain Alien DNA"*
-1. **Last 10 Items _4** - *"Democrats Are Trying to Change ‘Mother’s Day’ to ‘Birthing People’s Day'"*
-1. **Last 10 Items _5** - *"Scientists Show Quartz Crystal is 'Neither a Solid nor a Liquid'*
-1. **Last 10 Items _6** - *"Most Americans Believe CEOs are Vastly Overpaid"*
-1. **Last 10 Items _7** - *"Favorable Views of Supreme Court Fall to Historic Low"*
-1. **Last 10 Items _8** - *"Gen Z Voted at a Higher Rate in Its First Midterm Election than Previous Generations Did at that Age"*
-1. **Last 10 Items _9** - *"New Survey Shows Readers Overwhelmingly Prefer Physical Books"*
-1. **Last 10 Items _10** - *"Two in Five Americans Say a Civil War is at Least Somewhat Likely in the Next Decade"*
+1. **Last 10 Items _1** - *"Pfizer’s COVID-19 Vaccine Contains Aborted Fetal Cells"* (FAKE)
+1. **Last 10 Items _2** - *"Studies Show that Women with Big Butts Are Smarter and Healthier"* (FAKE)
+1. **Last 10 Items _3** - *"Researchers Discover that Octopus Genomes Contain Alien DNA"* (FAKE)
+1. **Last 10 Items _4** - *"Democrats Are Trying to Change ‘Mother’s Day’ to ‘Birthing People’s Day'"* (FAKE)
+1. **Last 10 Items _5** - *"Scientists Show Quartz Crystal is 'Neither a Solid nor a Liquid'* (FAKE)
+1. **Last 10 Items _6** - *"Most Americans Believe CEOs are Vastly Overpaid"* (REAL)
+1. **Last 10 Items _7** - *"Favorable Views of Supreme Court Fall to Historic Low"* (REAL)
+1. **Last 10 Items _8** - *"Gen Z Voted at a Higher Rate in Its First Midterm Election than Previous Generations Did at that Age"* (REAL)
+1. **Last 10 Items _9** - *"New Survey Shows Readers Overwhelmingly Prefer Physical Books"* (REAL)
+1. **Last 10 Items _10** - *"Two in Five Americans Say a Civil War is at Least Somewhat Likely in the Next Decade"* (REAL)
 1. **ITMIST PRE SCORE**
 1. **ITMIST POST SCORE**
 1. **ITMIST CHANGE**
