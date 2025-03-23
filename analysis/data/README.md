@@ -124,9 +124,9 @@ Please categorize the following news headlines as either 'Fake News' or 'Real Ne
 1. **First 10 Items _6** - *"Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It"*
 1. **First 10 Items _7** - *"One-in-Three Worldwide Lack Confidence in NGOs (Non-governmental Organizations devoted to social causes)"*
 1. **First 10 Items _8** - *"Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000"*
-1. **First 10 Items _9** - *" "*
-1. **First 10 Items _10** - *" "*
-1. **Last 10 Items _1** - *" "*
+1. **First 10 Items _9** - *Headline: "International Relations Experts and US Public Agree: America Is Less Respected Globally"*
+1. **First 10 Items _10** - *Headline: "Hyatt Will Remove Small Bottles from Hotel Bathrooms by 2021"*
+1. **Last 10 Items _1** - *"Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins"*
 1. **Last 10 Items _2** - *" "*
 1. **Last 10 Items _3** - *" "*
 1. **Last 10 Items _4** - *" "*
