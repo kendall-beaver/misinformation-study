@@ -48,7 +48,7 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## DEMOGRAPHIC INFO
 
-## Part 1:
+**Part 1:**
 1. **Age** - *What is your current age?*
 1. **Gender** - *Which of the following best describes your gender identity?*
 1. **Citizenship** - *Are you a U.S. citizen?*
@@ -95,6 +95,7 @@ There is often debate about whether or not the public is told the whole truth ab
 
 *NOTE: Please consider the following items in the context of American government, media, institutions, etc.
 
+**Part 1**
 1. **First Seven Items _1** - *"The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."*
 1. **First Seven Items _2** - *"The power held by heads of state is second to that of small unknown groups who really control world politics."*
 1. **First Seven Items _3** - *"Secret organizations communicate with extraterrestrials, but keep this fact from the public."*
@@ -102,6 +103,8 @@ There is often debate about whether or not the public is told the whole truth ab
 1. **First Seven Items _5** - *"Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public."*
 1. **First Seven Items _6** - *"The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement."*
 1. **First Seven Items _7** - *"A small, secret group of people is responsible for making all major world decisions, such as going to war."*
+
+**Part 2**
 1. **Last Eight Items _1** - *"Evidence of alien contact is being concealed from the public."*
 1. **Last Eight Items _2** - *"Technology with mind-control capacities is used on people without their knowledge."*
 1. **Last Eight Items _3** - *"New and advanced technology which would harm current industry is being suppressed."*
