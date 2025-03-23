@@ -61,24 +61,23 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## SOCIAL MEDIA HABITS		
 
-1. <u>Platforms</u>
-1. _Platforms_
-1. *Platforms_6_TEXT*
-1. _Time Spent_
-1. _Utility_
+1. **Platforms**
+1. **Platforms_6_TEXT**
+1. **Time Spent**
+1. **Utility**
 
 ## PODCAST LISTENING HABITS
 
-1. Frequency
-1. Top 3 Entertainment_1
-1. Top 3 Entertainment_2
-1. Top 3 Entertainment_3
-1. Top 3 Educational _1
-1. Top 3 Educational _2
-1. Top 3 Educational _3
-1. Ad-Free
-1. Ad Skipping 
-1. Recommendation
+1. **Frequency**
+1. **Top 3 Entertainment_1**
+1. **Top 3 Entertainment_2**
+1. **Top 3 Entertainment_3**
+1. **Top 3 Educational _1**
+1. **Top 3 Educational _2**
+1. **Top 3 Educational _3**
+1. **Ad-Free**
+1. **Ad Skipping** 
+1. **Recommendation**
 
 ## QUALITATIVE QUESTIONS					
 
@@ -89,81 +88,87 @@ After each Response Question, trying to scale and measure the Understandability 
 1. **QQ2** - *What are some reasons you think people believe false ideas circulating online?*
 1. **QQ3** - *Describe a situation in which supporting friends would be more important than telling the truth.*
 
-## GCBS DATA																
+## GCBS DATA
 
-1. First Seven Items _1 - "The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."
-1. First Seven Items _2 - "The power held by heads of state is second to that of small unknown groups who really control world politics."
+These are statements.
+
+1. **First Seven Items _1** - *"The government is frequently involved in the murder of innocent citizens and/or well-known public figures, and keeps this a secret."*
+1. **First Seven Items _2** - *"The power held by heads of state is second to that of small unknown groups who really control world politics."*
 1. **First Seven Items _3** - *"Secret organizations communicate with extraterrestrials, but keep this fact from the public."*
 1. **First Seven Items _4** - *"The spread of most viruses and/or diseases is the result of the deliberate, concealed efforts of some organization."*
-1. **First Seven Items _5** - "Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public."
-1. **First Seven Items _6** - "The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement."
-1. **First Seven Items _7** "A small, secret group of people is responsible for making all major world decisions, such as going to war."
-1. Last Eight Items _1 - "Evidence of alien contact is being concealed from the public."	
-1. Last Eight Items _2 - "Technology with mind-control capacities is used on people without their knowledge."
-1. Last Eight Items _3 - "New and advanced technology which would harm current industry is being suppressed."
-1. Last Eight Items _4 - "The government regularly uses people as patsies to hide its involvement in criminal activity."
-1. Last Eight Items _5 - "Most significant events have been the result of the activity of a small group who secretly manipulate world events."
-1. Last Eight Items _6 - "Some UFO sightings and rumors are planned or staged in order to distract the public from real alien contact."
-1. Last Eight Items _7 - "Experiments involving new drugs or technologies are routinely carried out on the public without their knowledge or consent."
-1. GCBS PRE SCORE
-1. GCBS POST SCORE
-1. GCBS CHANGE
+1. **First Seven Items _5** - *"Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public."*
+1. **First Seven Items _6** - *"The government regularly permits or perpetrates acts of terrorism on its own soil, disguising its involvement."*
+1. **First Seven Items _7** - *"A small, secret group of people is responsible for making all major world decisions, such as going to war."*
+1. **Last Eight Items _1** - *"Evidence of alien contact is being concealed from the public."*
+1. **Last Eight Items _2** - *"Technology with mind-control capacities is used on people without their knowledge."*
+1. **Last Eight Items _3** - *"New and advanced technology which would harm current industry is being suppressed."*
+1. **Last Eight Items _4** - *"The government regularly uses people as patsies to hide its involvement in criminal activity."*
+1. **Last Eight Items _5** - *"Most significant events have been the result of the activity of a small group who secretly manipulate world events."*
+1. **Last Eight Items _6** - *"Some UFO sightings and rumors are planned or staged in order to distract the public from real alien contact."*
+1. **Last Eight Items _7** - *"Experiments involving new drugs or technologies are routinely carried out on the public without their knowledge or consent."*
+1. **GCBS PRE SCORE**
+1. **GCBS POST SCORE**
+1. **GCBS CHANGE**
 
 ## MIST-20 DATA																						
 
-1. First 10 Items _1
-1. First 10 Items _2
-1. First 10 Items _3
-1. First 10 Items _4
-1. First 10 Items _5
-1. First 10 Items _6
-1. First 10 Items _7
-1. First 10 Items _8
-1. First 10 Items _9
-1. First 10 Items _10
-1. Last 10 Items _1
-1. Last 10 Items _2
-1. Last 10 Items _3
-1. Last 10 Items _4
-1. Last 10 Items _5
-1. Last 10 Items _6
-1. Last 10 Items _7
-1. Last 10 Items _8
-1. Last 10 Items _9
-1. Last 10 Items _10
-1. MIST-20 PRE SCORE
-1. MIST-20 POST SCORE
-1. MIST-20 CHANGE
+Please categorize the following news headlines as either 'Fake News' or 'Real News'.
+
+*NOTE: Please consider the following items in the context of American government, media, institutions, etc.
+
+1. **First 10 Items _1** - Government Officials Have Manipulated Stock Prices to Hide Scandals
+1. **First 10 Items _2** - The Corporate Media Is Controlled by the Military-industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda
+1. **First 10 Items _3**
+1. **First 10 Items _4**
+1. **First 10 Items _5**
+1. **First 10 Items _6**
+1. **First 10 Items _7**
+1. **First 10 Items _8**
+1. **First 10 Items _9**
+1. **First 10 Items _10**
+1. **Last 10 Items _1**
+1. **Last 10 Items _2**
+1. **Last 10 Items _3**
+1. **Last 10 Items _4**
+1. **Last 10 Items _5**
+1. **Last 10 Items _6**
+1. **Last 10 Items _7**
+1. **Last 10 Items _8**
+1. **Last 10 Items _9**
+1. **Last 10 Items _10**
+1. **MIST-20 PRE SCORE**
+1. **MIST-20 POST SCORE**
+1. **MIST-20 CHANGE**
 
 ## IT-MIST DATA																						
 
-1. First 10 Items _1
-1. First 10 Items _2
-1. First 10 Items _3
-1. First 10 Items _4
-1. First 10 Items _5
-1. First 10 Items _6
-1. First 10 Items _7
-1. First 10 Items _8
-1. First 10 Items _9
-1. First 10 Items _10
-1. Last 10 Items _1
-1. Last 10 Items _2
-1. Last 10 Items _3
-1. Last 10 Items _4
-1. Last 10 Items _5
-1. Last 10 Items _6
-1. Last 10 Items _7
-1. Last 10 Items _8
-1. Last 10 Items _9
-1. Last 10 Items _10
-1. ITMIST PRE SCORE
-1. ITMIST POST SCORE
-1. ITMIST CHANGE
+1. **First 10 Items _1**
+1. **First 10 Items _2**
+1. **First 10 Items _3**
+1. **First 10 Items _4**
+1. **First 10 Items _5**
+1. **First 10 Items _6**
+1. **First 10 Items _7**
+1. **First 10 Items _8**
+1. **First 10 Items _9**
+1. **First 10 Items _10**
+1. **Last 10 Items _1**
+1. **Last 10 Items _2**
+1. **Last 10 Items _3**
+1. **Last 10 Items _4**
+1. **Last 10 Items _5**
+1. **Last 10 Items _6**
+1. **Last 10 Items _7**
+1. **Last 10 Items _8**
+1. **Last 10 Items _9**
+1. **Last 10 Items _10**
+1. **ITMIST PRE SCORE**
+1. **ITMIST POST SCORE**
+1. **ITMIST CHANGE**
 
 ## AD RESPONSE QUESTIONS
 
-1. Question 1
-1. Question 2
-1. Question 3
-1. Comments
+1. **Question 1**
+1. **Question 2**
+1. **Question 3**
+1. **Comments**
