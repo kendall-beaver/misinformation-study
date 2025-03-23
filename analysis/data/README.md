@@ -36,7 +36,7 @@ After each Response Question, trying to scale and measure the Understandability 
 
 ## Study Data
 
-**1. Participant ID**
+1. **Participant ID**
     _Ranges from 1-99_
 
 1. **Group Type** - 4 types:
@@ -58,4 +58,30 @@ After each Response Question, trying to scale and measure the Understandability 
 **Ethnicity** 
 
 **Ethnicity_6_TEXT** - Used to list an additional ethnicity
+
+**Religion**
+
+**Religion_11_TEXT**
+
+**Politics**
+
+**Politics_5_TEXT**
+
+## Social Media Habits			
+
+1. **Platforms**
+
+1. **Platforms_6_TEXT**
+
+1. **Time Spent**
+
+1. **Utility**
+
+## PODCAST LISTENING HABITS
+
+
+
+
+
+
 
