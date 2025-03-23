@@ -92,7 +92,7 @@ _*NOTE: Please consider the following items in the context of American governmen
 
 ## MIST-20 DATA
 
-Participants were asked to categorize the following news headlines as either 'Fake News' or 'Real News', considering each headline in the context of American government, media, institutions, etc.
+Participants were asked to categorize the following news headlines as either **_'Fake News'_** or **_'Real News'_**, considering each headline in the context of American government, media, institutions, etc.
 
 **PART 1**
 1. **First 10 Items _1** - *"Government Officials Have Manipulated Stock Prices to Hide Scandals"* (FAKE)
@@ -117,11 +117,14 @@ Participants were asked to categorize the following news headlines as either 'Fa
 1. **Last 10 Items _8** - *"Democrats More Supportive than Republicans of Federal Spending for Scientific Research"* (REAL)
 1. **Last 10 Items _9** - *"Global Warming Age Gap: Younger Americans Most Worried"* (REAL)
 1. **Last 10 Items _10** - *"US Support for Legal Marijuana Steady in Past Year"* (REAL)
+
 1. **MIST-20 PRE SCORE**
 1. **MIST-20 POST SCORE**
 1. **MIST-20 CHANGE**
 
 ## IT-MIST DATA
+
+Participants were asked to categorize the following news headlines as either **_'Fake News'_** or **_'Real News'_**, considering each headline in the context of American government, media, institutions, etc.
 
 **PART 1**
 1. **First 10 Items _1** - *"MAGA Supporter Accidentally Burns Down Home While Setting Fire to Pride Flag"* (FAKE)
@@ -146,6 +149,7 @@ Participants were asked to categorize the following news headlines as either 'Fa
 1. **Last 10 Items _8** - *"Gen Z Voted at a Higher Rate in Its First Midterm Election than Previous Generations Did at that Age"* (REAL)
 1. **Last 10 Items _9** - *"New Survey Shows Readers Overwhelmingly Prefer Physical Books"* (REAL)
 1. **Last 10 Items _10** - *"Two in Five Americans Say a Civil War is at Least Somewhat Likely in the Next Decade"* (REAL)
+
 1. **ITMIST PRE SCORE**
 1. **ITMIST POST SCORE**
 1. **ITMIST CHANGE**
