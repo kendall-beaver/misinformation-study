@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Load library and dataset
 
@@ -13,6 +13,7 @@ output: pdf_document
 #install.packages("tinytex")
 #tinytex::install_tinytex()
 #install.packages("gridExtra")
+#install.packages("cowplot")
 
 library(gridExtra)
 library(readxl)
@@ -25,7 +26,7 @@ misinfo <- read_excel("data/sketches_for_skepticism_shortened.xlsx")
 summary(misinfo)
 ```
 
-```{r filtered_data}
+```{r filtered_data, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Filtered data set to columns I need
 
@@ -60,8 +61,7 @@ misinfo_filtered <- misinfo %>%
          UNDERSTANDABILITY, SENTIMENT, `ADDITIONAL THOUGHTS`)
 ```
 
-```{r factors}
-
+```{r factors, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 # Turn "character" columns into factors
 
 # Columns that need to be turned into factors: 
@@ -128,9 +128,7 @@ colSums(is.na(misinfo_filtered))
 misinfo_filtered$CHANGED_VIEWS_QQ1 <- as.factor(misinfo_filtered$CHANGED_VIEWS_QQ1)
 ```
 
-# Histograms
-
-```{r histograms}
+```{r histograms, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # HISTOGRAMS
 
@@ -146,14 +144,12 @@ for (group_value in unique(misinfo_filtered$GROUP)) {
          y = "Count") +
     theme_minimal()
   
-  print(p)  # Ensure the plot is displayed inside the loop
+#  print(p)  # Ensure the plot is displayed inside the loop
 }
 
 ```
 
-# Pie Charts
-
-```{r pie_chart}
+```{r pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
 library(ggplot2)
 library(dplyr)
@@ -216,24 +212,147 @@ for (group_value in unique(misinfo_filtered$GROUP)) {
 #pie_charts[["Group_4"]]  # View the pie chart for "Control Group (Audio)"
 
 # Combine the first two and the last two pie charts in a 2x2 grid
-grid.arrange(
-  pie_charts[["Group_1"]],  # Test Group (Visual)
-  pie_charts[["Group_2"]]  # Control Group (Visual)
+#grid.arrange(
+#  pie_charts[["Group_1"]],  # Test Group (Visual)
+#  pie_charts[["Group_2"]]  # Control Group (Visual)
   #pie_charts[["Group_3"]],  # Test Group (Audio)
   #pie_charts[["Group_4"]],  # Control Group (Audio)
   #nrow = 2  # Arrange in 2 rows
   #ncol = 1   # Arrange in 2 columns
-)
+#)
+```
+
+```{r four_pie_charts_in_one, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+library(gridExtra)
+library(cowplot)
+
+# Function to extract the legend from a ggplot
+get_legend <- function(my_plot) {
+  g <- ggplotGrob(my_plot)
+  legend <- g$grobs[[which(sapply(g$grobs, function(x) x$name) == "guide-box")]]
+  return(legend)
+}
+
+# Extract the legend from one of the pie charts
+shared_legend <- get_legend(pie_charts[["Group_1"]])
+
+# Apply centered titles to all four plots
+plot1 <- pie_charts[["Group_1"]] +
+  ggtitle("Test Group (Visual)") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+
+plot2 <- pie_charts[["Group_2"]] +
+  ggtitle("Control Group (Visual)") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+
+plot3 <- pie_charts[["Group_3"]] +
+  ggtitle("Test Group (Audio)") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+
+plot4 <- pie_charts[["Group_4"]] +
+  ggtitle("Control Group (Audio)") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+
+# Arrange first row (Visual groups)
+#row1 <- arrangeGrob(plot1, plot2, nrow = 1)
+
+# Arrange second row (Audio groups)
+#row2 <- arrangeGrob(plot3, plot4, nrow = 1)
+
+# Arrange everything correctly
+#grid.arrange(
+#  row1,
+#  row2,
+#  shared_legend,
+#  nrow = 3,
+#  heights = c(4, 4, 2)  # Adjust height ratios for better spacing
+#)
+
+```
+
+# Pie Charts - Visual Ad (Test vs. Control Group)
+
+```{r visual_ad_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+library(gridExtra)
+library(cowplot)
+
+# Function to extract the legend from a ggplot
+get_legend <- function(my_plot) {
+  g <- ggplotGrob(my_plot)
+  legend <- g$grobs[[which(sapply(g$grobs, function(x) x$name) == "guide-box")]]
+  return(legend)
+}
+
+# Extract the legend from one of the pie charts
+shared_legend <- get_legend(pie_charts[["Group_1"]])
+
+# Apply centered titles to all four plots
+plot1 <- pie_charts[["Group_1"]] +
+  ggtitle("Test Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Visual Test Group
+
+plot2 <- pie_charts[["Group_2"]] +
+  ggtitle("Control Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Visual Control Group
+
+plot3 <- pie_charts[["Group_3"]] +
+  ggtitle("Test Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Audio Test Group
+
+plot4 <- pie_charts[["Group_4"]] +
+  ggtitle("Control Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Audio Control Group
 
 grid.arrange(
-  pie_charts[["Group_3"]],  # Test Group (Audio)
-  pie_charts[["Group_4"]]  # Control Group (Audio)
-  #nrow = 2  # Arrange in 2 rows
-  #ncol = 1   # Arrange in 2 columns
+  arrangeGrob(
+    plot1, plot2,
+    nrow = 1
+  ),
+  shared_legend,
+  nrow = 2,
+  heights = c(5, 2)  # Adjust height ratios for better spacing
 )
 ```
 
-```{r other}
+# Pie Charts - Audio Ad (Test vs. Control Group)
+
+```{r audio_ad_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+grid.arrange(
+  arrangeGrob(
+    plot3, plot4,
+    nrow = 1
+  ),
+  shared_legend,
+  nrow = 2,
+  heights = c(4, 2)  # Adjust height ratios for better spacing
+)
+
+# heights = c(4, 1)  # Original ratio
+```
+
+```{r backup, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# This was my original for what I plotted above
+
+# Arrange the last two pie charts with the shared legend
+#grid.arrange(
+#  arrangeGrob(
+#    pie_charts[["Group_3"]] + theme(legend.position = "none"),
+#    pie_charts[["Group_4"]] + theme(legend.position = "none"),
+#    nrow = 1
+#  ),
+#  shared_legend,
+#  nrow = 2,
+#  heights = c(4, 1)  # Adjust height ratio
+#)
+```
+
+```{r test_pies, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# These were just test pie charts which only displays each plot individually
 
 library(ggplot2)
 library(dplyr)
@@ -279,10 +398,10 @@ for (group_value in unique(misinfo_filtered$GROUP)) {
 }
 
 # View stored pie charts
-pie_charts[["Group_1"]]  # Example: Display pie chart for Group 1
-pie_charts[["Group_2"]]  # Example: Display pie chart for Group 2
-pie_charts[["Group_3"]]  # Example: Display pie chart for Group 3
-pie_charts[["Group_4"]]  # Example: Display pie chart for Group 4
+#pie_charts[["Group_1"]]  # Example: Display pie chart for Group 1
+#pie_charts[["Group_2"]]  # Example: Display pie chart for Group 2
+#pie_charts[["Group_3"]]  # Example: Display pie chart for Group 3
+#pie_charts[["Group_4"]]  # Example: Display pie chart for Group 4
 ```
 
 ### GCBS Pre-Score Q5 (Most Important)
