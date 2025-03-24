@@ -7,7 +7,7 @@ output: pdf
 
 ```{r setup, include=FALSE}
 
-# Import library
+# Load library and dataset
 
 library(readxl)
 library(dplyr)
@@ -17,6 +17,11 @@ library(ggplot2)
 
 misinfo <- read_excel("data/sketches_for_skepticism_shortened.xlsx")
 summary(misinfo)
+```
+
+```{r}
+
+# Filtered data set to columns I need
 
 # Columns I need: 
 
@@ -51,7 +56,67 @@ misinfo_filtered <- misinfo %>%
 
 ```{r}
 
+# Turn "character" columns into factors
 
+# Columns that need to be turned into factors: 
+
+# GROUP
+#   "Test Group (Visual)"
+#   "Control Group (Visual)"
+#   "Test Group (Audio)"
+#   "Control Group (Audio)"
+
+# CHANGED_VIEWS_QQ1
+#   "View stayed about the same"
+#   "View had some/moderate change"
+#   "View significantantly changed"
+
+# CHANGED_LENGTH_QQ1
+#   "Comment length became slightly or significantly shorter"
+#   "Comment length became slightly or significantly longer" 
+#   "Comment length stayed about the same"
+
+# CHANGED_VIEWS_QQ2
+
+# CHANGED_LENGTH_QQ2
+
+# UNDERSTANDABILITY
+
+# SENTIMENT
+
+# `ADDITIONAL THOUGHTS`
+
+# Mapping categorical variables to numerical values
+misinfo_filtered <- misinfo_filtered %>%
+  mutate(
+    GROUP = case_when(
+      GROUP == "Test Group (Visual)" ~ 1,
+      GROUP == "Control Group (Visual)" ~ 2,
+      GROUP == "Test Group (Audio)" ~ 3,
+      GROUP == "Control Group (Audio)" ~ 4
+    ),
+    CHANGED_VIEWS_QQ1 = case_when(
+      CHANGED_VIEWS_QQ1 == "View stayed about the same" ~ 1,
+      CHANGED_VIEWS_QQ1 == "View had some/moderate change" ~ 2,
+      CHANGED_VIEWS_QQ1 == "View significantly changed" ~ 3
+    ),
+    CHANGED_LENGTH_QQ1 = case_when(
+      CHANGED_LENGTH_QQ1 == "Comment length became slightly or significantly shorter" ~ 1,
+      CHANGED_LENGTH_QQ1 == "Comment length became slightly or significantly longer" ~ 2,
+      CHANGED_LENGTH_QQ1 == "Comment length stayed about the same" ~ 3
+    ),
+    SENTIMENT = case_when(
+      SENTIMENT == "Positive" ~ 1,
+      SENTIMENT == "Negative" ~ 2,
+      SENTIMENT == "Neutral" ~ 3
+    )
+  )
+
+# Check the updated dataset
+head(misinfo_filtered)
+
+# Check for missing values in the dataset
+colSums(is.na(misinfo_filtered))
 ```
 
 ```{r}
