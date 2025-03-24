@@ -312,7 +312,7 @@ grid.arrange(
   ),
   shared_legend,
   nrow = 2,
-  heights = c(5, 2)  # Adjust height ratios for better spacing
+  heights = c(4, 2)  # Adjust height ratios for better spacing
 )
 ```
 
