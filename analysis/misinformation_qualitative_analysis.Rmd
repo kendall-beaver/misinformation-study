@@ -7,25 +7,50 @@ output: pdf
 
 ```{r setup, include=FALSE}
 
+# Import library
+
 library(readxl)
 library(dplyr)
 library(corrplot)
 library(writexl)
 library(ggplot2)
 
-misinfo <- read_excel("data/sketches_for_skepticism.xlsx")
-misinfo
-gcb_copy_2 <- gcb
+misinfo <- read_excel("data/sketches_for_skepticism_shortened.xlsx")
+summary(misinfo)
 
-any(is.na(gcb)) #No missing values
-sum(is.na(gcb)) #Verification
+# Columns I need: 
 
-head(gcb) #20 features
-summary(gcb) #5,000 observations
+# PARTICIPANT ID
+# GROUP
+# CHANGED_VIEWS_QQ1
+# CHANGED_LENGTH_QQ1
+# CHANGED_VIEWS_QQ2
+# CHANGED_LENGTH_QQ2
+# GCBS PRE SCORE
+# GCBS POST SCORE
+# PRE & POST SCORE
+# GCBS CHANGE
+# MIST-20 PRE SCORE
+# MIST-20 POST SCORE
+# MIST-20 CHANGE
+# ITMIST PRE SCORE
+# ITMIST POST SCORE
+# ITMIST CHANGE
+# UNDERSTANDABILITY
+# SENTIMENT
+# ADDITIONAL THOUGHTS
 
-unique(gcb$`First Seven Items _1`)
+misinfo_filtered <- misinfo %>%
+  select(`PARTICIPANT ID`, GROUP, CHANGED_VIEWS_QQ1, CHANGED_LENGTH_QQ1,
+         CHANGED_VIEWS_QQ2, CHANGED_LENGTH_QQ2, `GCBS PRE SCORE`, 
+         `GCBS POST SCORE`, `PRE & POST SCORE`, `GCBS CHANGE`, 
+         `MIST-20 PRE SCORE`, `MIST-20 POST SCORE`, `MIST-20 CHANGE`, 
+         `ITMIST PRE SCORE`, `ITMIST POST SCORE`, `ITMIST CHANGE`, 
+         UNDERSTANDABILITY, SENTIMENT, `ADDITIONAL THOUGHTS`)
+```
 
-unique(gcb$`First 10 Items _1`)
+```{r}
+
 
 ```
 
