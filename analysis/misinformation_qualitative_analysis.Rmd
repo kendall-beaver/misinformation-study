@@ -1,14 +1,20 @@
 ---
-title: "Generic Conspiracist Beliefs"
+title: "Misinformation Qualitative Analysis"
 author: "Kendall Beaver"
 date: "`r Sys.Date()`"
-output: pdf
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 
 # Load library and dataset
 
+#install.packages("rmarkdown")
+#install.packages("tinytex")
+#tinytex::install_tinytex()
+#install.packages("gridExtra")
+
+library(gridExtra)
 library(readxl)
 library(dplyr)
 library(corrplot)
@@ -19,7 +25,7 @@ misinfo <- read_excel("data/sketches_for_skepticism_shortened.xlsx")
 summary(misinfo)
 ```
 
-```{r}
+```{r filtered_data}
 
 # Filtered data set to columns I need
 
@@ -54,7 +60,7 @@ misinfo_filtered <- misinfo %>%
          UNDERSTANDABILITY, SENTIMENT, `ADDITIONAL THOUGHTS`)
 ```
 
-```{r}
+```{r factors}
 
 # Turn "character" columns into factors
 
@@ -117,50 +123,166 @@ head(misinfo_filtered)
 
 # Check for missing values in the dataset
 colSums(is.na(misinfo_filtered))
+
+# Ensure CHANGED_VIEWS_QQ1 is treated as a factor
+misinfo_filtered$CHANGED_VIEWS_QQ1 <- as.factor(misinfo_filtered$CHANGED_VIEWS_QQ1)
 ```
 
-```{r}
-# Define the mapping of factor levels to numeric values
-factor_map <- c(
-  "Definitely Not True" = 1,
-  "Probably Not True" = 2,
-  "Not Sure/Cannot Decide" = 3,
-  "Probably True" = 4,
-  "Definitely True" = 5
-)
+# Histograms
 
-# List of columns to convert
-cols_to_convert <- c(
-  "First Seven Items _1", "First Seven Items _2", "First Seven Items _3", 
-  "First Seven Items _4", "First Seven Items _5", "First Seven Items _6", 
-  "First Seven Items _7", "Last Eight Items _1", "Last Eight Items _2", 
-  "Last Eight Items _3", "Last Eight Items _4", "Last Eight Items _5", 
-  "Last Eight Items _6", "Last Eight Items _7"
-)
+```{r histograms}
 
-# Apply conversion across all selected columns
-gcb[cols_to_convert] <- lapply(gcb[cols_to_convert], function(x) as.numeric(factor_map[x]))
+# HISTOGRAMS
 
-# Check the result
-str(gcb[cols_to_convert])
+# Ensure CHANGED_VIEWS_QQ1 is treated as a factor
+misinfo_filtered$CHANGED_VIEWS_QQ1 <- as.factor(misinfo_filtered$CHANGED_VIEWS_QQ1)
+
+# Loop through each GROUP value and create histograms
+for (group_value in unique(misinfo_filtered$GROUP)) {
+  p <- ggplot(misinfo_filtered %>% filter(GROUP == group_value), aes(x = CHANGED_VIEWS_QQ1)) +
+    geom_bar(fill = "steelblue", color = "black") +
+    labs(title = paste("Histogram of CHANGED_VIEWS_QQ1 for GROUP", group_value),
+         x = "CHANGED_VIEWS_QQ1", 
+         y = "Count") +
+    theme_minimal()
+  
+  print(p)  # Ensure the plot is displayed inside the loop
+}
 
 ```
 
-# GCBS Score: Simple Linear Regression Analysis
+# Pie Charts
 
-```{r}
+```{r pie_chart}
 
-# Define the regression formula
-formula <- as.formula("`GCBS PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
-                      `First Seven Items _3` + `First Seven Items _4` + 
-                      `First Seven Items _5` + `First Seven Items _6` + 
-                      `First Seven Items _7`")
+library(ggplot2)
+library(dplyr)
 
-# Fit the linear model
-model <- lm(formula, data = gcb)
+# Create an empty list to store pie charts
+pie_charts <- list()
 
-# View the model summary
-summary(model)
+# Define a vector to map numeric values to descriptions for CHANGED_VIEWS_QQ1
+view_labels <- c("1" = "View stayed about the same",
+                 "2" = "View had some/moderate change",
+                 "3" = "View significantly changed")
+
+# Custom colors for each section (You can change these to any colors you prefer)
+#custom_colors <- c("skyblue", "lightgreen", "coral")
+custom_colors <- c("skyblue", "orange", "red")
+
+# Define a vector to map numeric GROUP values to their corresponding titles
+group_titles <- c(
+  "1" = "Test Group (Visual)",
+  "2" = "Control Group (Visual)",
+  "3" = "Test Group (Audio)",
+  "4" = "Control Group (Audio)"
+)
+
+# Loop through each GROUP value (numeric) and create pie charts
+for (group_value in unique(misinfo_filtered$GROUP)) {
+  
+  # Convert group_value to a character (because group_titles uses character keys)
+  group_name <- as.character(group_value)
+  
+  # Prepare data for pie chart
+  pie_data <- misinfo_filtered %>%
+    filter(GROUP == group_value) %>%
+    count(CHANGED_VIEWS_QQ1) %>%
+    mutate(percentage = n / sum(n) * 100,
+           label = paste0(round(percentage, 1), "%"))  # Create labels with percentage signs
+  
+  # Ensure CHANGED_VIEWS_QQ1 is a factor
+  pie_data$CHANGED_VIEWS_QQ1 <- factor(pie_data$CHANGED_VIEWS_QQ1, levels = c("1", "2", "3"))
+  
+  # Generate pie chart with custom colors and black borders
+  p <- ggplot(pie_data, aes(x = "", y = n, fill = CHANGED_VIEWS_QQ1)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +  # Add black border around sections
+    coord_polar(theta = "y") +
+    geom_text(aes(label = label), position = position_stack(vjust = 0.7), color = "black", size = 3, fontface = "bold") +  # Add labels inside the pie
+    labs(title = group_titles[group_name],  # Custom title based on group_name
+         fill = "Change in Views") +  # Rename the legend
+    scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply custom colors
+    theme_void() +  # Remove unnecessary gridlines
+    theme(legend.position = "right")  # Ensure the legend is visible
+  
+  # Store the plot in the list with the group value as the name
+  pie_charts[[paste0("Group_", group_name)]] <- p
+}
+
+# View stored pie charts
+#pie_charts[["Group_1"]]  # View the pie chart for "Test Group (Visual)"
+#pie_charts[["Group_2"]]  # View the pie chart for "Control Group (Visual)"
+#pie_charts[["Group_3"]]  # View the pie chart for "Test Group (Audio)"
+#pie_charts[["Group_4"]]  # View the pie chart for "Control Group (Audio)"
+
+# Combine the first two and the last two pie charts in a 2x2 grid
+grid.arrange(
+  pie_charts[["Group_1"]],  # Test Group (Visual)
+  pie_charts[["Group_2"]]  # Control Group (Visual)
+  #pie_charts[["Group_3"]],  # Test Group (Audio)
+  #pie_charts[["Group_4"]],  # Control Group (Audio)
+  #nrow = 2  # Arrange in 2 rows
+  #ncol = 1   # Arrange in 2 columns
+)
+
+grid.arrange(
+  pie_charts[["Group_3"]],  # Test Group (Audio)
+  pie_charts[["Group_4"]]  # Control Group (Audio)
+  #nrow = 2  # Arrange in 2 rows
+  #ncol = 1   # Arrange in 2 columns
+)
+```
+
+```{r other}
+
+library(ggplot2)
+library(dplyr)
+
+# Create an empty list to store pie charts
+pie_charts <- list()
+
+# Define a vector to map numeric values to descriptions for CHANGED_VIEWS_QQ1
+view_labels <- c("1" = "View stayed about the same",
+                 "2" = "View had some/moderate change",
+                 "3" = "View significantly changed")
+
+# Custom colors for each section (You can change these to any colors you prefer)
+#custom_colors <- c("skyblue", "orange", "red")
+custom_colors <- c("skyblue", "lightgreen", "coral")
+
+# Loop through each GROUP value and create pie charts
+for (group_value in unique(misinfo_filtered$GROUP)) {
+  
+  # Prepare data for pie chart
+  pie_data <- misinfo_filtered %>%
+    filter(GROUP == group_value) %>%
+    count(CHANGED_VIEWS_QQ1) %>%
+    mutate(percentage = n / sum(n) * 100,
+           label = paste0(round(percentage, 1), "%"))  # Create labels with percentage signs
+  
+  # Ensure CHANGED_VIEWS_QQ1 is a factor
+  pie_data$CHANGED_VIEWS_QQ1 <- factor(pie_data$CHANGED_VIEWS_QQ1, levels = c(1, 2, 3))
+  
+  # Generate pie chart with custom colors and black borders
+  p <- ggplot(pie_data, aes(x = "", y = n, fill = CHANGED_VIEWS_QQ1)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +  # Add black border around sections
+    coord_polar(theta = "y") +
+    geom_text(aes(label = label), position = position_stack(vjust = 0.5), color = "black", size = 5) +  # Add labels inside the pie
+    labs(title = paste("Pie Chart of CHANGED_VIEWS_QQ1 for GROUP", group_value),
+         fill = "Change in Views") +  # Rename the legend
+    scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply custom colors
+    theme_void() +  # Remove unnecessary gridlines
+    theme(legend.position = "right")  # Ensure the legend is visible
+  
+  # Store the plot in the list with the group value as the name
+  pie_charts[[paste0("Group_", group_value)]] <- p
+}
+
+# View stored pie charts
+pie_charts[["Group_1"]]  # Example: Display pie chart for Group 1
+pie_charts[["Group_2"]]  # Example: Display pie chart for Group 2
+pie_charts[["Group_3"]]  # Example: Display pie chart for Group 3
+pie_charts[["Group_4"]]  # Example: Display pie chart for Group 4
 ```
 
 ### GCBS Pre-Score Q5 (Most Important)
@@ -170,237 +292,6 @@ summary(model)
 ### GCBS Pre-Score Q4 (Least Important)
 
 *The spread of most viruses and/or diseases is the result of the deliberate, concealed efforts of some organization.*
-
-# GCBS Score: Linear Regression w/80-20 Train-Test Split
-
-```{r}
-
-# Load necessary library
-set.seed(123)  # Set seed for reproducibility
-
-# Split data into training (80%) and testing (20%)
-sample_size <- floor(0.8 * nrow(gcb))
-train_indices <- sample(seq_len(nrow(gcb)), size = sample_size)
-
-train_data <- gcb[train_indices, ]  # Training set
-test_data <- gcb[-train_indices, ]  # Testing set
-
-# Define the regression formula
-formula <- as.formula("`GCBS PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
-                      `First Seven Items _3` + `First Seven Items _4` + 
-                      `First Seven Items _5` + `First Seven Items _6` + 
-                      `First Seven Items _7`")
-
-# Train the model on the training set
-model <- lm(formula, data = train_data)
-
-# Make predictions on the test set
-predictions <- predict(model, newdata = test_data)
-
-# Evaluate performance
-actuals <- test_data$`GCBS PRE SCORE`
-rmse <- sqrt(mean((predictions - actuals)^2))  # Root Mean Squared Error
-r_squared <- cor(predictions, actuals)^2  # R-squared
-
-# Print evaluation metrics
-cat("RMSE:", rmse, "\n")
-cat("R-squared:", r_squared, "\n")
-
-# Compute residuals for test data
-#test_residuals <- actuals - predictions  # Difference between actual and predicted
-
-# Create residual plot
-#plot(predictions, test_residuals, main = "Residual Plot", xlab = "Predicted Values", ylab = "Residuals")
-#abline(h = 0, col = "red")
-
-```
-
-# GCBS Score: Linear Regression w/10-Fold CV
-
-```{r}
-
-# Load necessary libraries
-install.packages("caret")
-library(caret)
-
-# Define the regression formula
-formula <- as.formula("`GCBS PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
-                      `First Seven Items _3` + `First Seven Items _4` + 
-                      `First Seven Items _5` + `First Seven Items _6` + 
-                      `First Seven Items _7`")
-
-# Define cross-validation method (10-fold)
-control <- trainControl(method = "cv", number = 10)
-
-# Train the model using cross-validation
-cv_model <- train(formula, data = gcb, method = "lm", trControl = control)
-
-# Print cross-validation results
-print(cv_model)
-
-# Extract RMSE and R-squared from cross-validation
-cv_results <- cv_model$results
-cat("Cross-Validated RMSE:", cv_results$RMSE, "\n")
-cat("Cross-Validated R-squared:", cv_results$Rsquared, "\n")
-
-```
-
-# GCBS Score: Linear Discriminate Analysis w/10-Fold CV
-
-```{r}
-
-# Load necessary libraries
-library(caret)
-library(MASS)  # For lda function
-
-# Set seed for reproducibility
-set.seed(123)
-
-# Define the mapping of factor levels to numeric values
-factor_map <- c(
-  "Definitely Not True" = 1,
-  "Probably Not True" = 2,
-  "Not Sure/Cannot Decide" = 3,
-  "Probably True" = 4,
-  "Definitely True" = 5
-)
-
-# List of columns to convert
-cols_to_convert <- c(
-  "First Seven Items _1", "First Seven Items _2", "First Seven Items _3", 
-  "First Seven Items _4", "First Seven Items _5", "First Seven Items _6", 
-  "First Seven Items _7", "Last Eight Items _1", "Last Eight Items _2", 
-  "Last Eight Items _3", "Last Eight Items _4", "Last Eight Items _5", 
-  "Last Eight Items _6", "Last Eight Items _7"
-)
-
-# Apply conversion across all selected columns
-gcb_copy_2[cols_to_convert] <- lapply(gcb_copy_2[cols_to_convert], function(x) as.numeric(factor_map[x]))
-
-# Split data into training (70%) and testing (30%)
-sample_size <- floor(0.7 * nrow(gcb_copy_2))
-train_indices <- sample(seq_len(nrow(gcb_copy_2)), size = sample_size)
-
-train_data <- gcb_copy_2[train_indices, ]  # Training set
-test_data <- gcb_copy_2[-train_indices, ]  # Testing set
-
-# Convert the response variable to a factor for LDA
-train_data$`MIST-20 PRE SCORE` <- as.factor(train_data$`MIST-20 PRE SCORE`)
-
-# Define the formula for LDA
-formula <- as.formula("`MIST-20 PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
-                      `First Seven Items _3` + `First Seven Items _4` + 
-                      `First Seven Items _5` + `First Seven Items _6` + 
-                      `First Seven Items _7`")
-
-# Define 10-fold cross-validation
-control <- trainControl(method = "cv", number = 10)
-
-# Train the LDA model using cross-validation
-lda_model <- train(formula, data = train_data, method = "lda", trControl = control)
-
-# Print cross-validation results
-print(lda_model)
-
-# Make predictions on the test set
-test_predictions <- predict(lda_model, newdata = test_data)
-
-# Evaluate performance
-confusion_matrix <- confusionMatrix(test_predictions, test_data$`MIST-20 PRE SCORE`)
-cat("Confusion Matrix:\n")
-print(confusion_matrix)
-
-# Optionally, you can also calculate accuracy
-accuracy <- sum(diag(confusion_matrix$table)) / sum(confusion_matrix$table)
-cat("Accuracy:", accuracy, "\n")
-
-```
-
-# MIST-20 Score: Linear Regression w/10-Fold CV
-
-```{r}
-
-# Convert the response variable to numeric (if it is not already)
-gcb$`MIST-20 PRE SCORE` <- as.numeric(as.character(gcb$`MIST-20 PRE SCORE`))
-
-# Convert predictors from qualitative to numeric (0 = Fake News, 1 = Real News)
-gcb[, c("First 10 Items _1", "First 10 Items _2", "First 10 Items _3", "First 10 Items _4", 
-        "First 10 Items _5", "First 10 Items _6", "First 10 Items _7", "First 10 Items _8", 
-        "First 10 Items _9", "First 10 Items _10")] <- 
-  lapply(gcb[, c("First 10 Items _1", "First 10 Items _2", "First 10 Items _3", "First 10 Items _4", 
-                 "First 10 Items _5", "First 10 Items _6", "First 10 Items _7", "First 10 Items _8", 
-                 "First 10 Items _9", "First 10 Items _10")], function(x) {
-    as.numeric(x == "Real News")  # Converts "Real News" to 1, "Fake News" to 0
-  })
-
-# Load necessary library
-library(caret)
-
-# Define the regression formula with new response and predictors
-formula <- as.formula("`MIST-20 PRE SCORE` ~ `First 10 Items _1` + `First 10 Items _2` + 
-                      `First 10 Items _3` + `First 10 Items _4` + `First 10 Items _5` + 
-                      `First 10 Items _6` + `First 10 Items _7` + `First 10 Items _8` + 
-                      `First 10 Items _9` + `First 10 Items _10`")
-
-# Define 10-fold cross-validation
-control <- trainControl(method = "cv", number = 10)
-
-# Train the model using cross-validation
-cv_model <- train(formula, data = gcb, method = "lm", trControl = control)
-
-# Print cross-validation results
-print(cv_model)
-
-# Extract RMSE and R-squared from cross-validation
-cv_results <- cv_model$results
-cat("Cross-Validated RMSE:", cv_results$RMSE, "\n")
-cat("Cross-Validated R-squared:", cv_results$Rsquared, "\n")
-
-```
-
-# MIST-20 Score: Linear Discriminate Analysis w/10-Fold CV
-
-```{r}
-
-# Check for constant predictors within each group
-library(dplyr)
-
-# Create a summary of predictors by group
-summary_df <- gcb %>%
-  group_by(`MIST-20 PRE SCORE`) %>%
-  summarize(across(starts_with("First 10 Items"), ~ n_distinct(.) > 1))
-
-print(summary_df)
-
-# Remove constant predictors
-gcb <- gcb %>%
-  select(where(~ n_distinct(.) > 1))  # Keep only predictors with more than 1 distinct value
-
-gcb$`MIST-20 PRE SCORE` <- as.factor(gcb$`MIST-20 PRE SCORE`)
-
-# Load necessary library
-library(caret)
-
-# Define the formula again if needed
-formula <- as.formula("`MIST-20 PRE SCORE` ~ `First 10 Items _1` + `First 10 Items _2` + 
-                      `First 10 Items _3` + `First 10 Items _4` + `First 10 Items _5` + 
-                      `First 10 Items _6` + `First 10 Items _7` + `First 10 Items _8` + 
-                      `First 10 Items _9` + `First 10 Items _10`")
-
-# Define 10-fold cross-validation
-control <- trainControl(method = "cv", number = 10)
-
-# Train the model using cross-validation for Linear Discriminant Analysis
-cv_model <- train(formula, data = gcb, method = "lda", trControl = control)
-
-# Print cross-validation results
-print(cv_model)
-
-# Extract metrics relevant for LDA
-cat("Cross-Validated Accuracy:", cv_model$results$Accuracy, "\n")
-cat("Cross-Validated Kappa:", cv_model$results$Kappa, "\n")
-
-```
 
 Control Group (Audio): 21 (42.98%)\
 Control Group (Visual): 22 (44%)\
