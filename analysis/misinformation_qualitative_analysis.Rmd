@@ -1,0 +1,322 @@
+---
+title: "Generic Conspiracist Beliefs"
+author: "Kendall Beaver"
+date: "`r Sys.Date()`"
+output: pdf
+---
+
+```{r setup, include=FALSE}
+
+library(readxl)
+library(dplyr)
+library(corrplot)
+library(writexl)
+library(ggplot2)
+
+misinfo <- read_excel("data/sketches_for_skepticism.xlsx")
+misinfo
+gcb_copy_2 <- gcb
+
+any(is.na(gcb)) #No missing values
+sum(is.na(gcb)) #Verification
+
+head(gcb) #20 features
+summary(gcb) #5,000 observations
+
+unique(gcb$`First Seven Items _1`)
+
+unique(gcb$`First 10 Items _1`)
+
+```
+
+```{r}
+# Define the mapping of factor levels to numeric values
+factor_map <- c(
+  "Definitely Not True" = 1,
+  "Probably Not True" = 2,
+  "Not Sure/Cannot Decide" = 3,
+  "Probably True" = 4,
+  "Definitely True" = 5
+)
+
+# List of columns to convert
+cols_to_convert <- c(
+  "First Seven Items _1", "First Seven Items _2", "First Seven Items _3", 
+  "First Seven Items _4", "First Seven Items _5", "First Seven Items _6", 
+  "First Seven Items _7", "Last Eight Items _1", "Last Eight Items _2", 
+  "Last Eight Items _3", "Last Eight Items _4", "Last Eight Items _5", 
+  "Last Eight Items _6", "Last Eight Items _7"
+)
+
+# Apply conversion across all selected columns
+gcb[cols_to_convert] <- lapply(gcb[cols_to_convert], function(x) as.numeric(factor_map[x]))
+
+# Check the result
+str(gcb[cols_to_convert])
+
+```
+
+# GCBS Score: Simple Linear Regression Analysis
+
+```{r}
+
+# Define the regression formula
+formula <- as.formula("`GCBS PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
+                      `First Seven Items _3` + `First Seven Items _4` + 
+                      `First Seven Items _5` + `First Seven Items _6` + 
+                      `First Seven Items _7`")
+
+# Fit the linear model
+model <- lm(formula, data = gcb)
+
+# View the model summary
+summary(model)
+```
+
+### GCBS Pre-Score Q5 (Most Important)
+
+*Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public.*
+
+### GCBS Pre-Score Q4 (Least Important)
+
+*The spread of most viruses and/or diseases is the result of the deliberate, concealed efforts of some organization.*
+
+# GCBS Score: Linear Regression w/80-20 Train-Test Split
+
+```{r}
+
+# Load necessary library
+set.seed(123)  # Set seed for reproducibility
+
+# Split data into training (80%) and testing (20%)
+sample_size <- floor(0.8 * nrow(gcb))
+train_indices <- sample(seq_len(nrow(gcb)), size = sample_size)
+
+train_data <- gcb[train_indices, ]  # Training set
+test_data <- gcb[-train_indices, ]  # Testing set
+
+# Define the regression formula
+formula <- as.formula("`GCBS PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
+                      `First Seven Items _3` + `First Seven Items _4` + 
+                      `First Seven Items _5` + `First Seven Items _6` + 
+                      `First Seven Items _7`")
+
+# Train the model on the training set
+model <- lm(formula, data = train_data)
+
+# Make predictions on the test set
+predictions <- predict(model, newdata = test_data)
+
+# Evaluate performance
+actuals <- test_data$`GCBS PRE SCORE`
+rmse <- sqrt(mean((predictions - actuals)^2))  # Root Mean Squared Error
+r_squared <- cor(predictions, actuals)^2  # R-squared
+
+# Print evaluation metrics
+cat("RMSE:", rmse, "\n")
+cat("R-squared:", r_squared, "\n")
+
+# Compute residuals for test data
+#test_residuals <- actuals - predictions  # Difference between actual and predicted
+
+# Create residual plot
+#plot(predictions, test_residuals, main = "Residual Plot", xlab = "Predicted Values", ylab = "Residuals")
+#abline(h = 0, col = "red")
+
+```
+
+# GCBS Score: Linear Regression w/10-Fold CV
+
+```{r}
+
+# Load necessary libraries
+install.packages("caret")
+library(caret)
+
+# Define the regression formula
+formula <- as.formula("`GCBS PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
+                      `First Seven Items _3` + `First Seven Items _4` + 
+                      `First Seven Items _5` + `First Seven Items _6` + 
+                      `First Seven Items _7`")
+
+# Define cross-validation method (10-fold)
+control <- trainControl(method = "cv", number = 10)
+
+# Train the model using cross-validation
+cv_model <- train(formula, data = gcb, method = "lm", trControl = control)
+
+# Print cross-validation results
+print(cv_model)
+
+# Extract RMSE and R-squared from cross-validation
+cv_results <- cv_model$results
+cat("Cross-Validated RMSE:", cv_results$RMSE, "\n")
+cat("Cross-Validated R-squared:", cv_results$Rsquared, "\n")
+
+```
+
+# GCBS Score: Linear Discriminate Analysis w/10-Fold CV
+
+```{r}
+
+# Load necessary libraries
+library(caret)
+library(MASS)  # For lda function
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Define the mapping of factor levels to numeric values
+factor_map <- c(
+  "Definitely Not True" = 1,
+  "Probably Not True" = 2,
+  "Not Sure/Cannot Decide" = 3,
+  "Probably True" = 4,
+  "Definitely True" = 5
+)
+
+# List of columns to convert
+cols_to_convert <- c(
+  "First Seven Items _1", "First Seven Items _2", "First Seven Items _3", 
+  "First Seven Items _4", "First Seven Items _5", "First Seven Items _6", 
+  "First Seven Items _7", "Last Eight Items _1", "Last Eight Items _2", 
+  "Last Eight Items _3", "Last Eight Items _4", "Last Eight Items _5", 
+  "Last Eight Items _6", "Last Eight Items _7"
+)
+
+# Apply conversion across all selected columns
+gcb_copy_2[cols_to_convert] <- lapply(gcb_copy_2[cols_to_convert], function(x) as.numeric(factor_map[x]))
+
+# Split data into training (70%) and testing (30%)
+sample_size <- floor(0.7 * nrow(gcb_copy_2))
+train_indices <- sample(seq_len(nrow(gcb_copy_2)), size = sample_size)
+
+train_data <- gcb_copy_2[train_indices, ]  # Training set
+test_data <- gcb_copy_2[-train_indices, ]  # Testing set
+
+# Convert the response variable to a factor for LDA
+train_data$`MIST-20 PRE SCORE` <- as.factor(train_data$`MIST-20 PRE SCORE`)
+
+# Define the formula for LDA
+formula <- as.formula("`MIST-20 PRE SCORE` ~ `First Seven Items _1` + `First Seven Items _2` + 
+                      `First Seven Items _3` + `First Seven Items _4` + 
+                      `First Seven Items _5` + `First Seven Items _6` + 
+                      `First Seven Items _7`")
+
+# Define 10-fold cross-validation
+control <- trainControl(method = "cv", number = 10)
+
+# Train the LDA model using cross-validation
+lda_model <- train(formula, data = train_data, method = "lda", trControl = control)
+
+# Print cross-validation results
+print(lda_model)
+
+# Make predictions on the test set
+test_predictions <- predict(lda_model, newdata = test_data)
+
+# Evaluate performance
+confusion_matrix <- confusionMatrix(test_predictions, test_data$`MIST-20 PRE SCORE`)
+cat("Confusion Matrix:\n")
+print(confusion_matrix)
+
+# Optionally, you can also calculate accuracy
+accuracy <- sum(diag(confusion_matrix$table)) / sum(confusion_matrix$table)
+cat("Accuracy:", accuracy, "\n")
+
+```
+
+# MIST-20 Score: Linear Regression w/10-Fold CV
+
+```{r}
+
+# Convert the response variable to numeric (if it is not already)
+gcb$`MIST-20 PRE SCORE` <- as.numeric(as.character(gcb$`MIST-20 PRE SCORE`))
+
+# Convert predictors from qualitative to numeric (0 = Fake News, 1 = Real News)
+gcb[, c("First 10 Items _1", "First 10 Items _2", "First 10 Items _3", "First 10 Items _4", 
+        "First 10 Items _5", "First 10 Items _6", "First 10 Items _7", "First 10 Items _8", 
+        "First 10 Items _9", "First 10 Items _10")] <- 
+  lapply(gcb[, c("First 10 Items _1", "First 10 Items _2", "First 10 Items _3", "First 10 Items _4", 
+                 "First 10 Items _5", "First 10 Items _6", "First 10 Items _7", "First 10 Items _8", 
+                 "First 10 Items _9", "First 10 Items _10")], function(x) {
+    as.numeric(x == "Real News")  # Converts "Real News" to 1, "Fake News" to 0
+  })
+
+# Load necessary library
+library(caret)
+
+# Define the regression formula with new response and predictors
+formula <- as.formula("`MIST-20 PRE SCORE` ~ `First 10 Items _1` + `First 10 Items _2` + 
+                      `First 10 Items _3` + `First 10 Items _4` + `First 10 Items _5` + 
+                      `First 10 Items _6` + `First 10 Items _7` + `First 10 Items _8` + 
+                      `First 10 Items _9` + `First 10 Items _10`")
+
+# Define 10-fold cross-validation
+control <- trainControl(method = "cv", number = 10)
+
+# Train the model using cross-validation
+cv_model <- train(formula, data = gcb, method = "lm", trControl = control)
+
+# Print cross-validation results
+print(cv_model)
+
+# Extract RMSE and R-squared from cross-validation
+cv_results <- cv_model$results
+cat("Cross-Validated RMSE:", cv_results$RMSE, "\n")
+cat("Cross-Validated R-squared:", cv_results$Rsquared, "\n")
+
+```
+
+# MIST-20 Score: Linear Discriminate Analysis w/10-Fold CV
+
+```{r}
+
+# Check for constant predictors within each group
+library(dplyr)
+
+# Create a summary of predictors by group
+summary_df <- gcb %>%
+  group_by(`MIST-20 PRE SCORE`) %>%
+  summarize(across(starts_with("First 10 Items"), ~ n_distinct(.) > 1))
+
+print(summary_df)
+
+# Remove constant predictors
+gcb <- gcb %>%
+  select(where(~ n_distinct(.) > 1))  # Keep only predictors with more than 1 distinct value
+
+gcb$`MIST-20 PRE SCORE` <- as.factor(gcb$`MIST-20 PRE SCORE`)
+
+# Load necessary library
+library(caret)
+
+# Define the formula again if needed
+formula <- as.formula("`MIST-20 PRE SCORE` ~ `First 10 Items _1` + `First 10 Items _2` + 
+                      `First 10 Items _3` + `First 10 Items _4` + `First 10 Items _5` + 
+                      `First 10 Items _6` + `First 10 Items _7` + `First 10 Items _8` + 
+                      `First 10 Items _9` + `First 10 Items _10`")
+
+# Define 10-fold cross-validation
+control <- trainControl(method = "cv", number = 10)
+
+# Train the model using cross-validation for Linear Discriminant Analysis
+cv_model <- train(formula, data = gcb, method = "lda", trControl = control)
+
+# Print cross-validation results
+print(cv_model)
+
+# Extract metrics relevant for LDA
+cat("Cross-Validated Accuracy:", cv_model$results$Accuracy, "\n")
+cat("Cross-Validated Kappa:", cv_model$results$Kappa, "\n")
+
+```
+
+Control Group (Audio): 21 (42.98%)\
+Control Group (Visual): 22 (44%)\
+Test Group (Audio): 28 (57.14%)\
+Test Group (Visual): 28 (56%)
+
+Total: 99
+
+They're trying to see if an advertisement influences their likelihood to believe in conspiracy theories and fake news? Hence asking questions about podcasts and social media.
