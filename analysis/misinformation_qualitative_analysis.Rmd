@@ -671,6 +671,138 @@ stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = 
 print(stacked_bar_chart)
 ```
 
+```{r test_box_plots, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Create a box plot for GCBS PRE SCORE by GROUP
+box_plot <- ggplot(misinfo_filtered, aes(x = as.factor(GROUP), y = `GCBS PRE SCORE`, fill = as.factor(GROUP))) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +  # Boxplot with outliers in red
+  labs(
+    title = "Distribution of GCBS Pre Score by Group",
+    x = "Group",
+    y = "GCBS Pre Score"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Apply custom labels for groups
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"  # Hide legend since colors represent groups
+  )
+
+# Print the box plot
+#print(box_plot)
+
+# Create a box plot for GCBS POST SCORE by GROUP
+box_plot_post <- ggplot(misinfo_filtered, aes(x = as.factor(GROUP), y = `GCBS POST SCORE`, fill = as.factor(GROUP))) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +  # Boxplot with outliers in red
+  labs(
+    title = "Distribution of GCBS Post Score by Group",
+    x = "Group",
+    y = "GCBS Post Score"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Apply custom labels for groups
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"  # Hide legend since colors represent groups
+  )
+
+# Print the box plot
+#print(box_plot_post)
+```
+
+```{r box_plot_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(gridExtra)
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "VISUAL AD", # Test Group (Visual)
+  "2" = "VISUAL AD", # Control Group (Visual)
+  "3" = "AUDIO AD", # Test Group (Audio)
+  "4" = "AUDIO AD" # Control Group (Audio)
+)
+
+# Reshape the data to long format for easier faceting
+long_data <- misinfo_filtered %>%
+  select(GROUP, `GCBS PRE SCORE`, `GCBS POST SCORE`) %>%
+  pivot_longer(cols = c(`GCBS PRE SCORE`, `GCBS POST SCORE`), 
+               names_to = "Test_Time", 
+               values_to = "Score") %>%
+  mutate(Test_Time = factor(Test_Time, levels = c("GCBS PRE SCORE", "GCBS POST SCORE")))
+
+# Create the first plot for Groups 1 and 2 (Visual Test and Control)
+plot1 <- ggplot(long_data %>% filter(GROUP %in% c(1, 3)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 1 and 2
+  labs(
+    title = "GCBS Scores Before & After Ad - Test Group\n",
+    x = "\nGCBS Test Scores",
+    y = "Score\n"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+# Use grid.arrange to display both plots together
+grid.arrange(plot1)  # Arrange plots side by side
+```
+
+```{r box_plot_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(gridExtra)
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "VISUAL AD", # Test Group (Visual)
+  "2" = "VISUAL AD", # Control Group (Visual)
+  "3" = "AUDIO AD", # Test Group (Audio)
+  "4" = "AUDIO AD" # Control Group (Audio)
+)
+
+# Reshape the data to long format for easier faceting
+long_data <- misinfo_filtered %>%
+  select(GROUP, `GCBS PRE SCORE`, `GCBS POST SCORE`) %>%
+  pivot_longer(cols = c(`GCBS PRE SCORE`, `GCBS POST SCORE`), 
+               names_to = "Test_Time", 
+               values_to = "Score") %>%
+  mutate(Test_Time = factor(Test_Time, levels = c("GCBS PRE SCORE", "GCBS POST SCORE")))
+
+# Create the plot for Groups 2 and 4 (Control Group)
+plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 2 and 4
+  labs(
+    title = "GCBS Scores Before & After Ad - Control Group\n",
+    x = "\nGCBS Test Scores",
+    y = "Score\n"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+# Use grid.arrange to display the plot
+grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
+```
+
+```{r}
+
+
+```
+
+\
+
 ```{r answer_length_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
 #grid.arrange(
