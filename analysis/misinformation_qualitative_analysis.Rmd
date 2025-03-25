@@ -268,10 +268,6 @@ plot4 <- pie_charts[["Group_4"]] +
 
 ```
 
-# Change in QQ1 Answer After Seeing Visual Ad - Test vs. Control Group
-
-**QQ1** - *What are some reasons you think people are attracted to radical groups?*
-
 ```{r visual_ad_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
 library(gridExtra)
@@ -304,39 +300,31 @@ plot4 <- pie_charts[["Group_4"]] +
   ggtitle("Control Group") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Audio Control Group
 
-grid.arrange(
-  arrangeGrob(
-    plot1, plot2,
-    nrow = 1
-  ),
-  shared_legend,
-  nrow = 2,
-  heights = c(4, 2)  # Adjust height ratios for better spacing
-)
+#grid.arrange(
+#  arrangeGrob(
+#    plot1, plot2,
+#    nrow = 1
+#  ),
+#  shared_legend,
+#  nrow = 2,
+#  heights = c(4, 2)  # Adjust height ratios for better spacing
+#)
 ```
-
-# Change in QQ1 Answer After Seeing Audio Ad - Test vs. Control Group
-
-**QQ1** - *What are some reasons you think people are attracted to radical groups?*
 
 ```{r audio_ad_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
-grid.arrange(
-  arrangeGrob(
-    plot3, plot4,
-    nrow = 1
-  ),
-  shared_legend,
-  nrow = 2,
-  heights = c(4, 2)  # Adjust height ratios for better spacing
-)
+#grid.arrange(
+#  arrangeGrob(
+#    plot3, plot4,
+#    nrow = 1
+#  ),
+#  shared_legend,
+#  nrow = 2,
+#  heights = c(4, 2)  # Adjust height ratios for better spacing
+#)
 
 # heights = c(4, 1)  # Original ratio
 ```
-
-## Change in QQ1 Comment Length After Seeing *Visual* Ad - Test vs. Control Group
-
-**QQ1** - *What are some reasons you think people are attracted to radical groups?*
 
 ```{r answer_length_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -423,18 +411,80 @@ plot4 <- pie_charts[["Group_4"]] +
   ggtitle("Control Group") +
   theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Audio Control Group
 
-grid.arrange(
-  arrangeGrob(
-    plot1, plot2,
-    nrow = 1
-  ),
-  shared_legend,
-  nrow = 2,
-  heights = c(4, 2)  # Adjust height ratios for better spacing
-)
+#grid.arrange(
+#  arrangeGrob(
+#    plot1, plot2,
+#    nrow = 1
+#  ),
+#  shared_legend,
+#  nrow = 2,
+#  heights = c(4, 2)  # Adjust height ratios for better spacing
+#)
 ```
 
-```{r stacked_bar_chart}
+**QQ1:** *What are some reasons you think people are attracted to radical groups?*
+
+```{r bar_chart_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Prepare data for stacked bar chart
+stacked_data <- misinfo_filtered %>%
+  count(GROUP, CHANGED_VIEWS_QQ1) %>%
+  group_by(GROUP) %>%
+  mutate(percentage = n / sum(n) * 100) %>%  # Convert to percentage
+  ungroup()
+
+# Ensure GROUP and CHANGED_LENGTH_QQ1 are factors for proper ordering
+stacked_data$GROUP <- factor(stacked_data$GROUP, levels = c("1", "2", "3", "4"))
+stacked_data$CHANGED_VIEWS_QQ1 <- factor(stacked_data$CHANGED_VIEWS_QQ1, levels = c("1", "2", "3"))
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "Test Group (Visual)",
+  "2" = "Control Group (Visual)",
+  "3" = "Test Group (Audio)",
+  "4" = "Control Group (Audio)"
+)
+
+# Define a vector to map numeric values to descriptions for CHANGED_VIEWS_QQ1
+view_labels <- c("1" = "View stayed about the same",
+                 "2" = "View had some/moderate change",
+                 "3" = "View significantly changed")
+
+# Custom colors
+custom_colors <- c("skyblue", "orange", "red")
+
+# Create the stacked bar chart
+stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = CHANGED_VIEWS_QQ1)) +
+  geom_bar(stat = "identity", color = "black") +  # Stacked bars with black borders
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5),  # Position labels in center of bars
+            color = "black", size = 4) +  # Adjust label size and color
+  labs(
+    title = "Change in QQ1 Answer After Exposed to Ad",
+    x = "\nGroup",
+    y = "Percentage\n",
+    fill = "Answer"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Map numeric groups to names
+  scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply colors and labels
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Center and style the title
+    axis.text.x = element_text(angle = 30, hjust = 1),  # Tilt x-axis labels for readability
+    legend.position = "right",  # Keep legend visible
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+# Print the stacked bar chart
+print(stacked_bar_chart)
+```
+
+\newpage
+
+**QQ1:** *What are some reasons you think people are attracted to radical groups?*
+
+```{r bar_chart_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
 # Load necessary libraries
 library(ggplot2)
@@ -474,7 +524,7 @@ stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = 
             position = position_stack(vjust = 0.5),  # Position labels in center of bars
             color = "black", size = 4) +  # Adjust label size and color
   labs(
-    title = "Change in QQ1 Comment Length After Exposed to Ad",
+    title = "Change in QQ1 Comment Length After\nExposed to Ad",
     x = "\nGroup",
     y = "Percentage\n",
     fill = "Comment Length"
@@ -492,24 +542,146 @@ stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = 
 
 # Print the stacked bar chart
 print(stacked_bar_chart)
-
 ```
 
-# Change in QQ1 Comment Length After Seeing *Audio* Ad - Test vs. Control Group
+**QQ2:** What are some reasons you think people believe false ideas circulating online?
 
-**QQ1** - *What are some reasons you think people are attracted to radical groups?*
+```{r bar_chart_3, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+library(tidyr)  # Ensure tidyr is loaded for drop_na()
+
+# Prepare data for stacked bar chart
+stacked_data <- misinfo_filtered %>%
+  drop_na(CHANGED_VIEWS_QQ2) %>%  # Removes rows with NA in CHANGED_VIEWS_QQ2
+  count(GROUP, CHANGED_VIEWS_QQ2) %>%
+  group_by(GROUP) %>%
+  mutate(percentage = n / sum(n) * 100) %>%  # Convert to percentage
+  ungroup()
+
+# Ensure GROUP and CHANGED_VIEWS_QQ2 are factors for proper ordering
+stacked_data$GROUP <- factor(stacked_data$GROUP, levels = c("1", "2", "3", "4"))
+stacked_data$CHANGED_VIEWS_QQ2 <- factor(stacked_data$CHANGED_VIEWS_QQ2, levels = c("1", "2", "3"))
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "Test Group (Visual)",
+  "2" = "Control Group (Visual)",
+  "3" = "Test Group (Audio)",
+  "4" = "Control Group (Audio)"
+)
+
+# Define a vector to map numeric values to descriptions for CHANGED_VIEWS_QQ2
+view_labels <- c("1" = "View stayed about the same",
+                 "2" = "View had some/moderate change",
+                 "3" = "View significantly changed")
+
+# Custom colors
+custom_colors <- c("skyblue", "orange", "red")
+
+# Create the stacked bar chart
+stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = CHANGED_VIEWS_QQ2)) +
+  geom_bar(stat = "identity", color = "black") +  # Stacked bars with black borders
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5),  # Position labels in center of bars
+            color = "black", size = 4) +  # Adjust label size and color
+  labs(
+    title = "\nChange in QQ2 Answer After Exposed to Ad",
+    x = "\nGroup",
+    y = "Percentage\n",
+    fill = "Answer"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Map numeric groups to names
+  scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply colors and labels
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Center and style the title
+    axis.text.x = element_text(angle = 30, hjust = 1),  # Tilt x-axis labels for readability
+    legend.position = "right",  # Keep legend visible
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+# Print the stacked bar chart
+print(stacked_bar_chart)
+```
+
+\newpage
+
+**QQ2:** What are some reasons you think people believe false ideas circulating online?
+
+```{r bar_chart_4, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)  # Ensure tidyr is loaded for drop_na()
+
+# Prepare data for stacked bar chart, removing NA values only for this analysis
+stacked_data <- misinfo_filtered %>%
+  drop_na(CHANGED_LENGTH_QQ2) %>%  # Removes rows with NA in CHANGED_LENGTH_QQ2
+  count(GROUP, CHANGED_LENGTH_QQ2) %>%
+  group_by(GROUP) %>%
+  mutate(percentage = n / sum(n) * 100) %>%  # Convert to percentage
+  ungroup()
+
+# Ensure GROUP and CHANGED_LENGTH_QQ2 are factors for proper ordering
+stacked_data$GROUP <- factor(stacked_data$GROUP, levels = c("1", "2", "3", "4"))
+stacked_data$CHANGED_LENGTH_QQ2 <- factor(stacked_data$CHANGED_LENGTH_QQ2, levels = c("1", "2", "3"))
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "Test Group (Visual)",
+  "2" = "Control Group (Visual)",
+  "3" = "Test Group (Audio)",
+  "4" = "Control Group (Audio)"
+)
+
+# Define labels for CHANGED_LENGTH_QQ2
+view_labels <- c("1" = "Length stayed about the same",
+                 "2" = "Length became longer",
+                 "3" = "Length became shorter")
+
+# Custom colors
+custom_colors <- c("skyblue", "red", "orange")
+
+# Create the stacked bar chart
+stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = CHANGED_LENGTH_QQ2)) +
+  geom_bar(stat = "identity", color = "black") +  # Stacked bars with black borders
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5),  # Position labels in center of bars
+            color = "black", size = 4) +  # Adjust label size and color
+  labs(
+    title = "Change in QQ2 Comment Length After\nExposed to Ad",
+    x = "\nGroup",
+    y = "Percentage\n",
+    fill = "Comment Length"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Map numeric groups to names
+  scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply colors and labels
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Center and style the title
+    axis.text.x = element_text(angle = 30, hjust = 1),  # Tilt x-axis labels for readability
+    legend.position = "right",  # Keep legend visible
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+# Print the stacked bar chart
+print(stacked_bar_chart)
+```
 
 ```{r answer_length_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
-grid.arrange(
-  arrangeGrob(
-    plot3, plot4,
-    nrow = 1
-  ),
-  shared_legend,
-  nrow = 2,
-  heights = c(4, 2)  # Adjust height ratios for better spacing
-)
+#grid.arrange(
+#  arrangeGrob(
+#    plot3, plot4,
+#    nrow = 1
+#  ),
+#  shared_legend,
+#  nrow = 2,
+#  heights = c(4, 2)  # Adjust height ratios for better spacing
+#)
 
 # heights = c(4, 1)  # Original ratio
 ```
@@ -584,6 +756,8 @@ for (group_value in unique(misinfo_filtered$GROUP)) {
 #pie_charts[["Group_3"]]  # Example: Display pie chart for Group 3
 #pie_charts[["Group_4"]]  # Example: Display pie chart for Group 4
 ```
+
+\newpage
 
 ### GCBS Pre-Score Q5 (Most Important)
 
