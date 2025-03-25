@@ -111,6 +111,16 @@ misinfo_filtered <- misinfo_filtered %>%
       CHANGED_LENGTH_QQ1 == "Comment length became slightly or significantly longer" ~ 2,
       CHANGED_LENGTH_QQ1 == "Comment length stayed about the same" ~ 3
     ),
+    CHANGED_VIEWS_QQ2 = case_when(
+      CHANGED_VIEWS_QQ2 == "View stayed about the same" ~ 1,
+      CHANGED_VIEWS_QQ2 == "View had some/moderate change" ~ 2,
+      CHANGED_VIEWS_QQ2 == "View significantly changed" ~ 3
+    ),
+    CHANGED_LENGTH_QQ2 = case_when(
+      CHANGED_LENGTH_QQ2 == "Comment length became slightly or significantly shorter" ~ 1,
+      CHANGED_LENGTH_QQ2 == "Comment length became slightly or significantly longer" ~ 2,
+      CHANGED_LENGTH_QQ2 == "Comment length stayed about the same" ~ 3
+    ),
     SENTIMENT = case_when(
       SENTIMENT == "Positive" ~ 1,
       SENTIMENT == "Negative" ~ 2,
@@ -125,28 +135,13 @@ head(misinfo_filtered)
 colSums(is.na(misinfo_filtered))
 
 # Ensure CHANGED_VIEWS_QQ1 is treated as a factor
-misinfo_filtered$CHANGED_VIEWS_QQ1 <- as.factor(misinfo_filtered$CHANGED_VIEWS_QQ1)
-```
+#misinfo_filtered$CHANGED_VIEWS_QQ1 <- as.factor(misinfo_filtered$CHANGED_VIEWS_QQ1)
 
-```{r histograms, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+# Ensure CHANGED_LENGTH_QQ1 is treated as a factor
+#misinfo_filtered$CHANGED_LENGTH_QQ1 <- as.factor(misinfo_filtered$CHANGED_LENGTH_QQ1)
 
-# HISTOGRAMS
-
-# Ensure CHANGED_VIEWS_QQ1 is treated as a factor
-misinfo_filtered$CHANGED_VIEWS_QQ1 <- as.factor(misinfo_filtered$CHANGED_VIEWS_QQ1)
-
-# Loop through each GROUP value and create histograms
-for (group_value in unique(misinfo_filtered$GROUP)) {
-  p <- ggplot(misinfo_filtered %>% filter(GROUP == group_value), aes(x = CHANGED_VIEWS_QQ1)) +
-    geom_bar(fill = "steelblue", color = "black") +
-    labs(title = paste("Histogram of CHANGED_VIEWS_QQ1 for GROUP", group_value),
-         x = "CHANGED_VIEWS_QQ1", 
-         y = "Count") +
-    theme_minimal()
-  
-#  print(p)  # Ensure the plot is displayed inside the loop
-}
-
+# Ensure SENTIMENT is treated as a factor
+#misinfo_filtered$SENTIMENT <- as.factor(misinfo_filtered$SENTIMENT)
 ```
 
 ```{r pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
@@ -271,7 +266,9 @@ plot4 <- pie_charts[["Group_4"]] +
 
 ```
 
-# Pie Charts - Visual Ad (Test vs. Control Group)
+# Change in QQ1 Answer After Seeing Visual Ad - Test vs. Control Group
+
+**QQ1** - *What are some reasons you think people are attracted to radical groups?*
 
 ```{r visual_ad_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -316,9 +313,144 @@ grid.arrange(
 )
 ```
 
-# Pie Charts - Audio Ad (Test vs. Control Group)
+# Change in QQ1 Answer After Seeing Audio Ad - Test vs. Control Group
+
+**QQ1** - *What are some reasons you think people are attracted to radical groups?*
 
 ```{r audio_ad_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+grid.arrange(
+  arrangeGrob(
+    plot3, plot4,
+    nrow = 1
+  ),
+  shared_legend,
+  nrow = 2,
+  heights = c(4, 2)  # Adjust height ratios for better spacing
+)
+
+# heights = c(4, 1)  # Original ratio
+```
+
+# Change in QQ1 Comment Length After Seeing Visual Ad - Test vs. Control Group
+
+**QQ1** - *What are some reasons you think people are attracted to radical groups?*
+
+Comment length became slightly or significantly longer, \
+Comment length became slightly or significantly shorter, \
+Comment length stayed about the same
+
+```{r answer_length_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# THIS IS JUST THE CODE TO PERFORM THE ANALYSIS ON COMMENT LENGTH
+
+# Create an empty list to store pie charts
+pie_charts <- list()
+
+# Define a vector to map numeric values to descriptions for CHANGED_VIEWS_QQ1
+view_labels <- c("1" = "Comment length stayed about the same",
+                 "2" = "Comment length became slightly or significantly longer",
+                 "3" = "Comment length became slightly or significantly shorter")
+
+# Custom colors for each section (You can change these to any colors you prefer)
+#custom_colors <- c("skyblue", "lightgreen", "coral")
+custom_colors <- c("skyblue", "red", "orange")
+
+# Define a vector to map numeric GROUP values to their corresponding titles
+group_titles <- c(
+  "1" = "Test Group (Visual)",
+  "2" = "Control Group (Visual)",
+  "3" = "Test Group (Audio)",
+  "4" = "Control Group (Audio)"
+)
+
+# Loop through each GROUP value (numeric) and create pie charts
+for (group_value in unique(misinfo_filtered$GROUP)) {
+  
+  # Convert group_value to a character (because group_titles uses character keys)
+  group_name <- as.character(group_value)
+  
+  # Prepare data for pie chart
+  pie_data <- misinfo_filtered %>%
+    filter(GROUP == group_value) %>%
+    count(CHANGED_LENGTH_QQ1) %>%
+    mutate(percentage = n / sum(n) * 100,
+           label = paste0(round(percentage, 1), "%"))  # Create labels with percentage signs
+  
+  # Ensure CHANGED_VIEWS_QQ1 is a factor
+  pie_data$CHANGED_LENGTH_QQ1 <- factor(pie_data$CHANGED_LENGTH_QQ1, levels = c("1", "2", "3"))
+  
+  # Generate pie chart with custom colors and black borders
+  p <- ggplot(pie_data, aes(x = "", y = n, fill = CHANGED_LENGTH_QQ1)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +  # Add black border around sections
+    coord_polar(theta = "y") +
+    geom_text(aes(label = label), position = position_stack(vjust = 0.7), color = "black", size = 3, fontface = "bold") +  # Add labels inside the pie
+    labs(title = group_titles[group_name],  # Custom title based on group_name
+         fill = "Change in Comment Length") +  # Rename the legend
+    scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply custom colors
+    theme_void() +  # Remove unnecessary gridlines
+    theme(legend.position = "right")  # Ensure the legend is visible
+  
+  # Store the plot in the list with the group value as the name
+  pie_charts[[paste0("Group_", group_name)]] <- p
+}
+
+# The first two pie charts
+
+
+# Function to extract the legend from a ggplot
+get_legend <- function(my_plot) {
+  g <- ggplotGrob(my_plot)
+  legend <- g$grobs[[which(sapply(g$grobs, function(x) x$name) == "guide-box")]]
+  return(legend)
+}
+
+# Extract the legend from one of the pie charts
+shared_legend <- get_legend(pie_charts[["Group_1"]])
+
+# Apply centered titles to all four plots
+plot1 <- pie_charts[["Group_1"]] +
+  ggtitle("Test Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Visual Test Group
+
+plot2 <- pie_charts[["Group_2"]] +
+  ggtitle("Control Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Visual Control Group
+
+plot3 <- pie_charts[["Group_3"]] +
+  ggtitle("Test Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Audio Test Group
+
+plot4 <- pie_charts[["Group_4"]] +
+  ggtitle("Control Group") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") # Audio Control Group
+
+grid.arrange(
+  arrangeGrob(
+    plot1, plot2,
+    nrow = 1
+  ),
+  shared_legend,
+  nrow = 2,
+  heights = c(4, 2)  # Adjust height ratios for better spacing
+)
+
+grid.arrange(
+  arrangeGrob(
+    plot1, plot2, plot3, plot4,
+    nrow = 2
+  ),
+  shared_legend,
+  nrow = 2,
+  heights = c(8, 3)  # Adjust height ratios for better spacing
+)
+```
+
+# Change in QQ1 Comment Length After Seeing Audio Ad - Test vs. Control Group
+
+**QQ1** - *What are some reasons you think people are attracted to radical groups?*
+
+```{r answer_length_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
 grid.arrange(
   arrangeGrob(
