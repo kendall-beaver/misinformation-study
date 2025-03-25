@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: pdf_document
 ---
 
+# Pilot Study
+
 ```{r setup, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Load library and dataset
@@ -332,13 +334,9 @@ grid.arrange(
 # heights = c(4, 1)  # Original ratio
 ```
 
-# Change in QQ1 Comment Length After Seeing Visual Ad - Test vs. Control Group
+## Change in QQ1 Comment Length After Seeing *Visual* Ad - Test vs. Control Group
 
 **QQ1** - *What are some reasons you think people are attracted to radical groups?*
-
-Comment length became slightly or significantly longer, \
-Comment length became slightly or significantly shorter, \
-Comment length stayed about the same
 
 ```{r answer_length_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -434,19 +432,70 @@ grid.arrange(
   nrow = 2,
   heights = c(4, 2)  # Adjust height ratios for better spacing
 )
-
-grid.arrange(
-  arrangeGrob(
-    plot1, plot2, plot3, plot4,
-    nrow = 2
-  ),
-  shared_legend,
-  nrow = 2,
-  heights = c(8, 3)  # Adjust height ratios for better spacing
-)
 ```
 
-# Change in QQ1 Comment Length After Seeing Audio Ad - Test vs. Control Group
+```{r stacked_bar_chart}
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Prepare data for stacked bar chart
+stacked_data <- misinfo_filtered %>%
+  count(GROUP, CHANGED_LENGTH_QQ1) %>%
+  group_by(GROUP) %>%
+  mutate(percentage = n / sum(n) * 100) %>%  # Convert to percentage
+  ungroup()
+
+# Ensure GROUP and CHANGED_LENGTH_QQ1 are factors for proper ordering
+stacked_data$GROUP <- factor(stacked_data$GROUP, levels = c("1", "2", "3", "4"))
+stacked_data$CHANGED_LENGTH_QQ1 <- factor(stacked_data$CHANGED_LENGTH_QQ1, levels = c("1", "2", "3"))
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "Test Group (Visual)",
+  "2" = "Control Group (Visual)",
+  "3" = "Test Group (Audio)",
+  "4" = "Control Group (Audio)"
+)
+
+# Define labels for CHANGED_LENGTH_QQ1
+view_labels <- c("1" = "Length stayed about the same",
+                 "2" = "Length became longer",
+                 "3" = "Length became shorter")
+
+# Custom colors
+custom_colors <- c("skyblue", "red", "orange")
+
+# Create the stacked bar chart
+stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = CHANGED_LENGTH_QQ1)) +
+  geom_bar(stat = "identity", color = "black") +  # Stacked bars with black borders
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5),  # Position labels in center of bars
+            color = "black", size = 4) +  # Adjust label size and color
+  labs(
+    title = "Change in QQ1 Comment Length After Exposed to Ad",
+    x = "\nGroup",
+    y = "Percentage\n",
+    fill = "Comment Length"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Map numeric groups to names
+  scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply colors and labels
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Center and style the title
+    axis.text.x = element_text(angle = 30, hjust = 1),  # Tilt x-axis labels for readability
+    legend.position = "right",  # Keep legend visible
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+# Print the stacked bar chart
+print(stacked_bar_chart)
+
+```
+
+# Change in QQ1 Comment Length After Seeing *Audio* Ad - Test vs. Control Group
 
 **QQ1** - *What are some reasons you think people are attracted to radical groups?*
 
@@ -520,7 +569,7 @@ for (group_value in unique(misinfo_filtered$GROUP)) {
     coord_polar(theta = "y") +
     geom_text(aes(label = label), position = position_stack(vjust = 0.5), color = "black", size = 5) +  # Add labels inside the pie
     labs(title = paste("Pie Chart of CHANGED_VIEWS_QQ1 for GROUP", group_value),
-         fill = "Change in Views") +  # Rename the legend
+         fill = "Change in Answer") +  # Rename the legend
     scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply custom colors
     theme_void() +  # Remove unnecessary gridlines
     theme(legend.position = "right")  # Ensure the legend is visible
