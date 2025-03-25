@@ -1,5 +1,5 @@
 ---
-title: "Misinformation Qualitative Analysis"
+title: "Misinformation Pilot Study - Qualitative Analysis"
 author: "Kendall Beaver"
 date: "`r Sys.Date()`"
 output: pdf_document
@@ -964,6 +964,65 @@ plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y =
 grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
 ```
 
+```{r sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)  # Ensure tidyr is loaded for drop_na()
+
+# Prepare data for stacked bar chart, removing NA values only for this analysis
+stacked_data <- misinfo_filtered %>%
+  count(GROUP, SENTIMENT) %>%
+  group_by(GROUP) %>%
+  mutate(percentage = n / sum(n) * 100) %>%  # Convert to percentage
+  ungroup()
+
+# Ensure GROUP is a factor for proper ordering
+stacked_data$GROUP <- factor(stacked_data$GROUP, levels = c("1", "2", "3", "4"))
+
+# Convert SENTIMENT to a factor with labels
+stacked_data$SENTIMENT <- factor(stacked_data$SENTIMENT, levels = c(1, 2, 3), labels = c("Positive", "Neutral", "Negative"))
+
+# Custom colors for sentiment levels
+custom_colors <- c("Positive" = "skyblue", "Neutral" = "orange", "Negative" = "red")
+
+# Define labels for groups
+group_titles <- c(
+  "1" = "Visual Ad\n(Test Group)",
+  "2" = "Visual Ad\n(Control Group)",
+  "3" = "Audio Ad\n(Test Group)",
+  "4" = "Audio Ad\n(Control Group)"
+)
+
+# Create the stacked bar chart
+stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = SENTIMENT)) +
+  geom_bar(stat = "identity", color = "black") +  # Stacked bars with black borders
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5),  # Position labels in center of bars
+            color = "black", size = 4) +  # Adjust label size and color
+  labs(
+    title = "Sentiment of Ad by Group",
+    x = "\nGroup",
+    y = "Percentage\n",
+    fill = "Sentiment"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Map numeric groups to names
+  scale_fill_manual(values = custom_colors) +  # Apply colors
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Center and style the title
+    #axis.text.x = element_text(angle = 30, hjust = 1),  # Tilt x-axis labels for readability
+    legend.position = "right",  # Keep legend visible
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+# Print the stacked bar chart
+print(stacked_bar_chart)
+
+```
+
 \
 
 ```{r answer_length_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
@@ -1054,13 +1113,7 @@ for (group_value in unique(misinfo_filtered$GROUP)) {
 
 \newpage
 
-### GCBS Pre-Score Q5 (Most Important)
-
-*Large groups of scientists manipulate, fabricate, or suppress evidence in order to deceive the public.*
-
-### GCBS Pre-Score Q4 (Least Important)
-
-*The spread of most viruses and/or diseases is the result of the deliberate, concealed efforts of some organization.*
+### Participants
 
 Control Group (Audio): 21 (42.98%)\
 Control Group (Visual): 22 (44%)\
@@ -1068,5 +1121,3 @@ Test Group (Audio): 28 (57.14%)\
 Test Group (Visual): 28 (56%)
 
 Total: 99
-
-They're trying to see if an advertisement influences their likelihood to believe in conspiracy theories and fake news? Hence asking questions about podcasts and social media.
