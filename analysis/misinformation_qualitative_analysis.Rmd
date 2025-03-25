@@ -796,9 +796,172 @@ plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y =
 grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
 ```
 
-```{r}
+```{r mist_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "VISUAL AD", # Test Group (Visual)
+  "2" = "VISUAL AD", # Control Group (Visual)
+  "3" = "AUDIO AD", # Test Group (Audio)
+  "4" = "AUDIO AD" # Control Group (Audio)
+)
 
+# Reshape the data to long format for easier faceting
+long_data <- misinfo_filtered %>%
+  # Convert both "MIST-20 PRE SCORE" and "MIST-20 POST SCORE" to numeric
+  mutate(
+    `MIST-20 PRE SCORE` = as.numeric(`MIST-20 PRE SCORE`),
+    `MIST-20 POST SCORE` = as.numeric(`MIST-20 POST SCORE`)
+  ) %>%
+  select(GROUP, `MIST-20 PRE SCORE`, `MIST-20 POST SCORE`) %>%  # Updated column names here
+  pivot_longer(cols = c(`MIST-20 PRE SCORE`, `MIST-20 POST SCORE`), 
+               names_to = "Test_Time", 
+               values_to = "Score") %>%
+  mutate(Test_Time = factor(Test_Time, levels = c("MIST-20 PRE SCORE", "MIST-20 POST SCORE")))  # Updated levels
+
+# Create the plot for Groups 1 and 3 (Test Group)
+plot1 <- ggplot(long_data %>% filter(GROUP %in% c(1, 3)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 1 and 3
+  labs(
+    title = "MIST-20 Scores Before & After Ad - Test Group\n",  # Updated title
+    x = "\nMIST-20 Test Scores",  # Updated axis label
+    y = "Score\n"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+# Use grid.arrange to display the plot
+grid.arrange(plot1)  # Display the plot for Test Groups (1 & 3)
+```
+
+```{r mist_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "VISUAL AD", # Test Group (Visual)
+  "2" = "VISUAL AD", # Control Group (Visual)
+  "3" = "AUDIO AD", # Test Group (Audio)
+  "4" = "AUDIO AD" # Control Group (Audio)
+)
+
+# Reshape the data to long format for easier faceting
+long_data <- misinfo_filtered %>%
+  # Convert both "MIST-20 PRE SCORE" and "MIST-20 POST SCORE" to numeric
+  mutate(
+    `MIST-20 PRE SCORE` = as.numeric(`MIST-20 PRE SCORE`),
+    `MIST-20 POST SCORE` = as.numeric(`MIST-20 POST SCORE`)
+  ) %>%
+  select(GROUP, `MIST-20 PRE SCORE`, `MIST-20 POST SCORE`) %>%  # Updated column names here
+  pivot_longer(cols = c(`MIST-20 PRE SCORE`, `MIST-20 POST SCORE`), 
+               names_to = "Test_Time", 
+               values_to = "Score") %>%
+  mutate(Test_Time = factor(Test_Time, levels = c("MIST-20 PRE SCORE", "MIST-20 POST SCORE")))  # Updated levels
+
+# Create the plot for Groups 2 and 4 (Control Group)
+plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 2 and 4
+  labs(
+    title = "MIST-20 Scores Before & After Ad - Control Group\n",  # Updated title
+    x = "\nMIST-20 Test Scores",  # Updated axis label
+    y = "Score\n"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+# Use grid.arrange to display the plot
+grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
+```
+
+```{r itmist_box_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "VISUAL AD", # Test Group (Visual)
+  "2" = "VISUAL AD", # Control Group (Visual)
+  "3" = "AUDIO AD", # Test Group (Audio)
+  "4" = "AUDIO AD" # Control Group (Audio)
+)
+
+# Reshape the data to long format for easier faceting
+long_data <- misinfo_filtered %>%
+  # Convert both "ITMIST PRE SCORE" and "ITMIST POST SCORE" to numeric
+  mutate(
+    `ITMIST PRE SCORE` = as.numeric(`ITMIST PRE SCORE`),
+    `ITMIST POST SCORE` = as.numeric(`ITMIST POST SCORE`)
+  ) %>%
+  select(GROUP, `ITMIST PRE SCORE`, `ITMIST POST SCORE`) %>%  # Updated column names here
+  pivot_longer(cols = c(`ITMIST PRE SCORE`, `ITMIST POST SCORE`), 
+               names_to = "Test_Time", 
+               values_to = "Score") %>%
+  mutate(Test_Time = factor(Test_Time, levels = c("ITMIST PRE SCORE", "ITMIST POST SCORE")))  # Updated levels
+
+# Create the plot for Groups 1 and 3 (Test Group)
+plot1 <- ggplot(long_data %>% filter(GROUP %in% c(1, 3)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 1 and 3
+  labs(
+    title = "ITMIST Scores Before & After Ad - Test Group\n",  # Updated title for ITMIST
+    x = "\nITMIST Test Scores",  # Updated axis label for ITMIST
+    y = "Score\n"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+# Use grid.arrange to display the plot
+grid.arrange(plot1)  # Display the plot for Test Groups (1 & 3)
+```
+
+```{r itmist_box_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "VISUAL AD", # Test Group (Visual)
+  "2" = "VISUAL AD", # Control Group (Visual)
+  "3" = "AUDIO AD", # Test Group (Audio)
+  "4" = "AUDIO AD" # Control Group (Audio)
+)
+
+# Reshape the data to long format for easier faceting
+long_data <- misinfo_filtered %>%
+  # Convert both "ITMIST PRE SCORE" and "ITMIST POST SCORE" to numeric
+  mutate(
+    `ITMIST PRE SCORE` = as.numeric(`ITMIST PRE SCORE`),
+    `ITMIST POST SCORE` = as.numeric(`ITMIST POST SCORE`)
+  ) %>%
+  select(GROUP, `ITMIST PRE SCORE`, `ITMIST POST SCORE`) %>%  # Updated column names here
+  pivot_longer(cols = c(`ITMIST PRE SCORE`, `ITMIST POST SCORE`), 
+               names_to = "Test_Time", 
+               values_to = "Score") %>%
+  mutate(Test_Time = factor(Test_Time, levels = c("ITMIST PRE SCORE", "ITMIST POST SCORE")))  # Updated levels
+
+# Create the plot for Groups 2 and 4 (Control Group)
+plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 2 and 4
+  labs(
+    title = "ITMIST Scores Before & After Ad - Control Group\n",  # Updated title for ITMIST
+    x = "\nITMIST Test Scores",  # Updated axis label for ITMIST
+    y = "Score\n"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+# Use grid.arrange to display the plot
+grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
 ```
 
 \
