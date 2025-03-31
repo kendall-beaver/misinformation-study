@@ -1,11 +1,10 @@
 ---
-title: "Misinformation Pilot Study - Qualitative Analysis"
+title: "Qualitative Analysis of Diana Daly's Pilot Study"
+subtitle: "(Plots of Preliminary Findings)"
 author: "Kendall Beaver"
 date: "`r Sys.Date()`"
 output: pdf_document
 ---
-
-# Pilot Study
 
 ```{r setup, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -422,7 +421,9 @@ plot4 <- pie_charts[["Group_4"]] +
 #)
 ```
 
-**QQ1:** *What are some reasons you think people are attracted to radical groups?*
+# **QQ1**
+
+*What are some reasons you think people are attracted to radical groups?*
 
 ```{r bar_chart_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -482,7 +483,9 @@ print(stacked_bar_chart)
 
 \newpage
 
-**QQ1:** *What are some reasons you think people are attracted to radical groups?*
+# **QQ1**
+
+*What are some reasons you think people are attracted to radical groups?*
 
 ```{r bar_chart_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -544,7 +547,11 @@ stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = 
 print(stacked_bar_chart)
 ```
 
-**QQ2:** What are some reasons you think people believe false ideas circulating online?
+\newpage
+
+# **QQ2**
+
+*What are some reasons you think people believe false ideas circulating online?*
 
 ```{r bar_chart_3, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -607,7 +614,9 @@ print(stacked_bar_chart)
 
 \newpage
 
-**QQ2:** What are some reasons you think people believe false ideas circulating online?
+# **QQ2**
+
+*What are some reasons you think people believe false ideas circulating online?*
 
 ```{r bar_chart_4, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -1021,6 +1030,8 @@ stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = 
 # Print the stacked bar chart
 print(stacked_bar_chart)
 
+# Save the plot as a PNG file
+ggsave("sentiment_of_ad.png", plot = stacked_bar_chart, width = 8, height = 6)
 ```
 
 \
@@ -1111,13 +1122,14 @@ for (group_value in unique(misinfo_filtered$GROUP)) {
 #pie_charts[["Group_4"]]  # Example: Display pie chart for Group 4
 ```
 
-\newpage
+```{r participant info, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-### Participants
+# Participants
 
-Control Group (Audio): 21 (42.98%)\
-Control Group (Visual): 22 (44%)\
-Test Group (Audio): 28 (57.14%)\
-Test Group (Visual): 28 (56%)
+#Control Group (Audio): 21 (42.98%)
+#Control Group (Visual): 22 (44%)
+#Test Group (Audio): 28 (57.14%)
+#Test Group (Visual): 28 (56%)
 
-Total: 99
+#Total: 99
+```
