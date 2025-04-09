@@ -86,7 +86,11 @@ Week number, today's date, etc.
 4/6 - 4/4
 
 I'm currently running GPT-2.
-I went to try to update GPT-3. 
+I went to try to update GPT-3. I received this error: "This repository was archived by the owner on Sep 19, 2020. It is now read-only."
+I thought that maybe I couldn't use it, but I actually could. 
+
+I'm running a Google Colab notebook for the first time. I need to acknowledge their code and figure out how to adjust
+it for GPT-3.
 
 ### Number of hours: 
 A quantity of hours, maybe towards specific tasks. 
