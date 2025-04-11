@@ -83,7 +83,7 @@ Write anything that you think would be important for YOU later on.
 ### Date: 
 Week number, today's date, etc. 
 
-4/6 - 4/12
+Week 14: 4/6 - 4/12
 
 I'm currently running GPT-2.
 I went to try to update GPT-3. I received this error: "This repository was archived by the owner on Sep 19, 2020. It is now read-only."
