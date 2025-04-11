@@ -1,0 +1,646 @@
+---
+title: "Lying_Analysis"
+output: pdf_document
+date: "2025-04-09"
+---
+
+```{r load_data, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(tidyr)
+library(gridExtra)
+library(readxl)
+library(dplyr)
+library(corrplot)
+library(writexl)
+library(ggplot2)
+
+lying <- read_excel("data/lying_data.xlsx")
+#summary(lying)
+```
+
+```{r filter_data, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+#lying$QQ1_CHARACTER_COUNT...28
+#lying$QQ1_CHARACTER_COUNT...37
+#lying$QQ1_CHARACTER_COUNT_CHANGE
+#lying$QQ2_CHARACTER_COUNT...30
+#lying$QQ2_CHARACTER_COUNT...41
+#lying$QQ2_CHARACTER_COUNT_CHANGE
+#lying$QQ3_CHARACTER_COUNT...32
+#lying$QQ3_CHARACTER_COUNT...44
+#lying$QQ3_CHARACTER_COUNT_CHANGE
+
+lying_filtered <- lying %>%
+  select(`PARTICIPANT ID`, GROUP, QQ1_CHARACTER_COUNT...28, QQ1_CHARACTER_COUNT...37, QQ1_CHARACTER_COUNT_CHANGE, QQ2_CHARACTER_COUNT...30, QQ2_CHARACTER_COUNT...41, QQ2_CHARACTER_COUNT_CHANGE, QQ3_CHARACTER_COUNT...32, QQ3_CHARACTER_COUNT...44, QQ3_CHARACTER_COUNT_CHANGE)
+
+#lying <- drop_na(lying_filtered)
+#summary(lying_filtered)
+```
+
+# Violin Density Plots
+
+```{r violin_plot, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Reshape your data to long format with GROUP included and custom question labels
+lying_long <- lying_filtered %>%
+  select(GROUP, QQ1_CHARACTER_COUNT_CHANGE, QQ2_CHARACTER_COUNT_CHANGE, QQ3_CHARACTER_COUNT_CHANGE) %>%
+  pivot_longer(cols = starts_with("QQ"),
+               names_to = "Question",
+               values_to = "RateChange") %>%
+  drop_na() %>%
+  mutate(Direction = ifelse(RateChange >= 0, "Positive", "Negative"),
+         Question = case_when(
+           Question == "QQ1_CHARACTER_COUNT_CHANGE" ~ "Question 1",
+           Question == "QQ2_CHARACTER_COUNT_CHANGE" ~ "Question 2",
+           Question == "QQ3_CHARACTER_COUNT_CHANGE" ~ "Question 3"
+         ))
+
+# Control Group (Visual) - p1
+p1 <- lying_long %>%
+  filter(GROUP == "Control Group (Visual)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Control Group (Visual)",
+       y = "Rate of Change",
+       x = "\nQuestion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Test Group (Visual) - p2
+p2 <- lying_long %>%
+  filter(GROUP == "Test Group (Visual)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Test Group (Visual)",
+       y = "Rate of Change",
+       x = "\nQuestion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Control Group (Audio) - p3
+p3 <- lying_long %>%
+  filter(GROUP == "Control Group (Audio)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Control Group (Audio)",
+       y = "Rate of Change",
+       x = "\nQuestion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Test Group (Audio) - p4
+p4 <- lying_long %>%
+  filter(GROUP == "Test Group (Audio)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Test Group (Audio)",
+       y = "Rate of Change",
+       x = "\nQuestions") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Step 2: Print the plots individually
+p1  # Control Group (Visual)
+p2  # Test Group (Visual)
+p3  # Control Group (Audio)
+p4  # Test Group (Audio)
+
+
+```
+
+# Box Plots (No Density)
+
+```{r box_plots, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# BOX PLOTS
+
+# Reshape your data to long format with GROUP included and custom question labels
+lying_long <- lying_filtered %>%
+  select(GROUP, QQ1_CHARACTER_COUNT_CHANGE, QQ2_CHARACTER_COUNT_CHANGE, QQ3_CHARACTER_COUNT_CHANGE) %>%
+  pivot_longer(cols = starts_with("QQ"),
+               names_to = "Question",
+               values_to = "RateChange") %>%
+  drop_na() %>%
+  mutate(Direction = ifelse(RateChange >= 0, "Positive", "Negative"),
+         Question = case_when(
+           Question == "QQ1_CHARACTER_COUNT_CHANGE" ~ "Question 1",
+           Question == "QQ2_CHARACTER_COUNT_CHANGE" ~ "Question 2",
+           Question == "QQ3_CHARACTER_COUNT_CHANGE" ~ "Question 3"
+         ))
+
+# Control Group (Visual) - p1
+p1 <- lying_long %>%
+  filter(GROUP == "Control Group (Visual)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_boxplot(position = position_dodge(width = 0.9), outlier.shape = NA) +  # Box plot instead of violin plot
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Control Group (Visual)",
+       y = "Rate of Change",
+       x = "\nQuestion") +
+  scale_y_continuous(limits = c(NA, 4)) +  # Set y-axis limit up to 4
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Test Group (Visual) - p2
+p2 <- lying_long %>%
+  filter(GROUP == "Test Group (Visual)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_boxplot(position = position_dodge(width = 0.9), outlier.shape = NA) +  # Box plot instead of violin plot
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Test Group (Visual)",
+       y = "Rate of Change",
+       x = "\nQuestion") +
+  scale_y_continuous(limits = c(NA, 4)) +  # Set y-axis limit up to 4
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Control Group (Audio) - p3
+p3 <- lying_long %>%
+  filter(GROUP == "Control Group (Audio)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_boxplot(position = position_dodge(width = 0.9), outlier.shape = NA) +  # Box plot instead of violin plot
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Control Group (Audio)",
+       y = "Rate of Change",
+       x = "\nQuestion") +
+  scale_y_continuous(limits = c(NA, 4)) +  # Set y-axis limit up to 4
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Test Group (Audio) - p4
+p4 <- lying_long %>%
+  filter(GROUP == "Test Group (Audio)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_boxplot(position = position_dodge(width = 0.9), outlier.shape = NA) +  # Box plot instead of violin plot
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Test Group (Audio)",
+       y = "Rate of Change",
+       x = "\nQuestions") +
+  scale_y_continuous(limits = c(NA, 4)) +  # Set y-axis limit up to 4
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))  # Horizontal x-axis labels
+
+# Step 2: Print the plots individually
+p1  # Control Group (Visual)
+p2  # Test Group (Visual)
+p3  # Control Group (Audio)
+p4  # Test Group (Audio)
+
+```
+
+# Types of Lies - All Categories
+
+```{r types_of_lies, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+#lying$QQ3_TYPE_OF_LIE
+#lying$QQ3_LIE_2_SUMMARY
+
+type_of_lie <- lying %>%
+  select(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY, GROUP)
+
+#unique(type_of_lie)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Step 1: Reshape the data and relabel
+type_of_lie_long <- lying %>%
+  select(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = everything(),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count + calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels to control x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Plot
+ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +  # changed from white to black
+  labs(title = "Question 3 - Types of Lie (All Ad Categories Combined)",
+       x = "\nResponses",
+       y = "Count") +
+  theme_minimal() #+
+  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+
+```
+
+# Types of Lies - Separate Categories (Important)
+
+```{r separate_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each GROUP
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per GROUP
+plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
+  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Group:", g),
+         x = "\nResponses",
+         y = "Count") +
+    theme_minimal() #+
+    #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+})
+
+# Step 5: Print each plot
+plot_list[[1]]  # Control Group (Visual)
+plot_list[[2]]  # Test Group (Visual)
+plot_list[[3]]  # Control Group (Audio)
+plot_list[[4]]  # Test Group (Audio)
+
+```
+
+# Types of Lie - Pie Charts
+
+```{r separate_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+
+# Custom function to create pie charts without legend (used inside shared layout)
+make_pie <- function(data, title_text) {
+  ggplot(data, aes(x = "", y = perc, fill = Response)) +
+    geom_bar(stat = "identity", width = 1, color = "white") +
+    coord_polar("y") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              color = "black", size = 3) +
+    labs(title = title_text) +
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5),
+          legend.position = "none")  # Remove legend here
+}
+
+# One function per group: two pies + shared legend
+make_group_pie_plot_with_legend <- function(group_name) {
+  group_data <- lie_counts %>% filter(GROUP == group_name)
+
+  # Pie chart: Before Ad
+  before_data <- group_data %>% filter(QuestionType == "Before Ad")
+  before_pie <- make_pie(before_data, paste(group_name, "- Before Ad"))
+
+  # Pie chart: After Ad (keep the legend)
+  after_data <- group_data %>% filter(QuestionType == "After Ad")
+  after_pie <- ggplot(after_data, aes(x = "", y = perc, fill = Response)) +
+    geom_bar(stat = "identity", width = 1, color = "white") +
+    coord_polar("y") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              color = "black", size = 3) +
+    labs(title = paste(group_name, "- After Ad")) +
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5),
+          legend.position = "bottom")  # Legend kept here
+
+  # Combine with shared legend
+  combined <- (before_pie + after_pie) + plot_layout(ncol = 2, guides = "collect") &
+    theme(legend.position = "bottom")
+
+  return(combined)
+}
+
+# Apply to each group
+group_levels <- unique(lie_counts$GROUP)
+group_pies_shared_legend <- lapply(group_levels, make_group_pie_plot_with_legend)
+
+# View plots
+group_pies_shared_legend[[1]]  # Control Group (Visual)
+group_pies_shared_legend[[2]]  # Test Group (Visual)
+group_pies_shared_legend[[3]]  # Control Group (Audio)
+group_pies_shared_legend[[4]]  # Test Group (Audio)
+
+```
+
+```{r rdige_plot, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Let's try a ridge plot
+
+library(ggridges)
+
+lying_long <- lying_filtered %>%
+  select(QQ1_CHARACTER_COUNT_CHANGE, QQ2_CHARACTER_COUNT_CHANGE, QQ3_CHARACTER_COUNT_CHANGE) %>%
+  pivot_longer(cols = everything(),
+               names_to = "Question",
+               values_to = "RateChange") %>%
+  drop_na() %>%
+  mutate(Direction = case_when(
+    RateChange > 0 ~ "Positive",
+    RateChange < 0 ~ "Negative",
+    RateChange == 0 ~ "No Change"
+  ))
+
+ggplot(lying_long, aes(x = RateChange, y = Question, fill = Direction)) +
+  geom_density_ridges(alpha = 0.8, scale = 1.2, color = "white") +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  labs(title = "Rate of Character Count Change by Question",
+       x = "Rate of Change (New/Old - 1)",
+       y = "Question") +
+  theme_minimal()
+```
+
+```{r stacked_bar, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Let's try stacked bar plot
+
+lying_long %>%
+  group_by(Question, Direction) %>%
+  summarise(Count = n()) %>%
+  ggplot(aes(x = Question, y = Count, fill = Direction)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  labs(title = "Counts of Response Direction by Question",
+       x = "Question",
+       y = "Number of Responses") +
+  theme_minimal()
+```
+
+```{r faceted_density_plot, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# BAD FACETED DENSITY PLOTS
+ggplot(lying_long, aes(x = RateChange, fill = Direction)) +
+  geom_density(alpha = 0.6) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  facet_wrap(~ Question, scales = "free") +
+  labs(title = "Density of Character Count Change by Question",
+       x = "Rate of Change",
+       y = "Density") +
+  theme_minimal()
+```
+
+```{r violin_plot_original, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# VIOLIN PLOTS ORIGINAL
+
+# Reshape your data to long format with GROUP included
+lying_long <- lying_filtered %>%
+  select(GROUP, QQ1_CHARACTER_COUNT_CHANGE, QQ2_CHARACTER_COUNT_CHANGE, QQ3_CHARACTER_COUNT_CHANGE) %>%
+  pivot_longer(cols = starts_with("QQ"),
+               names_to = "Question",
+               values_to = "RateChange") %>%
+  drop_na() %>%
+  mutate(Direction = ifelse(RateChange >= 0, "Positive", "Negative"))
+
+# Control Group (Visual) - p1
+p1 <- lying_long %>%
+  filter(GROUP == "Control Group (Visual)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Control Group (Visual)",
+       y = "Rate of Change",
+       x = "Question") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Test Group (Visual) - p2
+p2 <- lying_long %>%
+  filter(GROUP == "Test Group (Visual)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Test Group (Visual)",
+       y = "Rate of Change",
+       x = "Question") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Control Group (Audio) - p3
+p3 <- lying_long %>%
+  filter(GROUP == "Control Group (Audio)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Control Group (Audio)",
+       y = "Rate of Change",
+       x = "Question") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Test Group (Audio) - p4
+p4 <- lying_long %>%
+  filter(GROUP == "Test Group (Audio)") %>%
+  ggplot(aes(x = Question, y = RateChange, fill = Direction)) +
+  geom_violin(alpha = 0.6, position = position_dodge(width = 0.9), trim = FALSE) +
+  geom_boxplot(width = 0.1, position = position_dodge(width = 0.9), outlier.shape = NA) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62")) +
+  labs(title = "Test Group (Audio)",
+       y = "Rate of Change",
+       x = "Question") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Step 2: Print the plots individually
+p1  # Control Group (Visual)
+p2  # Test Group (Visual)
+p3  # Control Group (Audio)
+p4  # Test Group (Audio)
+
+```
+
+```{r stacked_bar_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Include GROUP before pivoting
+lying_long <- lying %>%
+  select(GROUP, QQ1_CHARACTER_COUNT_CHANGE, QQ2_CHARACTER_COUNT_CHANGE, QQ3_CHARACTER_COUNT_CHANGE) %>%
+  pivot_longer(cols = starts_with("QQ"),
+               names_to = "Question",
+               values_to = "RateChange") %>%
+  drop_na() %>%
+  mutate(Direction = case_when(
+    RateChange > 0 ~ "Positive",
+    RateChange < 0 ~ "Negative",
+    RateChange == 0 ~ "No Change"
+  ))
+
+# Faceted stacked bar chart by group
+lying_long %>%
+  group_by(GROUP, Question, Direction) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  ggplot(aes(x = Question, y = Count, fill = Direction)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ GROUP) +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  labs(title = "Character Count Change Direction by Question and Group",
+       x = "Question",
+       y = "Number of Responses") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+```{r}
+
+grouped_data <- lying_long %>%
+  group_by(GROUP, Question, Direction) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  group_by(GROUP, Question) %>%
+  mutate(Percent = Count / sum(Count) * 100)
+
+# Control Visual
+p1 <- grouped_data %>%
+  filter(GROUP == "Control Group (Visual)") %>%
+  ggplot(aes(x = Question, y = Count, fill = Direction)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  labs(title = "Control Group (Visual)",
+       x = "Question",
+       y = "Number of Responses") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Test Visual
+p2 <- grouped_data %>%
+  filter(GROUP == "Test Group (Visual)") %>%
+  ggplot(aes(x = Question, y = Count, fill = Direction)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  labs(title = "Test Group (Visual)",
+       x = "Question",
+       y = "Number of Responses") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Control Audio
+p3 <- grouped_data %>%
+  filter(GROUP == "Control Group (Audio)") %>%
+  ggplot(aes(x = Question, y = Count, fill = Direction)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  labs(title = "Control Group (Audio)",
+       x = "Question",
+       y = "Number of Responses") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Test Audio
+p4 <- grouped_data %>%
+  filter(GROUP == "Test Group (Audio)") %>%
+  ggplot(aes(x = Question, y = Count, fill = Direction)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")) +
+  labs(title = "Test Group (Audio)",
+       x = "Question",
+       y = "Number of Responses") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+p1
+p2
+p3
+p4
+
+ggsave("control_visual_plot.png", p1, width = 6, height = 5)
+ggsave("test_visual_plot.png", p2, width = 6, height = 5)
+ggsave("control_audio_plot.png", p3, width = 6, height = 5)
+ggsave("test_audio_plot.png", p4, width = 6, height = 5)
+
+```
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+
+# Step 1: Prep the data with percentages and label positions
+grouped_data <- lying_long %>%
+  group_by(GROUP, Question, Direction) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  group_by(GROUP, Question) %>%
+  mutate(
+    Percent = Count / sum(Count) * 100,
+    Position = cumsum(Count) - Count / 2  # Label in center of each bar segment
+  )
+
+# Step 2: Define a common theme and fill colors
+fill_colors <- c("Positive" = "#66c2a5", "Negative" = "#fc8d62", "No Change" = "#8da0cb")
+base_plot <- function(data, title_text) {
+  ggplot(data, aes(x = Question, y = Count, fill = Direction)) +
+    geom_bar(stat = "identity", position = "stack") +
+    geom_text(aes(label = paste0(round(Percent, 1), "%"), y = Position),
+              color = "white", size = 4) +
+    scale_fill_manual(values = fill_colors) +
+    labs(title = title_text,
+         x = "Question",
+         y = "Number of Responses") +
+    theme_minimal(base_size = 14) +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1),
+          legend.title = element_blank())
+}
+
+# Step 3: Generate the plots
+p1 <- grouped_data %>% filter(GROUP == "Control Group (Visual)") %>% base_plot("Control Group (Visual)")
+p2 <- grouped_data %>% filter(GROUP == "Test Group (Visual)") %>% base_plot("Test Group (Visual)")
+p3 <- grouped_data %>% filter(GROUP == "Control Group (Audio)") %>% base_plot("Control Group (Audio)")
+p4 <- grouped_data %>% filter(GROUP == "Test Group (Audio)") %>% base_plot("Test Group (Audio)")
+
+# Step 4: Display the plots (individually or together)
+p1
+p2
+p3
+p4
+
+```

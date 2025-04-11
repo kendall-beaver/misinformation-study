@@ -1,0 +1,114 @@
+---
+title: "Capstone Report (Final Draft)"
+author: "Kendall Beaver"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r load_data, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(tidyr)
+library(gridExtra)
+library(readxl)
+library(dplyr)
+library(corrplot)
+library(writexl)
+library(ggplot2)
+```
+
+```{r separate_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+lying <- read_excel("data/lying_data.xlsx")
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each GROUP
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per GROUP
+plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
+  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Group:", g),
+         x = "\nResponses",
+         y = "Count") +
+    theme_minimal() #+
+    #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+})
+
+# Step 5: Print each plot
+plot_list[[1]]  # Control Group (Visual)
+plot_list[[2]]  # Test Group (Visual)
+plot_list[[3]]  # Control Group (Audio)
+plot_list[[4]]  # Test Group (Audio)
+```
+
+While the Test Group (Audio) went from 7.1% to 14.3%, everything stayed exactly the same except for "Unsure."
+
+The Control Group (Audio) seems to have had some effect on the getting respondants to put a different answer, "Keeping friend from danger and/or punishment" to "White Lie," dropping by 25% and increasing by 7.8%.
+
+```{r itmist_box_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "VISUAL AD", # Test Group (Visual)
+  "2" = "VISUAL AD", # Control Group (Visual)
+  "3" = "AUDIO AD", # Test Group (Audio)
+  "4" = "AUDIO AD" # Control Group (Audio)
+)
+
+# Reshape the data to long format for easier faceting
+long_data <- misinfo_filtered %>%
+  # Convert both "ITMIST PRE SCORE" and "ITMIST POST SCORE" to numeric
+  mutate(
+    `ITMIST PRE SCORE` = as.numeric(`ITMIST PRE SCORE`),
+    `ITMIST POST SCORE` = as.numeric(`ITMIST POST SCORE`)
+  ) %>%
+  select(GROUP, `ITMIST PRE SCORE`, `ITMIST POST SCORE`) %>%  # Updated column names here
+  pivot_longer(cols = c(`ITMIST PRE SCORE`, `ITMIST POST SCORE`), 
+               names_to = "Test_Time", 
+               values_to = "Score") %>%
+  mutate(Test_Time = factor(Test_Time, levels = c("ITMIST PRE SCORE", "ITMIST POST SCORE")))  # Updated levels
+
+# Create the plot for Groups 2 and 4 (Control Group)
+plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 2 and 4
+  labs(
+    title = "ITMIST Scores Before & After Ad - Control Group\n",  # Updated title for ITMIST
+    x = "\nITMIST Test Scores",  # Updated axis label for ITMIST
+    y = "Score\n"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+# Use grid.arrange to display the plot
+grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
+```

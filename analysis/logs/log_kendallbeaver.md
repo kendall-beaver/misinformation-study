@@ -83,14 +83,24 @@ Write anything that you think would be important for YOU later on.
 ### Date: 
 Week number, today's date, etc. 
 
-4/6 - 4/4
+4/6 - 4/12
 
 I'm currently running GPT-2.
 I went to try to update GPT-3. I received this error: "This repository was archived by the owner on Sep 19, 2020. It is now read-only."
 I thought that maybe I couldn't use it, but I actually could. 
 
 I'm running a Google Colab notebook for the first time. I need to acknowledge their code and figure out how to adjust
-it for GPT-3.
+it for GPT-3. I ran into a problem where I need to pay to use an API key - actually, there's a free plan to test out the API key but 
+I don't want to start that and find great results then have to pay to use that. Anyways, GPT-2 is completely free and open-sourced
+so I'm just going to use that.
+
+So I'm just running one pilot. 
+
+For transcribing the audio, I'm using something called Whisper
+
+``` pip install git+https://github.com/openai/whisper.git 
+pip install ffmpeg-python ```
+
 
 ### Number of hours: 
 A quantity of hours, maybe towards specific tasks. 
