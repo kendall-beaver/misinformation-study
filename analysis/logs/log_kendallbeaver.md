@@ -31,7 +31,7 @@ Week number, today's date, etc.
 
 3/16 - 3/22
 
-Began editing this file. The hard stuff is getting everything organized.
+I set up my GitHub account and have been editing the README files, just getting everything organized which hsa been more time consuming than I expected.
 
 I want to compare my findings with Diana's findings, and possibly the demographic information to the main YouGov study.
 
@@ -83,7 +83,7 @@ Write anything that you think would be important for YOU later on.
 ### Date: 
 Week number, today's date, etc. 
 
-4/6 - 4/12
+Week 14: 4/6 - 4/12
 
 I'm currently running GPT-2.
 I went to try to update GPT-3. I received this error: "This repository was archived by the owner on Sep 19, 2020. It is now read-only."
