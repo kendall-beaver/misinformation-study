@@ -9,9 +9,24 @@ output: pdf_document
 
 ## Demographics
 
+1.  Political Party
+2.  Age
+3.  News Source/Information
+4.  Hours online?
+
 ## Qualitative Questions Analysis
 
+1.  QQ1 After Ad (Did views and length change?)
+2.  QQ2 After Ad
+3.  QQ3 After Ad
+
 ## Test Score Analysis
+
+1.  GBCS
+2.  MIST-20
+3.  IT-MIST
+
+## Additional Sentiment Discovered From Other Questions
 
 ## GenAI Results
 
