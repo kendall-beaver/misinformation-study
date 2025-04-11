@@ -31,7 +31,7 @@ Week number, today's date, etc.
 
 3/16 - 3/22
 
-Began editing this file. The hard stuff is getting everything organized.
+I set up my GitHub account and have been editing the README files, just getting everything organized which hsa been more time consuming than I expected.
 
 I want to compare my findings with Diana's findings, and possibly the demographic information to the main YouGov study.
 
