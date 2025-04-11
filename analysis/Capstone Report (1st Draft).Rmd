@@ -112,3 +112,23 @@ plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y =
 # Use grid.arrange to display the plot
 grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
 ```
+
+## Analysis of QQ3:
+
+This didn't effect anybody across all of the categories.
+
+```{r table_of_previous, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+library(knitr)
+
+library(tidyr)
+
+lie_counts_wide <- lie_counts %>%
+  select(GROUP, QuestionType, Response, n) %>%
+  pivot_wider(names_from = Response, values_from = n, values_fill = 0)
+
+# Then use gt or kable
+lie_counts_wide %>%
+  gt()
+
+```

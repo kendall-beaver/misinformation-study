@@ -303,6 +303,56 @@ plot_list[[4]]  # Test Group (Audio)
 
 ```
 
+# Types of Lies by Count
+
+```{r count_separate_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each GROUP
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
+  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack") +
+    geom_text(aes(label = n),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Group:", g),
+         x = "\nResponses",
+         y = "Count") +
+    theme_minimal()
+})
+
+# Step 5: Print each plot
+plot_list[[1]]  # Control Group (Visual)
+plot_list[[2]]  # Test Group (Visual)
+plot_list[[3]]  # Control Group (Audio)
+plot_list[[4]]  # Test Group (Audio)
+
+```
+
 # Types of Lie - Pie Charts
 
 ```{r separate_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
