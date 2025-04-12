@@ -28,6 +28,9 @@ output: pdf_document
 
 ## Additional Sentiment Discovered From Other Questions
 
+1.  Sentiment towards ads
+2.  Sentiment about participating in future studies
+
 ## GenAI Results
 
 ```{r load_data, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
@@ -138,7 +141,7 @@ plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y =
 grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
 ```
 
-# Analysis of QQ3:
+# II: Analysis of Qualitative Questions
 
 This didn't effect anybody across all of the categories.
 
@@ -157,3 +160,5 @@ lie_counts_wide %>%
   gt()
 
 ```
+
+# References
