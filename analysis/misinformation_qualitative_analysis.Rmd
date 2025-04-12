@@ -421,7 +421,7 @@ plot4 <- pie_charts[["Group_4"]] +
 #)
 ```
 
-# **QQ1**
+# **QQ1 - Content of Answer**
 
 *What are some reasons you think people are attracted to radical groups?*
 
@@ -483,7 +483,7 @@ print(stacked_bar_chart)
 
 \newpage
 
-# **QQ1**
+# **QQ1 - Length of Answer**
 
 *What are some reasons you think people are attracted to radical groups?*
 
@@ -549,7 +549,7 @@ print(stacked_bar_chart)
 
 \newpage
 
-# **QQ2**
+# **QQ2 - Content of Answer**
 
 *What are some reasons you think people believe false ideas circulating online?*
 
@@ -614,7 +614,7 @@ print(stacked_bar_chart)
 
 \newpage
 
-# **QQ2**
+# **QQ2 - Length of Answer**
 
 *What are some reasons you think people believe false ideas circulating online?*
 

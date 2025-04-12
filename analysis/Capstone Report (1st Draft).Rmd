@@ -7,12 +7,22 @@ output: pdf_document
 
 # Outline
 
+## Intro
+
+1.  Intro of misinformation and purpose of study, to study the prebunking effects using comedy sketch ads to see how effective they will be.
+2.  Two different ads
+    1.  Control ad: Was not a neutral ad. It was an ad with negative emotion, which is impactful but confused the results. In the future a neutral ad will be chosen, in terms of content, tone and emotion.
+3.  Method: used Descript program to create ads.
+4.  My help/work needed: Looking at qualitative questions that was asked before viewing the ad and after reviewing the ad.
+
 ## Demographics
 
-1.  Political Party
-2.  Age
-3.  News Source/Information
-4.  Hours online?
+1.  Overview of participants
+2.  Charts of
+    1.  Political Party
+    2.  Age
+    3.  News Source/Information
+    4.  Hours online?
 
 ## Qualitative Questions Analysis
 
@@ -31,10 +41,21 @@ output: pdf_document
 1.  Sentiment towards ads
 2.  Sentiment about participating in future studies
 
-## GenAI Results
+## GenAI Study & Results
 
-```{r load_data, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+## Future Direction
 
+And yes, audio ads are not a great way to reach people, though they may still be effective in more typical listening conditions. In future work, ideally, we would have participants queue up media they already planned to listen to, and then embed our ad in it while they engage however they usually do (exercising, cleaning, driving).
+
+I'm glad Video ads are still showing promise on deeper analysis. We should pursue that in ads on YouTube podcasts, since many cannot skip those.More testing might be good first, ideally targeting more specific falsehoods and problems.
+
+## References
+
+-------
+
+```{r load_libraries, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Load libraries
 library(tidyr)
 library(gridExtra)
 library(readxl)
@@ -42,62 +63,12 @@ library(dplyr)
 library(corrplot)
 library(writexl)
 library(ggplot2)
-```
+library(gt)
 
-```{r separate_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+# Load datasets
 
 lying <- read_excel("data/lying_data.xlsx")
-
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-
-# Step 1: Reshape, include GROUP, relabel columns
-type_of_lie_long <- lying %>%
-  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
-  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
-               names_to = "QuestionType",
-               values_to = "Response") %>%
-  drop_na() %>%
-  mutate(QuestionType = recode(QuestionType,
-                               QQ3_TYPE_OF_LIE = "Before Ad",
-                               QQ3_LIE_2_SUMMARY = "After Ad"))
-
-# Step 2: Count and calculate percentages for each GROUP
-lie_counts <- type_of_lie_long %>%
-  group_by(GROUP, QuestionType, Response) %>%
-  summarise(n = n(), .groups = "drop") %>%
-  group_by(GROUP, QuestionType) %>%
-  mutate(perc = n / sum(n) * 100)
-
-# Step 3: Set factor levels for consistent x-axis order
-lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
-
-# Step 4: Create one plot per GROUP
-plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
-  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
-    geom_bar(stat = "identity", position = "stack") +
-    geom_text(aes(label = paste0(round(perc, 1), "%")),
-              position = position_stack(vjust = 0.5),
-              size = 3,
-              color = "black") +
-    labs(title = paste("Group:", g),
-         x = "\nResponses",
-         y = "Count") +
-    theme_minimal() #+
-    #theme(axis.text.x = element_text(angle = 15, hjust = 1))
-})
-
-# Step 5: Print each plot
-plot_list[[1]]  # Control Group (Visual)
-plot_list[[2]]  # Test Group (Visual)
-plot_list[[3]]  # Control Group (Audio)
-plot_list[[4]]  # Test Group (Audio)
 ```
-
-While the Test Group (Audio) went from 7.1% to 14.3%, everything stayed exactly the same except for "Unsure."
-
-The Control Group (Audio) seems to have had some effect on the getting respondants to put a different answer, "Keeping friend from danger and/or punishment" to "White Lie," dropping by 25% and increasing by 7.8%.
 
 ```{r itmist_box_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -147,10 +118,6 @@ This didn't effect anybody across all of the categories.
 
 ```{r table_of_previous, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
-library(knitr)
-
-library(tidyr)
-
 lie_counts_wide <- lie_counts %>%
   select(GROUP, QuestionType, Response, n) %>%
   pivot_wider(names_from = Response, values_from = n, values_fill = 0)
@@ -158,7 +125,166 @@ lie_counts_wide <- lie_counts %>%
 # Then use gt or kable
 lie_counts_wide %>%
   gt()
-
 ```
+
+## **QQ1 - Content/View of Answer**
+
+```{r bar_chart_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Prepare data for stacked bar chart
+stacked_data <- misinfo_filtered %>%
+  count(GROUP, CHANGED_LENGTH_QQ1) %>%
+  group_by(GROUP) %>%
+  mutate(percentage = n / sum(n) * 100) %>%  # Convert to percentage
+  ungroup()
+
+# Ensure GROUP and CHANGED_LENGTH_QQ1 are factors for proper ordering
+stacked_data$GROUP <- factor(stacked_data$GROUP, levels = c("1", "2", "3", "4"))
+stacked_data$CHANGED_LENGTH_QQ1 <- factor(stacked_data$CHANGED_LENGTH_QQ1, levels = c("1", "2", "3"))
+
+# Define custom labels for groups
+group_titles <- c(
+  "1" = "Test Group (Visual)",
+  "2" = "Control Group (Visual)",
+  "3" = "Test Group (Audio)",
+  "4" = "Control Group (Audio)"
+)
+
+# Define labels for CHANGED_LENGTH_QQ1
+view_labels <- c("1" = "Length stayed about the same",
+                 "2" = "Length became longer",
+                 "3" = "Length became shorter")
+
+# Custom colors
+custom_colors <- c("skyblue", "red", "orange")
+
+# Create the stacked bar chart
+stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = CHANGED_LENGTH_QQ1)) +
+  geom_bar(stat = "identity", color = "black") +  # Stacked bars with black borders
+  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
+            position = position_stack(vjust = 0.5),  # Position labels in center of bars
+            color = "black", size = 4) +  # Adjust label size and color
+  labs(
+    title = "Change in QQ1 Comment Length After\nExposed to Ad",
+    x = "\nGroup",
+    y = "Percentage\n",
+    fill = "Comment Length"
+  ) +
+  scale_x_discrete(labels = group_titles) +  # Map numeric groups to names
+  scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply colors and labels
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Center and style the title
+    axis.text.x = element_text(angle = 30, hjust = 1),  # Tilt x-axis labels for readability
+    legend.position = "right",  # Keep legend visible
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+# Print the stacked bar chart
+print(stacked_bar_chart)
+```
+
+## QQ3: Change in Views of Answer (%)
+
+```{r qq3_stacked_bars_change_in_answer_percentage, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each GROUP
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per GROUP
+plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
+  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Group:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal() #+
+    #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+})
+
+# Step 5: Print each plot
+plot_list[[1]]  # Control Group (Visual)
+plot_list[[2]]  # Test Group (Visual)
+plot_list[[3]]  # Control Group (Audio)
+plot_list[[4]]  # Test Group (Audio)
+```
+
+```{r qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each GROUP
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per GROUP
+plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
+  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = n),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Group:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print each plot
+plot_list[[1]]  # Control Group (Visual)
+plot_list[[2]]  # Test Group (Visual)
+plot_list[[3]]  # Control Group (Audio)
+plot_list[[4]]  # Test Group (Audio)
+```
+
+There were four main responses to QQ3:
+
+1.  White Lie
+2.  Keeping friend from danger and/or punishment
+3.  Would tell truth over supporting friends
+4.  Unsure
+
+While the Test Group (Audio) went from 7.1% to 14.3%, everything stayed exactly the same except for "Unsure."
+
+The Control Group (Audio) seems to have had some effect on the getting respondants to put a different answer, "Keeping friend from danger and/or punishment" to "White Lie," dropping by 25% and increasing by 7.8%.
 
 # References
