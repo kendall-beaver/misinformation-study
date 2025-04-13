@@ -9,20 +9,14 @@ output: pdf_document
 
 ## Intro
 
-1.  Intro of misinformation and purpose of study, to study the prebunking effects using comedy sketch ads to see how effective they will be.
-2.  Two different ads
-    1.  Control ad: Was not a neutral ad. It was an ad with negative emotion, which is impactful but confused the results. In the future a neutral ad will be chosen, in terms of content, tone and emotion.
-3.  Method: used Descript program to create ads.
-4.  My help/work needed: Looking at qualitative questions that was asked before viewing the ad and after reviewing the ad.
-
 ## Demographics
 
 1.  Overview of participants
+    1.  149 students partook in Part I, but only 99 students wait until Part 2.
 2.  Charts of
-    1.  Political Party
-    2.  Age
-    3.  News Source/Information
-    4.  Hours online?
+    1.  Political Party?
+    2.  **Age & Gender (side-by-side)**
+    3.  **News Source/Information & Hours online (side-by-side)**
 
 ## Qualitative Questions Analysis
 
@@ -53,6 +47,8 @@ I'm glad Video ads are still showing promise on deeper analysis. We should pursu
 
 -------
 
+# Intro
+
 ```{r load_libraries, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Load libraries
@@ -68,6 +64,72 @@ library(gt)
 # Load datasets
 
 lying <- read_excel("data/lying_data.xlsx")
+```
+
+1.  Intro of misinformation and purpose of study, to study the prebunking effects using comedy sketch ads to see how effective they will be.
+2.  Two different ads
+    1.  Control ad: Was not a neutral ad. It was an ad with negative emotion, which is impactful but confused the results. In the future a neutral ad will be chosen, in terms of content, tone and emotion.
+        1.  The United States Post Office. Every now and then, something good happens here." This ad is about two friends waiting in line, or at least Jessica takes a number to wait. Jessica and Mel: Jessica has just completed bowling with her friends because they're morning people. What can you do? Mel jokes and says she can get new friends, and she snaps, then apologizes. She says her fingers were too small and she was kicked out. Mel acknowledges that that sucks, then he invites her to come hang with his karaoke friends at night, to which Jessica displays interest. Then it cuts to her singing and having fun. So completely random.
+3.  Method: used Descript program to create ads.
+4.  My help/work needed: Looking at qualitative questions that was asked before viewing the ad and after reviewing the ad.
+
+# Demographics
+
+```{r age_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### AGE PIE CHART ###
+
+#range(lying$Age, na.rm = TRUE)
+# 18 - 48 years old
+
+# Bin:
+# 18 - 19
+# 20 - 29
+# 30 - 39
+# 40 - 49
+
+# 1. Create age bins
+age_bins <- cut(lying$Age,
+                breaks = c(17, 19, 29, 39, 49),
+                labels = c("18–19", "20–29", "30–39", "40–49"),
+                right = TRUE)
+
+# 2. Create dataframe with counts & percentages
+age_counts <- as.data.frame(table(age_bins))
+colnames(age_counts) <- c("AgeGroup", "Count")
+
+age_counts <- age_counts %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+# 3. Plot with percentage labels, black borders, and reduced font size
+ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +  # Black border around slices
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Age Distribution in Bins") +
+  theme(legend.title = element_blank()) +
+  
+  # 4. Add text for larger slices (inside the pie)
+  geom_text(aes(label = ifelse(AgeGroup %in% c("18–19", "20–29"), Label, "")), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 4) +  # Reduced font size
+  
+  # 5. Add text for smaller slices (outside the pie)
+  geom_text(aes(label = ifelse(AgeGroup == "30–39", Label, "")),
+            position = position_nudge(x = 0.2),  # Adjust x to move the text for 30–39
+            color = "black", size = 4) +  # Reduced font size
+  
+  geom_text(aes(label = ifelse(AgeGroup == "40–49", Label, "")),
+            position = position_nudge(x = 0.35),  # Adjust x to move the text for 40–49
+            color = "black", size = 4) +  # Reduced font size
+  
+  theme(plot.title = element_text(hjust = 0.5))  # Center the title
+```
+
+```{r average_time_to_complete_study, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+
 ```
 
 ```{r itmist_box_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
