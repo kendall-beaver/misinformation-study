@@ -14,9 +14,9 @@ output: pdf_document
 1.  Overview of participants
     1.  149 students partook in Part I, but only 99 students wait until Part 2.
 2.  Charts of
-    1.  Political Party?
-    2.  **Age & Gender (side-by-side)**
-    3.  **News Source/Information & Hours online (side-by-side)**
+    1.  **Age & Gender (side-by-side)**
+    2.  **Social Media Platforms & Time Spent Online**
+    3.  **Top 3 Entertainment_1 &/or Top 3 Educational_1, & Ad-skipping habits (Only applicable to those who listen to podcasts)**
 
 ## Qualitative Questions Analysis
 
@@ -45,7 +45,7 @@ I'm glad Video ads are still showing promise on deeper analysis. We should pursu
 
 ## References
 
--------
+------------------------------------------------------------------------
 
 # Intro
 
@@ -59,7 +59,8 @@ library(dplyr)
 library(corrplot)
 library(writexl)
 library(ggplot2)
-library(gt)
+library(stringr)
+#library(gt)
 
 # Load datasets
 
@@ -127,8 +128,60 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
   theme(plot.title = element_text(hjust = 0.5))  # Center the title
 ```
 
-```{r average_time_to_complete_study, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r gender_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
+### AGE PIE CHART ###
+
+```
+
+```{r news_source, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### NEWS SOURCE PIE CHART ###
+
+
+```
+
+```{r podcasts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PODCASTST ###
+
+# I noticed there's different spellings of Joe Rogan. 
+# Need to get different variations of spelling on the
+# same page.
+
+# Step 1: Convert to lowercase for consistency
+cleaned <- tolower(lying$`Top 3 Entertainment_1`)
+
+# Step 2: Clean up repeated "the"s at the start
+cleaned <- gsub("^(the\\s+)+", "", cleaned)
+
+# Step 3: Identify any Joe Rogan Experience variations and replace them
+cleaned <- gsub("joe\\s*rogan.*exper.{2,}", "The Joe Rogan Experience", cleaned)
+
+# Optional Step 4: Tidy up any leftover whitespace
+cleaned <- trimws(cleaned)
+
+# Step 5: Save it back to the original column
+lying$`Top 3 Entertainment_1` <- cleaned
+
+# Clean and standardize podcast names (ensure "joe rogan" is handled here)
+lying <- lying %>%
+  mutate(`Top 3 Entertainment_1` = case_when(
+    str_detect(str_to_lower(`Top 3 Entertainment_1`), "call.?her.?dad") ~ "Call Her Daddy",
+    str_detect(str_to_lower(`Top 3 Entertainment_1`), "pat mcafee.*show|pat mcafee.*talk") ~ "The Pat McAfee Show",
+    str_detect(str_to_lower(`Top 3 Entertainment_1`), "cancelled.*tana|canceled|cancelled") ~ "Cancelled with Tana Mongeau",
+    str_detect(str_to_lower(`Top 3 Entertainment_1`), "anything goes") ~ "Anything Goes",
+    str_detect(str_to_lower(`Top 3 Entertainment_1`), "hot.?mess.*alex") | 
+      str_to_lower(`Top 3 Entertainment_1`) == "hotmess" ~ "Hot Mess by Alex Earle",
+    str_detect(str_to_lower(`Top 3 Entertainment_1`), "joe\\s*rogan") ~ "The Joe Rogan Experience",  # Added this line to catch "joe rogan"
+    TRUE ~ `Top 3 Entertainment_1`
+  ))
+
+unique(na.omit(lying$`Top 3 Entertainment_1`))
+# 42 different podcasts
+
+length(unique(na.omit(lying$`Top 3 Entertainment_1`)))
+# 42 different podcasts
 
 ```
 
