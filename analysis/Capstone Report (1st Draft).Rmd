@@ -76,6 +76,8 @@ lying <- read_excel("data/lying_data.xlsx")
 
 # Demographics
 
+## Age
+
 ```{r age_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 ### AGE PIE CHART ###
@@ -128,18 +130,58 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
   theme(plot.title = element_text(hjust = 0.5))  # Center the title
 ```
 
+## Gender
+
 ```{r gender_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-### AGE PIE CHART ###
+## GENDER PIE CHART ###
 
+# Create dataframe with counts & percentages for Gender
+gender_counts <- as.data.frame(table(lying$Gender))
+colnames(gender_counts) <- c("Gender", "Count")
+
+gender_counts <- gender_counts %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+# Plot Gender Distribution Pie Chart
+ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Gender Distribution") +
+  theme(legend.title = element_blank(),
+        plot.title = element_text(hjust = 0.5)) +
+
+  # Text for genders EXCEPT "Prefer not to say"
+  geom_text(data = subset(gender_counts, Gender != "Prefer not to say"),
+            aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 4) +
+
+  # Text for "Prefer not to say" with adjusted position
+  geom_text(data = subset(gender_counts, Gender == "Prefer not to say"),
+            aes(label = Label), 
+            position = position_nudge(x = 0.3),  # Adjust x as needed
+            color = "black", size = 4)
 ```
+
+# Social Media Habits
+
+## Social Media Platform
 
 ```{r news_source, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-### NEWS SOURCE PIE CHART ###
+### SOCIAL MEDIA PIE CHART ###
 
 
 ```
+
+# Podcasts & Podcast Habits
+
+## Podcast Type & Length
+
+Non-podcast listeners vs. people who have listen to at least one (educational) podcast.
 
 ```{r podcasts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -238,8 +280,8 @@ lie_counts_wide <- lie_counts %>%
   pivot_wider(names_from = Response, values_from = n, values_fill = 0)
 
 # Then use gt or kable
-lie_counts_wide %>%
-  gt()
+#lie_counts_wide %>%
+#  gt()
 ```
 
 ## **QQ1 - Content/View of Answer**
