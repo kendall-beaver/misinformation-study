@@ -111,7 +111,7 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
   coord_polar(theta = "y") +
   theme_void() +
   labs(title = "Age Distribution in Bins") +
-  theme(legend.title = element_blank()) +
+  guides(fill = guide_legend(title = "Age Range")) +  # Add legend title
   
   # 4. Add text for larger slices (inside the pie)
   geom_text(aes(label = ifelse(AgeGroup %in% c("18–19", "20–29"), Label, "")), 
@@ -181,49 +181,169 @@ ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
 
 ## Podcast Type & Length
 
-Non-podcast listeners vs. people who have listen to at least one (educational) podcast.
+Non-podcast listeners vs. people who have listen to at least one educational podcast.
 
-```{r podcasts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+## Educational Podcasts
 
-### PODCASTST ###
+```{r educational_podcasts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-# I noticed there's different spellings of Joe Rogan. 
-# Need to get different variations of spelling on the
-# same page.
+#unique(na.omit(lying$`Top 3 Educational _1`))
+# 50 unedited podcasts
 
-# Step 1: Convert to lowercase for consistency
-cleaned <- tolower(lying$`Top 3 Entertainment_1`)
+#length(unique(na.omit(lying$`Top 3 Educational _1`)))
+# 50 unedited podcasts
 
-# Step 2: Clean up repeated "the"s at the start
-cleaned <- gsub("^(the\\s+)+", "", cleaned)
-
-# Step 3: Identify any Joe Rogan Experience variations and replace them
-cleaned <- gsub("joe\\s*rogan.*exper.{2,}", "The Joe Rogan Experience", cleaned)
-
-# Optional Step 4: Tidy up any leftover whitespace
-cleaned <- trimws(cleaned)
-
-# Step 5: Save it back to the original column
-lying$`Top 3 Entertainment_1` <- cleaned
-
-# Clean and standardize podcast names (ensure "joe rogan" is handled here)
 lying <- lying %>%
-  mutate(`Top 3 Entertainment_1` = case_when(
-    str_detect(str_to_lower(`Top 3 Entertainment_1`), "call.?her.?dad") ~ "Call Her Daddy",
-    str_detect(str_to_lower(`Top 3 Entertainment_1`), "pat mcafee.*show|pat mcafee.*talk") ~ "The Pat McAfee Show",
-    str_detect(str_to_lower(`Top 3 Entertainment_1`), "cancelled.*tana|canceled|cancelled") ~ "Cancelled with Tana Mongeau",
-    str_detect(str_to_lower(`Top 3 Entertainment_1`), "anything goes") ~ "Anything Goes",
-    str_detect(str_to_lower(`Top 3 Entertainment_1`), "hot.?mess.*alex") | 
-      str_to_lower(`Top 3 Entertainment_1`) == "hotmess" ~ "Hot Mess by Alex Earle",
-    str_detect(str_to_lower(`Top 3 Entertainment_1`), "joe\\s*rogan") ~ "The Joe Rogan Experience",  # Added this line to catch "joe rogan"
-    TRUE ~ `Top 3 Entertainment_1`
-  ))
+  mutate(
+    podcast_clean = str_trim(str_to_lower(`Top 3 Educational _1`)),
+    
+    podcast_standard = case_when(
+      # Remove non-informative answers
+      str_detect(podcast_clean, "^(n[./\\s-]*a|none|not applicable|nothing|no podcast)$") ~ NA_character_,
 
-unique(na.omit(lying$`Top 3 Entertainment_1`))
-# 42 different podcasts
+      # Match actual podcasts
+      str_detect(podcast_clean, "joe rogan") ~ "joe rogan experience",
+      str_detect(podcast_clean, "mel robbins") ~ "mel robbins podcast",
+      str_detect(podcast_clean, "ted ?talks?") ~ "ted talks",
+      str_detect(podcast_clean, "npr") ~ "npr",
+      str_detect(podcast_clean, "cnn") ~ "cnn",
+      str_detect(podcast_clean, "ed mylett") ~ "the ed mylett show",
+      str_detect(podcast_clean, "jay shetty") ~ "jay shetty",
+      str_detect(podcast_clean, "pod save america") ~ "pod save america",
+      str_detect(podcast_clean, "craig groeschel") ~ "craig groeschel leadership podcast",
+      str_detect(podcast_clean, "science vs") ~ "science vs",
+      str_detect(podcast_clean, "the psychology of your 20") ~ "the psychology of your 20's",
+      str_detect(podcast_clean, "easy spanish") ~ "easy spanish",
+      str_detect(podcast_clean, "stuff you should know") ~ "stuff you should know",
+      str_detect(podcast_clean, "pat mcafee") ~ "pat mcafee show",
+      str_detect(podcast_clean, "planet money") ~ "planet money",
+      str_detect(podcast_clean, "morning brew") ~ "morning brew",
+      str_detect(podcast_clean, "apple news today") ~ "apple news today",
+      str_detect(podcast_clean, "on the media") ~ "on the media",
+      str_detect(podcast_clean, "the weeds") ~ "the weeds",
+      str_detect(podcast_clean, "the muckrake") ~ "the muckrake podcast",
+      str_detect(podcast_clean, "majority report") ~ "the majority report",
+      str_detect(podcast_clean, "comment section") ~ "the comment section",
+      str_detect(podcast_clean, "book review") ~ "the book review",
+      str_detect(podcast_clean, "unbiased") ~ "unbiased",
+      str_detect(podcast_clean, "turning point usa") ~ "turning point usa",
+      str_detect(podcast_clean, "textory") ~ "textory",
+      str_detect(podcast_clean, "rrc") ~ "rrc",
+      str_detect(podcast_clean, "israel: state of a nation") ~ "israel: state of a nation",
 
-length(unique(na.omit(lying$`Top 3 Entertainment_1`)))
-# 42 different podcasts
+      # Otherwise, return cleaned raw input
+      TRUE ~ podcast_clean
+    )
+  )
+
+# unique(lying$podcast_standard)
+# 37 including missing values
+
+# unique(na.omit(lying$podcast_standard))
+# 36 different podcasts
+
+#length(unique(na.omit(lying$podcast_standard)))
+# 36 different podcasts
+
+"joe rogan experience" #1–5 hours              
+"dead meat podcast" #1-2 hors
+"school"
+"the psychology of your 20's" # 1 hour (50 mins)
+"jay shetty"
+"the ed mylett show"                 
+"turning point usa"                  
+"the bill simmons"                  
+"cnn"
+"the book review"
+"the comment section"
+"bigdeal"                           
+"mel robbins podcast"
+"phnx arizona cardinals podcast"
+"ted talks"
+"pod save america"                  
+"easy spanish"
+"podsave america"
+"craig groeschel leadership podcast"
+"the weeds"                         
+"rrc"
+"israel: state of a nation"
+"textory"
+"the muckrake podcast"
+"npr"
+"the majority report"
+"unbiased"
+"apple news today"                  
+"on the media"
+"stuff you should know"
+"pat mcafee show"
+"science vs"                        
+"morning brew"
+"planet money"
+"tangle"
+"the ultimate human"
+```
+
+## Podcast vs. Non-Podcast Listeners
+
+```{r podcast_vs_non-podcast_listeners_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PODCAST VS. NON-PODCAST LISTENERS PIE CHART ###
+
+# Assuming podcast_standard is a column in a dataframe called 'lying'
+podcast_status <- ifelse(is.na(lying$podcast_standard) | lying$podcast_standard == "", 
+                         "Doesn't Listen to Podcast", 
+                         "Listens to Podcast")
+podcast_status <- factor(podcast_status, levels = c("Listens to Podcast", "Doesn't Listen to Podcast"))
+
+podcast_summary <- as.data.frame(table(podcast_status))
+colnames(podcast_summary) <- c("Status", "Count")
+
+podcast_summary <- podcast_summary %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+ggplot(podcast_summary, aes(x = "", y = Count, fill = Status)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Proportion of Participants Who Listens to a Podcast") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank()) +
+  geom_text(aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 5)
+```
+
+Proportion of Podcast Listeners Who Skip Ads vs. Fast-Forwards
+
+```{r}
+
+#unique(lying$`Ad Skipping`)
+
+# Create a cleaned version of the column
+ad_skipping_clean <- lying$`Ad Skipping` %>%
+  na.omit() %>%
+  recode("I sometimes skip past ads." = "Sometimes skips ads",
+         "I always skip past ads."   = "Always skips ads",
+         "I never skip past ads."    = "Never skips ads")
+
+ad_skip_summary <- as.data.frame(table(ad_skipping_clean))
+colnames(ad_skip_summary) <- c("AdSkipping", "Count")
+
+ad_skip_summary <- ad_skip_summary %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+ggplot(ad_skip_summary, aes(x = "", y = Count, fill = AdSkipping)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Ad Skipping Behavior") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank()) +
+  geom_text(aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 5)
 
 ```
 
