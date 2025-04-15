@@ -51,9 +51,7 @@ Write anything that you think would be important for YOU later on.
 ---
 
 ### Date: 
-Week number, today's date, etc. 
-
-3/30 - 4/5
+## 3/30 - 4/5
 
 I'm currently looking into the different types of lies. One interesting paper is...
 
