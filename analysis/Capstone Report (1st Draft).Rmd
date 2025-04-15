@@ -565,7 +565,7 @@ ggplot(podcast_summary, aes(x = "", y = Count, fill = Status)) +
 
 ## Proportion of Podcast Listeners Who Skip Ads vs. Fast-Forwards
 
-```{r}
+```{r skipping_ads, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
 #unique(lying$`Ad Skipping`)
 
@@ -600,44 +600,7 @@ ggplot(ad_skip_summary, aes(x = "", y = Count, fill = AdSkipping)) +
 
 ```{r itmist_box_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
-# Define custom labels for groups
-group_titles <- c(
-  "1" = "VISUAL AD", # Test Group (Visual)
-  "2" = "VISUAL AD", # Control Group (Visual)
-  "3" = "AUDIO AD", # Test Group (Audio)
-  "4" = "AUDIO AD" # Control Group (Audio)
-)
 
-# Reshape the data to long format for easier faceting
-long_data <- misinfo_filtered %>%
-  # Convert both "ITMIST PRE SCORE" and "ITMIST POST SCORE" to numeric
-  mutate(
-    `ITMIST PRE SCORE` = as.numeric(`ITMIST PRE SCORE`),
-    `ITMIST POST SCORE` = as.numeric(`ITMIST POST SCORE`)
-  ) %>%
-  select(GROUP, `ITMIST PRE SCORE`, `ITMIST POST SCORE`) %>%  # Updated column names here
-  pivot_longer(cols = c(`ITMIST PRE SCORE`, `ITMIST POST SCORE`), 
-               names_to = "Test_Time", 
-               values_to = "Score") %>%
-  mutate(Test_Time = factor(Test_Time, levels = c("ITMIST PRE SCORE", "ITMIST POST SCORE")))  # Updated levels
-
-# Create the plot for Groups 2 and 4 (Control Group)
-plot2 <- ggplot(long_data %>% filter(GROUP %in% c(2, 4)), aes(x = Test_Time, y = Score, fill = Test_Time)) +
-  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
-  facet_wrap(~ GROUP, labeller = as_labeller(group_titles)) +  # Only for Groups 2 and 4
-  labs(
-    title = "ITMIST Scores Before & After Ad - Control Group\n",  # Updated title for ITMIST
-    x = "\nITMIST Test Scores",  # Updated axis label for ITMIST
-    y = "Score\n"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    legend.position = "none"
-  )
-
-# Use grid.arrange to display the plot
-grid.arrange(plot2)  # Display the plot for Control Groups (2 & 4)
 ```
 
 # II: Analysis of Qualitative Questions
@@ -646,13 +609,7 @@ This didn't effect anybody across all of the categories.
 
 ```{r table_of_previous, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
-lie_counts_wide <- lie_counts %>%
-  select(GROUP, QuestionType, Response, n) %>%
-  pivot_wider(names_from = Response, values_from = n, values_fill = 0)
 
-# Then use gt or kable
-#lie_counts_wide %>%
-#  gt()
 ```
 
 ## **QQ1 - Content/View of Answer**
@@ -714,38 +671,125 @@ Change in word count. I looked at the amount of sentences and words per sentence
 
 ```{r qq1_avg_words_per_sentence_diff, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-range(lying$QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE)
-# -114   55
+library(dplyr)
+library(stringr)
+library(stringi)
 
-# Normalize the data
-lying$QQ1_DIFFERENCE_WORD_COUNT_Z <- scale(lying$QQ1_DIFFERENCE_WORD_COUNT)
+# Helper functions
+count_words <- function(text) {
+  if (is.na(text) || str_trim(text) == "") return(0)
+  str_count(text, boundary("word"))
+}
 
-# Apply bins
-lying$change_category <- cut(
-  lying$QQ1_DIFFERENCE_WORD_COUNT_Z,
-  breaks = c(-Inf, -1.5, -0.5, 0.5, 1.5, Inf),
-  labels = c("Significant decrease", "Moderate decrease", "Little to no change", "Moderate increase", "Significant increase")
-)
+count_sentences <- function(text) {
+  if (is.na(text) || str_trim(text) == "") return(0)
+  
+  # Split on punctuation OR newline OR sentence-like boundaries
+  splits <- unlist(strsplit(text, "(?<=[.!?])\\s+|\\n+|(?<=\\w)\\s+(?=[A-Z])", perl = TRUE))
+  
+  # Count non-empty sentences, always return at least 1 if there is any content
+  num_sentences <- sum(str_trim(splits) != "")
+  return(max(num_sentences, 1))
+}
 
-hist(lying$QQ1_DIFFERENCE_WORD_COUNT_Z, 
-     breaks = 30, 
-     main = "Distribution of Z-Scores", 
-     xlab = "Z-Score", 
-     col = "lightblue")
+# Apply to your dataset
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
+    
+    word_count_diff = word_count_day2 - word_count_day1,
+    sentence_count_diff = sentence_count_day2 - sentence_count_day1,
+    
+    composite_diff = (word_count_diff + sentence_count_diff) / 2
+  )
 
-abline(v = 0, col = "red", lwd = 2)  # Add vertical line at zero
+ggplot(lying, aes(x = composite_diff)) +
+  geom_histogram(aes(y = ..density..), binwidth = 1, fill = "skyblue", color = "black", alpha = 0.7) +
+  geom_density(color = "darkblue", size = 1) +
+  labs(
+    title = "Histogram + Density of Composite Score Differences",
+    x = "Composite Difference",
+    y = "Density"
+  ) +
+  theme_minimal()
 
-plot(density(lying$QQ1_DIFFERENCE_WORD_COUNT_Z), 
-     main = "Density Plot of Z-Scores", 
-     xlab = "Z-Score")
+###
 
-abline(v = 0, col = "red", lty = 2, lwd = 2)  # Red dashed line at zero
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
 
-boxplot(lying$QQ1_DIFFERENCE_WORD_COUNT_Z,
-        main = "Boxplot of Z-Scores",
-        ylab = "Z-Score")
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid divide-by-zero
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
 
-abline(h = 0, col = "red", lty = 2, lwd = 2)
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+ggplot(lying, aes(x = composite_diff_norm)) +
+  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+  labs(
+    title = "Histogram of Normalized Composite Change",
+    x = "Normalized Composite Difference",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+#lying %>%
+#  filter((word_count_day2 - word_count_day1 + sentence_count_day2 - sentence_count_day1) / 2 == -60) %>%
+#  select(QQ1_BEFORE, QQ1_AFTER, word_count_day1, word_count_day2, sentence_count_day1, sentence_count_day2, composite_diff_norm)
+```
+
+```{r group_composite_scores, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid divide-by-zero
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+ggplot(lying, aes(x = composite_diff_norm)) +
+  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+  facet_wrap(~ GROUP) +  # Creates a separate plot for each group
+  labs(
+    title = "Histogram of Normalized Composite Change by Group",
+    x = "Normalized Composite Difference",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# Assuming your categories in `GROUP` are, for example: "A", "B", "C", "D"
+
+categories <- unique(lying$GROUP)  # Get unique category names
+
+# Loop through each category and create individual plots
+for (category in categories) {
+  p <- lying %>%
+    filter(GROUP == category) %>%
+    ggplot(aes(x = composite_diff_norm)) +
+    geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+    labs(
+      title = paste("Histogram of Normalized Composite Change for Group", category),
+      x = "Normalized Composite Difference",
+      y = "Count"
+    ) +
+    theme_minimal()
+  
+  print(p)  # Print the plot for this category
+}
 
 ```
 
@@ -857,14 +901,16 @@ plot_list[[4]]  # Test Group (Audio)
 
 ## Sentiment towards ads
 
-```{r}
+```{r ad_sentiment}
 
+# PIE CHART
 ```
 
 ## Sentiment about participating in future studies
 
-```{r}
+```{r future_study_sentiment}
 
+# PIE CHART
 ```
 
 # References
