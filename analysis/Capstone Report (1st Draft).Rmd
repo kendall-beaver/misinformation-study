@@ -23,6 +23,7 @@ output: pdf_document
 1.  QQ1 After Ad (Did views and length change?)
 2.  QQ2 After Ad
 3.  QQ3 After Ad
+    1.  5 types of comment length (count count)
 
 ## Test Score Analysis
 
@@ -60,6 +61,7 @@ library(corrplot)
 library(writexl)
 library(ggplot2)
 library(stringr)
+library(scales)
 #library(gt)
 
 # Load datasets
@@ -168,24 +170,269 @@ ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
 
 # Social Media Habits
 
-## Social Media Platform
+## Social Media Platform Used by Participants
 
-```{r news_source, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+This indicates the main sources of news that people get.
 
-### SOCIAL MEDIA PIE CHART ###
+```{r social_media, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### TYPES OF SOCIAL MEDIA PLATFORMS - PIE CHART ###
+
+#unique(lying$Platforms)
+#unique(lying$Platforms_6_TEXT)
+# "YouTube" "Discord" "Tumblr" "Reddit" "MEANS.TV" "Telegram" "Snapchat"
+
+### JUST NORMAL PIE CHART WITH OTHER ###
+
+# Step 1: Split out the Platforms column into individual rows
+platform_counts <- lying %>%
+  separate_rows(Platforms, sep = ",") %>%
+  mutate(Platforms = str_trim(Platforms)) %>%
+  filter(!is.na(Platforms), Platforms != "", Platforms != "None") %>%
+  count(Platforms) %>%
+  mutate(Percent = round(n / sum(n) * 100, 1),
+         Label = paste0(Platforms, " (", Percent, "%)"))
+
+# Step 2: Replace "Other (please specify)" with "Other"
+platform_counts <- platform_counts %>%
+  mutate(Platforms = ifelse(Platforms == "Other (please specify)", "Other", Platforms))
+
+# Step 3: Make the pie chart
+ggplot(platform_counts, aes(x = "", y = n, fill = Platforms)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  labs(title = "Social Media Platform Usage") +
+  theme_void() +
+  theme(legend.title = element_text(face = "bold", size = 12),
+        plot.title = element_text(hjust = 0.5)) +
+  guides(fill = guide_legend(title = "Social Media Platform")) +  # Add legend title
+
+  # Display percentages for all slices
+  geom_text(aes(label = paste0(Percent, "%")),
+            position = position_stack(vjust = 0.5),
+            color = "black", size = 4)
+
+### HISTOGRAM ###
+
+ggplot(platform_counts, aes(x = reorder(Platforms, -n), y = n, fill = Platforms)) +
+  geom_col(color = "black") +
+  labs(
+    title = "Social Media Platform Usage",
+    x = "Platform",
+    y = "Number of Mentions"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",  # Still hiding the legend
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 9)
+  ) +
+  geom_text(aes(label = n), vjust = -0.5, size = 3.5)  # Count labels above bars
+```
+
+The "Other" category includes 2 mentions of Reddit, and 1 mention of Discord, MEANS.TV, Telegram, Tumblr, and YouTube.
+
+## Number of Platforms Used
+
+```{r number_of_platforms, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Create a new column 'PlatformCount' to store the number of platforms each person uses
+lying <- lying %>%
+  mutate(PlatformCount = str_count(Platforms, ",") + 1)  # Count commas and add 1 for platform count
+
+# head(lying$PlatformCount)
+
+platform_summary <- lying %>%
+  count(PlatformCount, name = "Count") %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+#ggplot(platform_summary, aes(x = "", y = Count, fill = factor(PlatformCount))) +
+#  geom_bar(stat = "identity", width = 1, color = "black") +
+#  coord_polar(theta = "y") +
+#  theme_void() +
+#  labs(title = "Number of Platforms Used by Participants") +
+#  theme(plot.title = element_text(hjust = 0.5),
+#        legend.title = element_blank()) +
+#  geom_text(aes(label = Label), 
+#            position = position_stack(vjust = 0.5), 
+#            color = "black", size = 5)
+
+### HISTOGRAM ###
+
+ggplot(platform_summary, aes(x = factor(PlatformCount), y = Count, fill = factor(PlatformCount))) +
+  geom_col(color = "black") +
+  labs(
+    title = "Number of Platforms Used by Participants",
+    x = "Number of Platforms",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    legend.position = "none"
+  ) +
+  geom_text(aes(label = paste0(Percent, "%")), vjust = -0.5, size = 4)
+
+```
+
+## Hours Spent on Social Media
+
+The amount of time exposed to news and information on these platforms.
+
+```{r time_spent_on_social_media, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# unique(lying$`Time Spent`)
+# 6 values:
+# "Over 2 hours"
+# "Between 1 hour, 30 minutes - 2 hours"
+# "Between 30 minutes - 1 hour"
+# "Between 1 hour - 1 hour, 30 minutes" 
+# "Between 5 minutes - 30 minutes"
+# "No time"       
+
+### PIE CHART ###
+
+# Clean and summarize the 'Time Spent' column
+time_summary <- lying %>%
+  filter(!is.na(`Time Spent`)) %>%
+  count(`Time Spent`, name = "Count") %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+ggplot(time_summary, aes(x = "", y = Count, fill = `Time Spent`)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Time Spent Listening to Podcasts") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank()) +
+  geom_text(aes(label = Label),
+            position = position_stack(vjust = 0.5),
+            color = "black", size = 5)
+
+### BAR CHART ###
+
+# Define the desired order and new labels
+original_order <- c(
+  "No time",
+  "Between 5 minutes - 30 minutes",
+  "Between 30 minutes - 1 hour",
+  "Between 1 hour - 1 hour, 30 minutes",
+  "Between 1 hour, 30 minutes - 2 hours",
+  "Over 2 hours"
+)
+
+new_labels <- c(
+  "No time",
+  "5 - 30 mins",
+  "30 - 60 mins",
+  "60 - 90 mins",
+  "90 - 120 mins",
+  "120+ mins"
+)
+
+# Apply reordering and relabeling
+time_summary <- time_summary %>%
+  mutate(`Time Spent` = factor(`Time Spent`, levels = original_order, labels = new_labels))
+
+ggplot(time_summary, aes(x = `Time Spent`, y = Count, fill = `Time Spent`)) +
+  geom_bar(stat = "identity", color = "black") +
+  labs(title = "Time Spent Listening to Podcasts",
+       x = "\nTime Spent",
+       y = "Number of Participants\n") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_text(angle = 0, vjust = 1)  # Straight x-axis labels
+  ) +
+  geom_text(aes(label = Count), vjust = -0.3, size = 4)
+
+### PIE CHART ###
+
+# Clean and summarize the 'Time Spent' column
+time_summary <- lying %>%
+  filter(!is.na(`Time Spent`)) %>%
+  count(`Time Spent`, name = "Count") %>%
+  mutate(
+    `Time Spent` = factor(`Time Spent`, levels = original_order, labels = new_labels),  # Apply ordering & relabeling
+    Percent = round(Count / sum(Count) * 100, 1),
+    Label = paste0(Percent, "%")
+  )
+
+# Pie chart with updated labels
+ggplot(time_summary, aes(x = "", y = Count, fill = `Time Spent`)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Time Spent on Social Media") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.title = element_text(size = 10, face = "bold"),  # Optional: adjust style
+    legend.text = element_text(size = 9)
+  ) +
+  guides(fill = guide_legend(title = "Length of Time\nSpent on Social Media")) +  # Custom legend title
+  geom_text(aes(label = Label),
+            position = position_stack(vjust = 0.5),
+            color = "black", size = 5)
+
+```
+
+## Gathering News From Social Media
+
+```{r news_from_social_media, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(ggplot2)
+library(dplyr)
+library(scales)
+
+# Prepare the data
+data_for_plot <- lying %>%
+  count(News_From_Social) %>%
+  mutate(prop = n / sum(n),
+         percent_label = percent(prop))
+
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = News_From_Social)) +
+  geom_col(width = 1, color = "black") +  # dark border with color = "black"
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sources of News from Social Media")
 
 
 ```
 
+## Podcast Recommendation
+
+```{r podcast_recommendation, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Prepare the data
+data_for_plot <- lying %>%
+  count(Podcast_Recommendation) %>%
+  mutate(prop = n / sum(n),
+         percent_label = percent(prop))
+
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = Podcast_Recommendation)) +
+  geom_col(width = 1, color = "black") +  # dark border
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Recommending Podcast to a Friend")
+```
+
 # Podcasts & Podcast Habits
 
-## Podcast Type & Length
-
-Non-podcast listeners vs. people who have listen to at least one educational podcast.
-
-## Educational Podcasts
+## Background Research on Educational Podcasts
 
 ```{r educational_podcasts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### BACKGROUND RESEARCH OF TYPES OF PODCASTS ###
 
 #unique(na.omit(lying$`Top 3 Educational _1`))
 # 50 unedited podcasts
@@ -245,45 +492,47 @@ lying <- lying %>%
 #length(unique(na.omit(lying$podcast_standard)))
 # 36 different podcasts
 
-"joe rogan experience" #1–5 hours              
-"dead meat podcast" #1-2 hors
-"school"
-"the psychology of your 20's" # 1 hour (50 mins)
-"jay shetty"
-"the ed mylett show"                 
-"turning point usa"                  
-"the bill simmons"                  
-"cnn"
-"the book review"
-"the comment section"
-"bigdeal"                           
-"mel robbins podcast"
-"phnx arizona cardinals podcast"
-"ted talks"
-"pod save america"                  
-"easy spanish"
-"podsave america"
-"craig groeschel leadership podcast"
-"the weeds"                         
-"rrc"
-"israel: state of a nation"
-"textory"
-"the muckrake podcast"
-"npr"
-"the majority report"
-"unbiased"
-"apple news today"                  
-"on the media"
-"stuff you should know"
-"pat mcafee show"
-"science vs"                        
-"morning brew"
-"planet money"
-"tangle"
-"the ultimate human"
+#"joe rogan experience" #1–5 hours              
+#"dead meat podcast" #1-2 hors
+#"school"
+#"the psychology of your 20's" # 1 hour (50 mins)
+#"jay shetty"
+#"the ed mylett show"                 
+#"turning point usa"                  
+#"the bill simmons"                  
+#"cnn"
+#"the book review"
+#"the comment section"
+#"bigdeal"                           
+#"mel robbins podcast"
+#"phnx arizona cardinals podcast"
+#"ted talks"
+#"pod save america"                  
+#"easy spanish"
+#"podsave america"
+#"craig groeschel leadership podcast"
+#"the weeds"                         
+#"rrc"
+#"israel: state of a nation"
+#"textory"
+#"the muckrake podcast"
+#"npr"
+#"the majority report"
+#"unbiased"
+#"apple news today"                  
+#"on the media"
+#"stuff you should know"
+#"pat mcafee show"
+#"science vs"                        
+#"morning brew"
+#"planet money"
+#"tangle"
+#"the ultimate human"
 ```
 
 ## Podcast vs. Non-Podcast Listeners
+
+Percentage of non-podcast listeners vs. people who have listen to at least one educational type of podcast.
 
 ```{r podcast_vs_non-podcast_listeners_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -314,7 +563,7 @@ ggplot(podcast_summary, aes(x = "", y = Count, fill = Status)) +
             color = "black", size = 5)
 ```
 
-Proportion of Podcast Listeners Who Skip Ads vs. Fast-Forwards
+## Proportion of Podcast Listeners Who Skip Ads vs. Fast-Forwards
 
 ```{r}
 
@@ -346,6 +595,8 @@ ggplot(ad_skip_summary, aes(x = "", y = Count, fill = AdSkipping)) +
             color = "black", size = 5)
 
 ```
+
+# ITMIST Scores
 
 ```{r itmist_box_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -408,61 +659,97 @@ lie_counts_wide <- lie_counts %>%
 
 ```{r bar_chart_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
-# Prepare data for stacked bar chart
-stacked_data <- misinfo_filtered %>%
-  count(GROUP, CHANGED_LENGTH_QQ1) %>%
-  group_by(GROUP) %>%
-  mutate(percentage = n / sum(n) * 100) %>%  # Convert to percentage
-  ungroup()
+range(lying$QQ1_DIFFERENCE_WORD_COUNT)
 
-# Ensure GROUP and CHANGED_LENGTH_QQ1 are factors for proper ordering
-stacked_data$GROUP <- factor(stacked_data$GROUP, levels = c("1", "2", "3", "4"))
-stacked_data$CHANGED_LENGTH_QQ1 <- factor(stacked_data$CHANGED_LENGTH_QQ1, levels = c("1", "2", "3"))
-
-# Define custom labels for groups
-group_titles <- c(
-  "1" = "Test Group (Visual)",
-  "2" = "Control Group (Visual)",
-  "3" = "Test Group (Audio)",
-  "4" = "Control Group (Audio)"
+lying$bins <- cut(
+  lying$QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE,
+  breaks = c(-Inf, -25, -5, 5, 25, Inf),
+  labels = c("x <= -25", "-25 < x <= -5", "-5 < x <= 5", "5 < x <= 25", "x > 25"),
+  right = TRUE
 )
 
-# Define labels for CHANGED_LENGTH_QQ1
-view_labels <- c("1" = "Length stayed about the same",
-                 "2" = "Length became longer",
-                 "3" = "Length became shorter")
+library(dplyr)
 
-# Custom colors
-custom_colors <- c("skyblue", "red", "orange")
+lying <- lying %>%
+  mutate(bins = case_when(
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE > 25   ~ "x > 25",
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= 5   ~ "5 <= x <= 25",
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= -5  ~ "-5 <= x <= 5",
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= -25 ~ "-25 <= x <= -5",
+    TRUE                                          ~ "x < -25"
+  ))
 
-# Create the stacked bar chart
-stacked_bar_chart <- ggplot(stacked_data, aes(x = GROUP, y = percentage, fill = CHANGED_LENGTH_QQ1)) +
-  geom_bar(stat = "identity", color = "black") +  # Stacked bars with black borders
-  geom_text(aes(label = paste0(round(percentage, 1), "%")), 
-            position = position_stack(vjust = 0.5),  # Position labels in center of bars
-            color = "black", size = 4) +  # Adjust label size and color
+### COUNT BAR CHART ###
+
+library(ggplot2)
+
+ggplot(lying, aes(x = GROUP, fill = bins)) +
+  geom_bar(position = "stack") +
   labs(
-    title = "Change in QQ1 Comment Length After\nExposed to Ad",
-    x = "\nGroup",
-    y = "Percentage\n",
-    fill = "Comment Length"
+    title = "Distribution of Average Words Per Sentence by Group",
+    x = "Group",
+    y = "Count",
+    fill = "Word Count Bin"
   ) +
-  scale_x_discrete(labels = group_titles) +  # Map numeric groups to names
-  scale_fill_manual(values = custom_colors, labels = view_labels) +  # Apply colors and labels
-  theme_minimal() + 
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),  # Center and style the title
-    axis.text.x = element_text(angle = 30, hjust = 1),  # Tilt x-axis labels for readability
-    legend.position = "right",  # Keep legend visible
-    legend.title = element_text(face = "bold"),
-    legend.text = element_text(size = 10)
-  )
+  theme_minimal()
 
-# Print the stacked bar chart
-print(stacked_bar_chart)
+### STACKED BAR CHART ###
+
+ggplot(lying, aes(x = GROUP, fill = bins)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Proportional Distribution of Sentence Lengths by Group",
+    x = "Group",
+    y = "Proportion",
+    fill = "Word Count Bin"
+  ) +
+  theme_minimal()
+
 ```
 
-## QQ3: Change in Views of Answer (%)
+## **QQ1 - Change in Length of Answers (Avg. Words Per Sentence)**
+
+Change in word count. I looked at the amount of sentences and words per sentence, then took an average of words per sentence divided by the number of sentences to measure how each participant writes a sentence and relatively increased or decreased their thoughts
+
+```{r qq1_avg_words_per_sentence_diff, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+range(lying$QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE)
+# -114   55
+
+# Normalize the data
+lying$QQ1_DIFFERENCE_WORD_COUNT_Z <- scale(lying$QQ1_DIFFERENCE_WORD_COUNT)
+
+# Apply bins
+lying$change_category <- cut(
+  lying$QQ1_DIFFERENCE_WORD_COUNT_Z,
+  breaks = c(-Inf, -1.5, -0.5, 0.5, 1.5, Inf),
+  labels = c("Significant decrease", "Moderate decrease", "Little to no change", "Moderate increase", "Significant increase")
+)
+
+hist(lying$QQ1_DIFFERENCE_WORD_COUNT_Z, 
+     breaks = 30, 
+     main = "Distribution of Z-Scores", 
+     xlab = "Z-Score", 
+     col = "lightblue")
+
+abline(v = 0, col = "red", lwd = 2)  # Add vertical line at zero
+
+plot(density(lying$QQ1_DIFFERENCE_WORD_COUNT_Z), 
+     main = "Density Plot of Z-Scores", 
+     xlab = "Z-Score")
+
+abline(v = 0, col = "red", lty = 2, lwd = 2)  # Red dashed line at zero
+
+boxplot(lying$QQ1_DIFFERENCE_WORD_COUNT_Z,
+        main = "Boxplot of Z-Scores",
+        ylab = "Z-Score")
+
+abline(h = 0, col = "red", lty = 2, lwd = 2)
+
+```
+
+## QQ3: Percentage Change in Views/Answers
 
 ```{r qq3_stacked_bars_change_in_answer_percentage, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -509,6 +796,19 @@ plot_list[[3]]  # Control Group (Audio)
 plot_list[[4]]  # Test Group (Audio)
 ```
 
+## QQ3: Count of Change in Views/Answers (Use This One)
+
+Overall, the ad didn't have that much of an effect on any of the groups in their response.
+
+There were four main responses to QQ3:
+
+1.  White Lie
+2.  Keeping friend from danger and/or punishment
+3.  Would tell truth over supporting friends
+4.  Unsure
+
+While the Test Group (Audio) went from 7.1% to 14.3%, everything stayed exactly the same except for "Unsure." The Control Group (Audio) seems to have had some effect on the getting respondants to put a different answer, "Keeping friend from danger and/or punishment" to "White Lie," dropping by 25% and increasing by 7.8%.
+
 ```{r qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Step 1: Reshape, include GROUP, relabel columns
@@ -553,15 +853,18 @@ plot_list[[3]]  # Control Group (Audio)
 plot_list[[4]]  # Test Group (Audio)
 ```
 
-There were four main responses to QQ3:
+# Additional Sentiment
 
-1.  White Lie
-2.  Keeping friend from danger and/or punishment
-3.  Would tell truth over supporting friends
-4.  Unsure
+## Sentiment towards ads
 
-While the Test Group (Audio) went from 7.1% to 14.3%, everything stayed exactly the same except for "Unsure."
+```{r}
 
-The Control Group (Audio) seems to have had some effect on the getting respondants to put a different answer, "Keeping friend from danger and/or punishment" to "White Lie," dropping by 25% and increasing by 7.8%.
+```
+
+## Sentiment about participating in future studies
+
+```{r}
+
+```
 
 # References
