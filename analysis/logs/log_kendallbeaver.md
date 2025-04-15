@@ -124,7 +124,7 @@ Write anything that you think would be important for YOU later on.
 ### Date: 
 #### 4/13 - 4/19
 
-One thing I tried looking into this week was
+One idea I had was to gather the time for audio podcasts and compare it to the category for skipping ads, assuming that participants will choose to skip ads for longer ones versus short ads. However, I couldn't find an easy way to gather the information so I abondoned that and instead chose to just count only one educational podcast in my chart.
 
 ### Number of hours: 
 A quantity of hours, maybe towards specific tasks. 
