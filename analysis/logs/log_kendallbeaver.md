@@ -25,6 +25,12 @@ Something that was challenging that could be worked on, such as anything that wa
 Write anything that you think would be important for YOU later on.
 
 ---
+### Date:
+#### 3/1
+
+We got to meet with the donor today. Diana couldn't make it. The donor wants a pamphlet. 
+
+---
 
 ### Date: 
 #### 3/16 - 3/22
