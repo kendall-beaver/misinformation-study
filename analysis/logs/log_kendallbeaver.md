@@ -98,11 +98,7 @@ so I'm just going to use that.
 
 So I'm just running one pilot. 
 
-I tried transcribing the audio with a free-open sourced software called Whisper
-
-``` pip install git+https://github.com/openai/whisper.git 
-pip install ffmpeg-python ```
-
+I tried transcribing the audio with a free-open sourced software called Whisper, and it actually works, but I found out that I could just transcribe the audio myself much quicker than the program, but this will be useful for people who need to transcribe something else. 
 
 ### Number of hours: 
 A quantity of hours, maybe towards specific tasks. 
