@@ -29,7 +29,7 @@ Write anything that you think would be important for YOU later on.
 ### Date: 
 ## 3/16 - 3/22
 
-I set up my GitHub account this week and spent a lot of time editing the README files, which serves a metadata for all the variables in Diana's study.
+I set up my GitHub account this week and spent a lot of time entering metadata into the README files that explains all of the variables in Diana's study.
 
 I want to compare my findings with Diana's findings, and possibly the demographic information to the main YouGov study.
 
