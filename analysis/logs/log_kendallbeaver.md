@@ -32,10 +32,8 @@ We got to meet with the donor today. Diana couldn't make it. The donor wants a p
 
 * Assigned to mentor & send introduction email 2/17/25
 * Meet Diana & Kainan to discuss expectations 2/20/25
-
-Meet with donor of project 2/21/25
-
-Determine variables to study 2/24/25
+* Meet with donor of project 2/21/25
+* Determine variables to study 2/24/25
 
 Conduct research on previous GenAI models 3/3/25
 
