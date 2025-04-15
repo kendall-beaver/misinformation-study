@@ -27,9 +27,7 @@ Write anything that you think would be important for YOU later on.
 ---
 
 ### Date: 
-Week number, today's date, etc. 
-
-3/16 - 3/22
+## 3/16 - 3/22
 
 I set up my GitHub account and have been editing the README files, just getting everything organized which hsa been more time consuming than I expected.
 
