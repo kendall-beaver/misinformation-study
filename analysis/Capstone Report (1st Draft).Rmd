@@ -755,7 +755,9 @@ ggplot(lying, aes(x = composite_diff_norm)) +
 #  select(QQ1_BEFORE, QQ1_AFTER, word_count_day1, word_count_day2, sentence_count_day1, sentence_count_day2, composite_diff_norm)
 ```
 
-Participant 17 had the largest change, while Participant 83 had the lowest. A composite score of 1 means that the values doubled, and a composite score of 2 means that it tripled.
+Participant 17 had the largest change, whose values septupled (600%)! Participant 83 had the lowest. A composite score of 1 means that the values doubled, and a composite score of 2 means that it tripled.
+
+So, looking at values above 1, meaing that the combined words and sentences doubled and went up by 100%.
 
 ```{r group_composite_scores, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
