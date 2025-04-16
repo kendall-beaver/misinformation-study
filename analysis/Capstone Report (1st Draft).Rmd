@@ -756,7 +756,7 @@ ggplot(lying, aes(x = composite_diff_norm)) +
 #  select(QQ1_BEFORE, QQ1_AFTER, word_count_day1, word_count_day2, sentence_count_day1, sentence_count_day2, composite_diff_norm)
 ```
 
-## **QQ1 - Composite Score**
+## **QQ1 - Composite Score Histogram**
 
 Participant 17 had the largest change, whose values septupled (600%)! Participant 83 had the lowest. A composite score of 1 means that the values doubled, and a composite score of 2 means that it tripled.
 
@@ -837,10 +837,9 @@ lying %>%
 #  filter(composite_diff_norm == min(composite_diff_norm, na.rm = TRUE))
 ```
 
-```{r composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+## **QQ1: Composite - Score Pie Charts**
 
-library(ggplot2)
-library(dplyr)
+```{r qq1_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 lying <- lying %>%
   mutate(
@@ -899,9 +898,7 @@ ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
     legend.text = element_text(size = 10)
   )
 
-### ONE PLOT ###
-
-library(patchwork)
+### 4-PLOTS-IN-1 ###
 
 # Create an empty list to hold plots
 plot_list <- list()
@@ -954,8 +951,29 @@ for (grp in groups) {
 # Combine all plots into one using patchwork
 wrap_plots(plot_list) +
   plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+```
 
-### INDIVIDUAL PLOTS ###
+## **QQ2: Composite Score - Pie Charts**
+
+```{r qq2_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# SET CODE TO QQ2
+
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2 = sapply(QQ2_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ2_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+# NORMAL OPERATIONS LIKE ABOVE
 
 lying <- lying %>%
   mutate(
@@ -964,20 +982,64 @@ lying <- lying %>%
       composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
       composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
       composite_diff_norm >= 0.5 ~ ">= 50%"
-    ),
-    change_bucket = factor(
-      change_bucket,
-      levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%")
     )
   )
 
-# Unique GROUP values
-groups <- unique(lying$GROUP)
+lying$change_bucket <- factor(
+  lying$change_bucket,
+  levels = c(
+    "< -50%",
+    "-50% to 0%",
+    "0% to 49%",
+    ">= 50%"
+  )
+)
 
-# Loop over each group
+bucket_counts <- lying %>%
+  group_by(change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1),
+    pct_label = paste0(percentage, "%")
+  )
+
+ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(label = pct_label),
+    position = position_stack(vjust = 0.6),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "< -50%" = "red",
+      "-50% to 0%" = "orange",
+      "0% to 49%" = "yellow",
+      ">= 50%" = "skyblue"
+    )
+  ) +
+  labs(
+    title = "Composite Change Distribution by Bucket",
+    fill = "Change Bucket"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+### 4-PLOTS-IN-1 ###
+
+# Create an empty list to hold plots
+plot_list <- list()
+
+# Loop over each group and create pie charts
 for (grp in groups) {
   
-  # Filter and count buckets for this group
   bucket_counts_group <- lying %>%
     filter(GROUP == grp) %>%
     group_by(change_bucket) %>%
@@ -987,7 +1049,6 @@ for (grp in groups) {
       pct_label = paste0(percentage, "%")
     )
   
-  # Create pie chart
   p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
     geom_bar(stat = "identity", width = 1, color = "black") +
     coord_polar("y", start = 0) +
@@ -1007,7 +1068,7 @@ for (grp in groups) {
       )
     ) +
     labs(
-      title = paste("Composite Change Distribution – Group", grp),
+      title = paste(grp),
       fill = "Change Bucket"
     ) +
     theme_void() +
@@ -1017,15 +1078,152 @@ for (grp in groups) {
       legend.text = element_text(size = 10)
     )
   
-  # Print the pie chart
-  print(p)
-  
-  # Optional: save the chart to file
-  # ggsave(paste0("pie_chart_group_", grp, ".png"), plot = p, width = 6, height = 6)
+  # Add to plot list
+  plot_list[[grp]] <- p
 }
 
-
+# Combine all plots into one using patchwork
+wrap_plots(plot_list) +
+  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
 ```
+
+The drop was the same percentage for Test Group - Visual and Audio: 57.2% and 57.1%, respectively; but the word count more than doubled for Visual in the Test Group. and was slightly larger for the Control Group, although the drop in word and sentence count was the highest in this group, with 59.1%.
+
+## **QQ3: Composite Score - Pie Charts** 
+
+```{r qq3_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# SET CODE TO QQ3
+
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2 = sapply(QQ3_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ3_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+# NORMAL OPERATIONS LIKE ABOVE
+
+lying <- lying %>%
+  mutate(
+    change_bucket = case_when(
+      composite_diff_norm < -0.5 ~ "< -50%",
+      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
+      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
+      composite_diff_norm >= 0.5 ~ ">= 50%"
+    )
+  )
+
+lying$change_bucket <- factor(
+  lying$change_bucket,
+  levels = c(
+    "< -50%",
+    "-50% to 0%",
+    "0% to 49%",
+    ">= 50%"
+  )
+)
+
+bucket_counts <- lying %>%
+  group_by(change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1),
+    pct_label = paste0(percentage, "%")
+  )
+
+ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(label = pct_label),
+    position = position_stack(vjust = 0.6),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "< -50%" = "red",
+      "-50% to 0%" = "orange",
+      "0% to 49%" = "yellow",
+      ">= 50%" = "skyblue"
+    )
+  ) +
+  labs(
+    title = "Composite Change Distribution by Bucket",
+    fill = "Change Bucket"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+### 4-PLOTS-IN-1 ###
+
+# Create an empty list to hold plots
+plot_list <- list()
+
+# Loop over each group and create pie charts
+for (grp in groups) {
+  
+  bucket_counts_group <- lying %>%
+    filter(GROUP == grp) %>%
+    group_by(change_bucket) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(
+      percentage = round(100 * count / sum(count), 1),
+      pct_label = paste0(percentage, "%")
+    )
+  
+  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +
+    coord_polar("y", start = 0) +
+    geom_text(
+      aes(label = pct_label),
+      position = position_stack(vjust = 0.6),
+      size = 3,
+      color = "black",
+      fontface = "bold"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "< -50%" = "red",
+        "-50% to 0%" = "orange",
+        "0% to 49%" = "yellow",
+        ">= 50%" = "skyblue"
+      )
+    ) +
+    labs(
+      title = paste(grp),
+      fill = "Change Bucket"
+    ) +
+    theme_void() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(size = 10)
+    )
+  
+  # Add to plot list
+  plot_list[[grp]] <- p
+}
+
+# Combine all plots into one using patchwork
+wrap_plots(plot_list) +
+  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+```
+
+This significantly dropped, and surprisingly the audio had the greatest increase amount of words and sentences, but also the greatest drop, too.
 
 ## QQ3: Percentage Change in Views/Answers
 
@@ -1074,7 +1272,7 @@ plot_list[[3]]  # Control Group (Audio)
 plot_list[[4]]  # Test Group (Audio)
 ```
 
-## QQ3: Count of Change in Views/Answers (Use This One)
+## QQ3: Change in Views - Histogram (Counts)
 
 Overall, the ad didn't have that much of an effect on any of the groups in their response.
 
@@ -1135,6 +1333,85 @@ plot_list[[4]]  # Test Group (Audio)
 
 ```{r males_and_females_qq3, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each Gender
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = n),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
+
+### PORPORTION
+
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each Gender
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),  # Show percentages instead of count
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
 
 ```
 
@@ -1145,6 +1422,8 @@ plot_list[[4]]  # Test Group (Audio)
 ```{r ad_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # PIE CHART
+
+
 ```
 
 ## Sentiment about participating in future studies
@@ -1152,6 +1431,8 @@ plot_list[[4]]  # Test Group (Audio)
 ```{r future_study_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # PIE CHART
+
+
 ```
 
 # Conclusions
