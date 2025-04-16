@@ -62,6 +62,7 @@ library(writexl)
 library(ggplot2)
 library(stringr)
 library(scales)
+library(patchwork)
 #library(gt)
 
 # Load datasets
@@ -674,7 +675,7 @@ ggplot(lying, aes(x = GROUP, fill = bins)) +
 
 ```
 
-## **QQ1 - Change in Length of Answers (Avg. Words Per Sentence)**
+## **QQ1 - Change in Length of Answers**
 
 Change in word count. I looked at the amount of sentences and words per sentence, then took an average of words per sentence divided by the number of sentences to measure how each participant writes a sentence and relatively increased or decreased their thoughts
 
@@ -755,6 +756,8 @@ ggplot(lying, aes(x = composite_diff_norm)) +
 #  select(QQ1_BEFORE, QQ1_AFTER, word_count_day1, word_count_day2, sentence_count_day1, sentence_count_day2, composite_diff_norm)
 ```
 
+## **QQ1 - Composite Score**
+
 Participant 17 had the largest change, whose values septupled (600%)! Participant 83 had the lowest. A composite score of 1 means that the values doubled, and a composite score of 2 means that it tripled.
 
 So, looking at values above 1, meaing that the combined words and sentences doubled and went up by 100%.
@@ -828,14 +831,201 @@ for (category in categories) {
 #max(lying$composite_diff_norm)
 min(lying$composite_diff_norm)
 
-#lying %>%
-#  filter(composite_diff_norm == max(composite_diff_norm, na.rm = TRUE))
 lying %>%
-  filter(composite_diff_norm == min(composite_diff_norm, na.rm = TRUE))
-
+  filter(composite_diff_norm == max(composite_diff_norm, na.rm = TRUE))
+#lying %>%
+#  filter(composite_diff_norm == min(composite_diff_norm, na.rm = TRUE))
 ```
 
-![](images/clipboard-4271632721.png)
+```{r composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(ggplot2)
+library(dplyr)
+
+lying <- lying %>%
+  mutate(
+    change_bucket = case_when(
+      composite_diff_norm < -0.5 ~ "< -50%",
+      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
+      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
+      composite_diff_norm >= 0.5 ~ ">= 50%"
+    )
+  )
+
+lying$change_bucket <- factor(
+  lying$change_bucket,
+  levels = c(
+    "< -50%",
+    "-50% to 0%",
+    "0% to 49%",
+    ">= 50%"
+  )
+)
+
+bucket_counts <- lying %>%
+  group_by(change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1),
+    pct_label = paste0(percentage, "%")
+  )
+
+ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(label = pct_label),
+    position = position_stack(vjust = 0.6),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "< -50%" = "red",
+      "-50% to 0%" = "orange",
+      "0% to 49%" = "yellow",
+      ">= 50%" = "skyblue"
+    )
+  ) +
+  labs(
+    title = "Composite Change Distribution by Bucket",
+    fill = "Change Bucket"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+### ONE PLOT ###
+
+library(patchwork)
+
+# Create an empty list to hold plots
+plot_list <- list()
+
+# Loop over each group and create pie charts
+for (grp in groups) {
+  
+  bucket_counts_group <- lying %>%
+    filter(GROUP == grp) %>%
+    group_by(change_bucket) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(
+      percentage = round(100 * count / sum(count), 1),
+      pct_label = paste0(percentage, "%")
+    )
+  
+  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +
+    coord_polar("y", start = 0) +
+    geom_text(
+      aes(label = pct_label),
+      position = position_stack(vjust = 0.6),
+      size = 3,
+      color = "black",
+      fontface = "bold"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "< -50%" = "red",
+        "-50% to 0%" = "orange",
+        "0% to 49%" = "yellow",
+        ">= 50%" = "skyblue"
+      )
+    ) +
+    labs(
+      title = paste(grp),
+      fill = "Change Bucket"
+    ) +
+    theme_void() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(size = 10)
+    )
+  
+  # Add to plot list
+  plot_list[[grp]] <- p
+}
+
+# Combine all plots into one using patchwork
+wrap_plots(plot_list) +
+  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+
+### INDIVIDUAL PLOTS ###
+
+lying <- lying %>%
+  mutate(
+    change_bucket = case_when(
+      composite_diff_norm < -0.5 ~ "< -50%",
+      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
+      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
+      composite_diff_norm >= 0.5 ~ ">= 50%"
+    ),
+    change_bucket = factor(
+      change_bucket,
+      levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%")
+    )
+  )
+
+# Unique GROUP values
+groups <- unique(lying$GROUP)
+
+# Loop over each group
+for (grp in groups) {
+  
+  # Filter and count buckets for this group
+  bucket_counts_group <- lying %>%
+    filter(GROUP == grp) %>%
+    group_by(change_bucket) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(
+      percentage = round(100 * count / sum(count), 1),
+      pct_label = paste0(percentage, "%")
+    )
+  
+  # Create pie chart
+  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +
+    coord_polar("y", start = 0) +
+    geom_text(
+      aes(label = pct_label),
+      position = position_stack(vjust = 0.6),
+      size = 3,
+      color = "black",
+      fontface = "bold"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "< -50%" = "red",
+        "-50% to 0%" = "orange",
+        "0% to 49%" = "yellow",
+        ">= 50%" = "skyblue"
+      )
+    ) +
+    labs(
+      title = paste("Composite Change Distribution – Group", grp),
+      fill = "Change Bucket"
+    ) +
+    theme_void() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(size = 10)
+    )
+  
+  # Print the pie chart
+  print(p)
+  
+  # Optional: save the chart to file
+  # ggsave(paste0("pie_chart_group_", grp, ".png"), plot = p, width = 6, height = 6)
+}
+
+
+```
 
 ## QQ3: Percentage Change in Views/Answers
 
@@ -941,18 +1131,25 @@ plot_list[[3]]  # Control Group (Audio)
 plot_list[[4]]  # Test Group (Audio)
 ```
 
+## QQ3: Views Between Males & Females
+
+```{r males_and_females_qq3, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+
+```
+
 # Additional Sentiment
 
 ## Sentiment towards ads
 
-```{r ad_sentiment}
+```{r ad_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # PIE CHART
 ```
 
 ## Sentiment about participating in future studies
 
-```{r future_study_sentiment}
+```{r future_study_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # PIE CHART
 ```
