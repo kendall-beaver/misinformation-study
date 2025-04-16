@@ -610,159 +610,22 @@ This didn't effect anybody across all of the categories.
 
 ```{r table_of_previous, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
-
+# Just display the questions here? Not sure where I was going with this...
 ```
 
 ## QQ1: Change in **Content of Answer**
 
 I had to manually read each response and subjectively determined if their answer changed. A more optimal method to counter this would be to have multiple people reviewing this and comparing the results with a Gini index, which was not afforded to this project since I was the sole researcher.
 
-```{r content_of_answer_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
-
-
-```
-
-## **QQ1: Change in Word Count**
-
-```{r bar_chart_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
-
-range(lying$QQ1_DIFFERENCE_WORD_COUNT)
-
-lying$bins <- cut(
-  lying$QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE,
-  breaks = c(-Inf, -25, -5, 5, 25, Inf),
-  labels = c("x <= -25", "-25 < x <= -5", "-5 < x <= 5", "5 < x <= 25", "x > 25"),
-  right = TRUE
-)
-
-library(dplyr)
-
-lying <- lying %>%
-  mutate(bins = case_when(
-    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE > 25   ~ "x > 25",
-    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= 5   ~ "5 <= x <= 25",
-    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= -5  ~ "-5 <= x <= 5",
-    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= -25 ~ "-25 <= x <= -5",
-    TRUE                                          ~ "x < -25"
-  ))
-
-### COUNT BAR CHART ###
-
-library(ggplot2)
-
-ggplot(lying, aes(x = GROUP, fill = bins)) +
-  geom_bar(position = "stack") +
-  labs(
-    title = "Distribution of Average Words Per Sentence by Group",
-    x = "Group",
-    y = "Count",
-    fill = "Word Count Bin"
-  ) +
-  theme_minimal()
-
-### STACKED BAR CHART ###
-
-ggplot(lying, aes(x = GROUP, fill = bins)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(
-    title = "Proportional Distribution of Sentence Lengths by Group",
-    x = "Group",
-    y = "Proportion",
-    fill = "Word Count Bin"
-  ) +
-  theme_minimal()
-
-```
-
-## **QQ1 - Change in Length of Answers**
-
 Change in word count. I looked at the amount of sentences and words per sentence, then took an average of words per sentence divided by the number of sentences to measure how each participant writes a sentence and relatively increased or decreased their thoughts
-
-```{r qq1_avg_words_per_sentence_diff, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
-
-library(dplyr)
-library(stringr)
-library(stringi)
-
-# Helper functions
-count_words <- function(text) {
-  if (is.na(text) || str_trim(text) == "") return(0)
-  str_count(text, boundary("word"))
-}
-
-count_sentences <- function(text) {
-  if (is.na(text) || str_trim(text) == "") return(0)
-  
-  # Split on punctuation OR newline OR sentence-like boundaries
-  splits <- unlist(strsplit(text, "(?<=[.!?])\\s+|\\n+|(?<=\\w)\\s+(?=[A-Z])", perl = TRUE))
-  
-  # Count non-empty sentences, always return at least 1 if there is any content
-  num_sentences <- sum(str_trim(splits) != "")
-  return(max(num_sentences, 1))
-}
-
-# Apply to your dataset
-lying <- lying %>%
-  mutate(
-    word_count_day1 = sapply(QQ1_BEFORE, count_words),
-    word_count_day2 = sapply(QQ1_AFTER, count_words),
-    
-    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
-    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
-    
-    word_count_diff = word_count_day2 - word_count_day1,
-    sentence_count_diff = sentence_count_day2 - sentence_count_day1,
-    
-    composite_diff = (word_count_diff + sentence_count_diff) / 2
-  )
-
-ggplot(lying, aes(x = composite_diff)) +
-  geom_histogram(aes(y = ..density..), binwidth = 1, fill = "skyblue", color = "black", alpha = 0.7) +
-  geom_density(color = "darkblue", size = 1) +
-  labs(
-    title = "Histogram + Density of Composite Score Differences",
-    x = "Composite Difference",
-    y = "Density"
-  ) +
-  theme_minimal()
-
-###
-
-lying <- lying %>%
-  mutate(
-    word_count_day1 = sapply(QQ1_BEFORE, count_words),
-    word_count_day2 = sapply(QQ1_AFTER, count_words),
-    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
-    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
-
-    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid divide-by-zero
-    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
-
-    composite_diff_norm = (word_count_change + sentence_count_change) / 2
-  )
-
-ggplot(lying, aes(x = composite_diff_norm)) +
-  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
-  labs(
-    title = "Histogram of Normalized Composite Change",
-    x = "Normalized Composite Difference",
-    y = "Count"
-  ) +
-  theme_minimal()
-
-#lying %>%
-#  filter((word_count_day2 - word_count_day1 + sentence_count_day2 - sentence_count_day1) / 2 == -60) %>%
-#  select(QQ1_BEFORE, QQ1_AFTER, word_count_day1, word_count_day2, sentence_count_day1, sentence_count_day2, composite_diff_norm)
-```
-
-## **QQ1 - Composite Score Histogram**
 
 Participant 17 had the largest change, whose values septupled (600%)! Participant 83 had the lowest. A composite score of 1 means that the values doubled, and a composite score of 2 means that it tripled.
 
 So, looking at values above 1, meaing that the combined words and sentences doubled and went up by 100%.
 
-```{r group_composite_scores, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+## **QQ1: Composite Score - Jitter Plots**
+
+```{r qq1_jitter_plots, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Define the updated sentence-counting function
 count_sentences <- function(text) {
@@ -799,45 +662,20 @@ lying <- lying %>%
     composite_diff_norm = (word_count_change + sentence_count_change) / 2
   )
 
-# Overall facet plot by GROUP
-ggplot(lying, aes(x = composite_diff_norm)) +
-  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
-  facet_wrap(~ GROUP) +
+### JITTER PLOT
+
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
   labs(
-    title = "Histogram of Normalized Composite Change by Group",
-    x = "Normalized Composite Difference",
-    y = "Count"
+    title = "Jittered Plot of Normalized Composite Change — All Groups",
+    x = "\nGroup",
+    y = "Normalized Composite Difference\n"
   ) +
-  theme_minimal()
-
-# Individual histograms for each GROUP category
-categories <- unique(lying$GROUP)
-
-for (category in categories) {
-  p <- lying %>%
-    filter(GROUP == category) %>%
-    ggplot(aes(x = composite_diff_norm)) +
-    geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
-    labs(
-      title = paste("Histogram of Normalized Composite Change for Group", category),
-      x = "Normalized Composite Difference",
-      y = "Count"
-    ) +
-    theme_minimal()
-  
-  print(p)
-}
-
-#max(lying$composite_diff_norm)
-min(lying$composite_diff_norm)
-
-lying %>%
-  filter(composite_diff_norm == max(composite_diff_norm, na.rm = TRUE))
-#lying %>%
-#  filter(composite_diff_norm == min(composite_diff_norm, na.rm = TRUE))
+  theme_minimal() #+
+  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
 ```
 
-## **QQ1: Composite - Score Pie Charts**
+## **QQ1: Composite Score - Pie Charts**
 
 ```{r qq1_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -1089,7 +927,7 @@ wrap_plots(plot_list) +
 
 The drop was the same percentage for Test Group - Visual and Audio: 57.2% and 57.1%, respectively; but the word count more than doubled for Visual in the Test Group. and was slightly larger for the Control Group, although the drop in word and sentence count was the highest in this group, with 59.1%.
 
-## **QQ3: Composite Score - Pie Charts** 
+## **QQ3: Composite Score - Pie Charts**
 
 ```{r qq3_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -1421,17 +1259,123 @@ plot_list[[2]]  # Usually "Female"
 
 ```{r ad_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-# PIE CHART
+## SENTIMENT TOWARDS AD - PIE CHART ###
 
+# Prepare the data
+data_for_plot <- lying %>%
+  count(SENTIMENT) %>%
+  mutate(prop = n / sum(n),
+         percent_label = percent(prop))
 
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = SENTIMENT)) +
+  geom_col(width = 1, color = "black") +  # dark border with color = "black"
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sentiment Towards Ad") +
+  scale_fill_manual(
+    values = c(
+        "Negative" = "red",
+        "Neutral" = "yellow",
+        "Positive" = "skyblue"
+      ))
+
+### SEPARATE PLOTS FOR GROUPS
+
+# Prepare the data: calculate proportion per SENTIMENT per GROUP
+data_for_plot <- lying %>%
+  group_by(GROUP, SENTIMENT) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop)
+  )
+
+# Create the faceted pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = SENTIMENT)) +
+  geom_col(width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  facet_wrap(~ GROUP) +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sentiment Towards Ad by Group\n") +
+  scale_fill_manual(
+    name = "Sentiment",
+    values = c(
+      "Negative" = "red",
+      "Neutral" = "yellow",
+      "Positive" = "skyblue"
+    )
+  )
 ```
+
+Positive Sentime - These participants stated that the liked something about the ad, usually a line a character said or usually a positive sentiment such as one character inviting the friend to come out to karaoke with him and his friends.
 
 ## Sentiment about participating in future studies
 
 ```{r future_study_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-# PIE CHART
+# Set desired order for consistent coloring and legend
+ordered_levels <- c("Very Willing", "Slightly Willing", "Slightly Unwilling", "Very Unwilling")
+color_map <- c(
+  "Very Willing"       = "#59A14F",
+  "Slightly Willing"   = "#76B7B2",
+  "Slightly Unwilling" = "#F28E2B",
+  "Very Unwilling"     = "#E15759"
+)
 
+# SINGLE PIE CHART
+
+# Prepare the data
+data_for_plot <- lying %>%
+  count(FUTURE_STUDY) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop),
+    FUTURE_STUDY = factor(FUTURE_STUDY, levels = ordered_levels)
+  )
+
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
+  geom_col(width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sentiment Towards Future Study") +
+  scale_fill_manual(
+    name = "Willingness",
+    values = color_map,
+    drop = FALSE  # Keeps all levels in the legend, even if missing from data
+  )
+
+# SEPARATE PLOTS FOR GROUPS
+
+# Prepare data, filtering out missing levels per group but keeping the color map consistent
+data_for_plot <- lying %>%
+  group_by(GROUP, FUTURE_STUDY) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop),
+    FUTURE_STUDY = factor(FUTURE_STUDY, levels = ordered_levels)  # for consistent fill color mapping
+  )
+
+# Create the faceted pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
+  geom_col(width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  facet_wrap(~ GROUP) +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5), size = 3) +
+  ggtitle("Sentiment Towards Participating in a Future Study\n") +
+  scale_fill_manual(
+    name = "Willingness",
+    values = color_map,
+    drop = FALSE  # Ensures full legend even if a group has fewer categories
+  )
 
 ```
 

@@ -49,3 +49,305 @@ unique(na.omit(lying$`Top 3 Entertainment_1`))
 length(unique(na.omit(lying$`Top 3 Entertainment_1`)))
 # 42 different podcasts
 ```
+
+## **QQ1: Change in Word Count**
+
+```{r bar_chart_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+range(lying$QQ1_DIFFERENCE_WORD_COUNT)
+
+lying$bins <- cut(
+  lying$QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE,
+  breaks = c(-Inf, -25, -5, 5, 25, Inf),
+  labels = c("x <= -25", "-25 < x <= -5", "-5 < x <= 5", "5 < x <= 25", "x > 25"),
+  right = TRUE
+)
+
+library(dplyr)
+
+lying <- lying %>%
+  mutate(bins = case_when(
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE > 25   ~ "x > 25",
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= 5   ~ "5 <= x <= 25",
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= -5  ~ "-5 <= x <= 5",
+    QQ1_DIFFERENCE_AVG_WORDS_PER_SENTENCE >= -25 ~ "-25 <= x <= -5",
+    TRUE                                          ~ "x < -25"
+  ))
+
+### COUNT BAR CHART ###
+
+library(ggplot2)
+
+ggplot(lying, aes(x = GROUP, fill = bins)) +
+  geom_bar(position = "stack") +
+  labs(
+    title = "Distribution of Average Words Per Sentence by Group",
+    x = "Group",
+    y = "Count",
+    fill = "Word Count Bin"
+  ) +
+  theme_minimal()
+
+### STACKED BAR CHART ###
+
+ggplot(lying, aes(x = GROUP, fill = bins)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Proportional Distribution of Sentence Lengths by Group",
+    x = "Group",
+    y = "Proportion",
+    fill = "Word Count Bin"
+  ) +
+  theme_minimal()
+```
+
+## **QQ1 - Change in Length of Answers**
+
+```{r qq1_avg_words_per_sentence_diff, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+library(stringr)
+library(stringi)
+
+# Helper functions
+count_words <- function(text) {
+  if (is.na(text) || str_trim(text) == "") return(0)
+  str_count(text, boundary("word"))
+}
+
+count_sentences <- function(text) {
+  if (is.na(text) || str_trim(text) == "") return(0)
+  
+  # Split on punctuation OR newline OR sentence-like boundaries
+  splits <- unlist(strsplit(text, "(?<=[.!?])\\s+|\\n+|(?<=\\w)\\s+(?=[A-Z])", perl = TRUE))
+  
+  # Count non-empty sentences, always return at least 1 if there is any content
+  num_sentences <- sum(str_trim(splits) != "")
+  return(max(num_sentences, 1))
+}
+
+# Apply to your dataset
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
+    
+    word_count_diff = word_count_day2 - word_count_day1,
+    sentence_count_diff = sentence_count_day2 - sentence_count_day1,
+    
+    composite_diff = (word_count_diff + sentence_count_diff) / 2
+  )
+
+ggplot(lying, aes(x = composite_diff)) +
+  geom_histogram(aes(y = ..density..), binwidth = 1, fill = "skyblue", color = "black", alpha = 0.7) +
+  geom_density(color = "darkblue", size = 1) +
+  labs(
+    title = "Histogram + Density of Composite Score Differences",
+    x = "Composite Difference",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+###
+
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid divide-by-zero
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+ggplot(lying, aes(x = composite_diff_norm)) +
+  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+  labs(
+    title = "Histogram of Normalized Composite Change",
+    x = "Normalized Composite Difference",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+#lying %>%
+#  filter((word_count_day2 - word_count_day1 + sentence_count_day2 - sentence_count_day1) / 2 == -60) %>%
+#  select(QQ1_BEFORE, QQ1_AFTER, word_count_day1, word_count_day2, sentence_count_day1, sentence_count_day2, composite_diff_norm)
+```
+
+```{r group_composite_scores, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Define the updated sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  
+  # Match sentence-ending punctuation only
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  
+  # If no punctuation but text exists, count as 1 sentence
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  
+  return(count)
+}
+
+# Simple word count function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Compute word/sentence changes and composite score
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+# Overall facet plot by GROUP
+ggplot(lying, aes(x = composite_diff_norm)) +
+  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+  facet_wrap(~ GROUP) +
+  labs(
+    title = "Histogram of Normalized Composite Change by Group",
+    x = "Normalized Composite Difference",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# Individual histograms for each GROUP category
+categories <- unique(lying$GROUP)
+
+for (category in categories) {
+  p <- lying %>%
+    filter(GROUP == category) %>%
+    ggplot(aes(x = composite_diff_norm)) +
+    geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+    labs(
+      title = paste("Histogram of Normalized Composite Change for Group", category),
+      x = "Normalized Composite Difference",
+      y = "Count"
+    ) +
+    theme_minimal()
+  
+  print(p)
+}
+
+#max(lying$composite_diff_norm)
+min(lying$composite_diff_norm)
+
+lying %>%
+  filter(composite_diff_norm == max(composite_diff_norm, na.rm = TRUE))
+#lying %>%
+#  filter(composite_diff_norm == min(composite_diff_norm, na.rm = TRUE))
+
+###
+
+# Create subsets
+plot1_groups <- c("Control Group (Audio)", "Control Group (Visual)")
+plot2_groups <- c("Test Group (Audio)", "Test Group (Visual)")
+
+# Plot 1: Control Groups
+ggplot(filter(lying, GROUP %in% plot1_groups), aes(x = composite_diff_norm)) +
+  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+  facet_wrap(~ GROUP) +
+  labs(
+    title = "Histogram of Normalized Composite Change — Control Groups",
+    x = "Normalized Composite Difference",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# Plot 2: Test Groups
+ggplot(filter(lying, GROUP %in% plot2_groups), aes(x = composite_diff_norm)) +
+  geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
+  facet_wrap(~ GROUP) +
+  labs(
+    title = "Histogram of Normalized Composite Change — Test Groups",
+    x = "Normalized Composite Difference",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+### BOX PLOTS
+
+# Plot 1: Control Groups — Box Plot
+ggplot(filter(lying, GROUP %in% c("Control Group (Audio)", "Control Group (Visual)")),
+       aes(x = GROUP, y = composite_diff_norm)) +
+  geom_boxplot(fill = "skyblue", color = "black", alpha = 0.8) +
+  labs(
+    title = "Box Plot of Normalized Composite Change — Control Groups",
+    x = "Group",
+    y = "Normalized Composite Difference"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 15, hjust = 1))
+
+# Plot 2: Test Groups — Box Plot
+ggplot(filter(lying, GROUP %in% c("Test Group (Audio)", "Test Group (Visual)")),
+       aes(x = GROUP, y = composite_diff_norm)) +
+  geom_boxplot(fill = "skyblue", color = "black", alpha = 0.8) +
+  labs(
+    title = "Box Plot of Normalized Composite Change — Test Groups",
+    x = "Group",
+    y = "Normalized Composite Difference"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 15, hjust = 1))
+
+## BOX + JITTER PLOT FOR TEST GROUP
+
+ggplot(filter(lying, GROUP %in% c("Test Group (Audio)", "Test Group (Visual)")),
+       aes(x = GROUP, y = composite_diff_norm)) +
+  geom_boxplot(fill = "white", color = "black", width = 0.3) +
+  geom_jitter(width = 0.15, alpha = 0.6, color = "steelblue", size = 2) +
+  labs(
+    title = "Boxplot + Jitter of Normalized Composite Change — Test Groups",
+    x = "Group",
+    y = "Normalized Composite Difference"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 15, hjust = 1))
+
+### BOX + JITTER FOR ALL
+
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+  geom_boxplot(fill = "white", color = "black", width = 0.3) +
+  geom_jitter(width = 0.15, alpha = 0.6, color = "steelblue", size = 2) +
+  labs(
+    title = "Boxplot + Jitter of Normalized Composite Change — All Groups",
+    x = "Group",
+    y = "Normalized Composite Difference"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 15, hjust = 1))
+
+### JITTER PLOT
+
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
+  labs(
+    title = "Jittered Plot of Normalized Composite Change — All Groups",
+    x = "\nGroup",
+    y = "Normalized Composite Difference"
+  ) +
+  theme_minimal() #+
+  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+
+```
+
+## **QQ1 - Composite Score Histogram**
