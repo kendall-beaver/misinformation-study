@@ -612,7 +612,16 @@ This didn't effect anybody across all of the categories.
 
 ```
 
-## **QQ1 - Content/View of Answer**
+## QQ1: Change in **Content of Answer**
+
+I had to manually read each response and subjectively determined if their answer changed. A more optimal method to counter this would be to have multiple people reviewing this and comparing the results with a Gini index, which was not afforded to this project since I was the sole researcher.
+
+```{r content_of_answer_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+
+```
+
+## **QQ1: Change in Word Count**
 
 ```{r bar_chart_1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -746,24 +755,49 @@ ggplot(lying, aes(x = composite_diff_norm)) +
 #  select(QQ1_BEFORE, QQ1_AFTER, word_count_day1, word_count_day2, sentence_count_day1, sentence_count_day2, composite_diff_norm)
 ```
 
+Participant 17 had the largest change, while Participant 83 had the lowest. A composite score of 1 means that the values doubled, and a composite score of 2 means that it tripled.
+
 ```{r group_composite_scores, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
+# Define the updated sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  
+  # Match sentence-ending punctuation only
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  
+  # If no punctuation but text exists, count as 1 sentence
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  
+  return(count)
+}
+
+# Simple word count function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Compute word/sentence changes and composite score
 lying <- lying %>%
   mutate(
     word_count_day1 = sapply(QQ1_BEFORE, count_words),
     word_count_day2 = sapply(QQ1_AFTER, count_words),
+    
     sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
     sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
 
-    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid divide-by-zero
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
     sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
 
     composite_diff_norm = (word_count_change + sentence_count_change) / 2
   )
 
+# Overall facet plot by GROUP
 ggplot(lying, aes(x = composite_diff_norm)) +
   geom_histogram(binwidth = 0.05, fill = "skyblue", color = "black", alpha = 0.8) +
-  facet_wrap(~ GROUP) +  # Creates a separate plot for each group
+  facet_wrap(~ GROUP) +
   labs(
     title = "Histogram of Normalized Composite Change by Group",
     x = "Normalized Composite Difference",
@@ -771,11 +805,9 @@ ggplot(lying, aes(x = composite_diff_norm)) +
   ) +
   theme_minimal()
 
-# Assuming your categories in `GROUP` are, for example: "A", "B", "C", "D"
+# Individual histograms for each GROUP category
+categories <- unique(lying$GROUP)
 
-categories <- unique(lying$GROUP)  # Get unique category names
-
-# Loop through each category and create individual plots
 for (category in categories) {
   p <- lying %>%
     filter(GROUP == category) %>%
@@ -788,10 +820,20 @@ for (category in categories) {
     ) +
     theme_minimal()
   
-  print(p)  # Print the plot for this category
+  print(p)
 }
 
+#max(lying$composite_diff_norm)
+min(lying$composite_diff_norm)
+
+#lying %>%
+#  filter(composite_diff_norm == max(composite_diff_norm, na.rm = TRUE))
+lying %>%
+  filter(composite_diff_norm == min(composite_diff_norm, na.rm = TRUE))
+
 ```
+
+![](images/clipboard-4271632721.png)
 
 ## QQ3: Percentage Change in Views/Answers
 
@@ -912,5 +954,9 @@ plot_list[[4]]  # Test Group (Audio)
 
 # PIE CHART
 ```
+
+# Conclusions
+
+The visual ads, whether for control or not, seemed to have some positive influence on the participants.
 
 # References
