@@ -791,6 +791,58 @@ wrap_plots(plot_list) +
   plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
 ```
 
+## QQ2: Change in Composite Score - Jitter Plot
+
+```{r qq2_composite_jitter_plot, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Define the updated sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  
+  # Match sentence-ending punctuation only
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  
+  # If no punctuation but text exists, count as 1 sentence
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  
+  return(count)
+}
+
+# Simple word count function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Compute word/sentence changes and composite score
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2 = sapply(QQ2_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ2_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+### JITTER PLOT
+
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
+  labs(
+    title = "Jittered Plot of Normalized Composite Change QQ2 — All Groups",
+    x = "\nGroup",
+    y = "Normalized Composite Difference\n"
+  ) +
+  theme_minimal() #+
+  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+```
+
 ## **QQ2: Composite Score - Pie Charts**
 
 ```{r qq2_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
@@ -1124,6 +1176,62 @@ There were four main responses to QQ3:
 While the Test Group (Audio) went from 7.1% to 14.3%, everything stayed exactly the same except for "Unsure." The Control Group (Audio) seems to have had some effect on the getting respondants to put a different answer, "Keeping friend from danger and/or punishment" to "White Lie," dropping by 25% and increasing by 7.8%.
 
 ```{r qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### ALL GROUPS (COUNT)
+
+# Step 1: Reshape, drop Gender
+type_of_lie_long <- lying %>%
+  select(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages (no Gender)
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Plot single combined bar plot
+ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  labs(
+    title = "Type of Lie (All Groups)",
+    x = "\nQQ3",
+    y = "Count\n"
+  ) +
+  theme_minimal()
+
+
+### ALL GROUPS (PERCENTAGE)
+
+ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  labs(
+    title = "Type of Lie (All Groups)",
+    x = "\nQQ3",
+    y = "Count\n"
+  ) +
+  theme_minimal()
+
+
+### 4 SEPARATE BAR CHARTS
 
 # Step 1: Reshape, include GROUP, relabel columns
 type_of_lie_long <- lying %>%
