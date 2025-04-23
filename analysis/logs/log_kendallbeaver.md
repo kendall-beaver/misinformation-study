@@ -38,6 +38,8 @@ We got to meet with the donor today. Diana couldn't make it. The donor wants a p
 Conduct research on previous GenAI models 3/3/25
 
 ---
+#### 3/8
+I began reading papers on GCBS, which she accidentally gave me a copy of. Then Kanian gave me access to another Google Drive, or G Drive for the first time.
 
 ### Date: 
 #### 3/16 - 3/22
