@@ -1365,7 +1365,7 @@ plot_list[[2]]  # Usually "Female"
 
 ## Sentiment towards ads
 
-```{r ad_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r ad_sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 ## SENTIMENT TOWARDS AD - PIE CHART ###
 
@@ -1423,7 +1423,7 @@ Positive Sentime - These participants stated that the liked something about the 
 
 ## Sentiment about participating in future studies
 
-```{r future_study_sentiment, qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r future_study_sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Set desired order for consistent coloring and legend
 ordered_levels <- c("Very Willing", "Slightly Willing", "Slightly Unwilling", "Very Unwilling")
@@ -1484,6 +1484,150 @@ ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
     values = color_map,
     drop = FALSE  # Ensures full legend even if a group has fewer categories
   )
+
+```
+
+## Ethnicity, Religion & Politics - Future Participation Study (All Willing & Unwilling Categories)
+
+```{r ERP_future_study_all_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+full_data <- lying  # no filtering applied
+
+ggplot(full_data, aes(x = Ethnicity, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Ethnicity by Willingness to Participate in Future Study",
+       x = "Ethnicity", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(full_data, aes(x = Religion, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Religion by Willingness to Participate in Future Study",
+       x = "Religion", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(full_data, aes(x = Politics, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Politics by Willingness to Participate in Future Study",
+       x = "Politics", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# NORMALIZE THE COUNTS
+
+ethnicity_prop <- full_data %>%
+  count(Ethnicity, FUTURE_STUDY) %>%
+  group_by(Ethnicity) %>%
+  mutate(prop = n / sum(n))
+
+ggplot(ethnicity_prop, aes(x = Ethnicity, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Ethnicity (Proportional)",
+       x = "Ethnicity", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Politics
+
+# Prepare data
+politics_prop <- full_data %>%
+  count(Politics, FUTURE_STUDY) %>%
+  group_by(Politics) %>%
+  mutate(prop = n / sum(n))
+
+# Plot
+ggplot(politics_prop, aes(x = Politics, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Political Affiliation (Proportional)",
+       x = "Politics", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Religion
+
+# Prepare data
+religion_prop <- full_data %>%
+  count(Religion, FUTURE_STUDY) %>%
+  group_by(Religion) %>%
+  mutate(prop = n / sum(n))
+
+# Plot
+ggplot(religion_prop, aes(x = Religion, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Religion (Proportional)",
+       x = "Religion", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# GENDER
+
+# Prepare data
+gender_prop <- full_data %>%
+  count(Gender, FUTURE_STUDY) %>%
+  group_by(Gender) %>%
+  mutate(prop = n / sum(n))
+
+# Plot
+ggplot(gender_prop, aes(x = Gender, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Gender (Proportional)",
+       x = "Gender", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# I need to remove/be mindful of those values where only 1 person identifies in that category
+```
+
+## Ethnicity, Religion & Politics - Future Participation Study ("Very Willing" & "Very Unwilling")
+
+```{r ERP_future_study_very_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Filter data down for 2 categories in FUTURE_STUDY
+#filtered_data <- lying %>%
+#  filter(FUTURE_STUDY %in% c("Very Willing", "Very Unwilling"))
+#summary(filtered_data)
+# 33 rows total
+
+# PLOTTING ALL 3 TOGETHER
+
+long_data <- filtered_data %>%
+  pivot_longer(cols = c(Ethnicity, Religion, Politics),
+               names_to = "Feature",
+               values_to = "Value")
+
+ggplot(long_data, aes(x = Value, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~ Feature, scales = "free_x") +
+  labs(title = "Demographics by Willingness to Participate",
+       x = "", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# PLOTTING SEPARATELY
+
+# Ethnicity
+ggplot(filtered_data, aes(x = Ethnicity, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Ethnicity by Willingness to Participate in Future Study",
+       x = "Ethnicity", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Religion
+ggplot(filtered_data, aes(x = Religion, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Religion by Willingness to Participate in Future Study",
+       x = "Religion", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Politics
+ggplot(filtered_data, aes(x = Politics, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Politics by Willingness to Participate in Future Study",
+       x = "Politics", y = "Count") +
+  theme_minimal()
 
 ```
 
