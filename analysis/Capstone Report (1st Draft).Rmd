@@ -606,7 +606,13 @@ ggplot(ad_skip_summary, aes(x = "", y = Count, fill = AdSkipping)) +
 
 # II: Analysis of Qualitative Questions
 
-This didn't effect anybody across all of the categories.
+I've performed thematic analysis/content analysis on the responses from the first question and found seven main themes: (I can look at using Atlas.ti)
+
+Answer 2: perhaps a somebody in their life is forcing them to join. Powerful people could be preying on the weak.
+
+Answer 4 is a social answer because you want to seek people who have the same views as you. We seek communities of like-minded people.
+
+You could have a group of similar ideas, but that may not be proposing change necessarily, such as groups that promote conspiracy theories that the moon landing never happened, or that dinosaurs are a hoax, etc.
 
 ```{r table_of_previous, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
