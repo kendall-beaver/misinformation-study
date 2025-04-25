@@ -610,9 +610,13 @@ I've performed thematic analysis/content analysis on the responses from the firs
 
 Answer 2: perhaps a somebody in their life is forcing them to join. Powerful people could be preying on the weak.
 
-Answer 4 is a social answer because you want to seek people who have the same views as you. We seek communities of like-minded people.
+Answer 4 is a social answer because you want to seek people who have the same views as you. We seek communities of like-minded people. People with similar ideas make someone feels valued and listened to, and you feel like you belong and matter to that person and community. Everything ultimately comes down to community.
+
+Answer 6: "Safety in numbers"
 
 You could have a group of similar ideas, but that may not be proposing change necessarily, such as groups that promote conspiracy theories that the moon landing never happened, or that dinosaurs are a hoax, etc.
+
+There were vague answers such as "sense of empowerment," but never stated what gave them a sense of empowerment. This could result from a narcasistic leader giving them the sense of empowerment, but simply belonging to a tribe and community is the base, fundamental level to give someone a sense of empowerment.
 
 ```{r table_of_previous, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
 
@@ -796,6 +800,10 @@ for (grp in groups) {
 wrap_plots(plot_list) +
   plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
 ```
+
+# QQ2
+
+This section was easier to create categories out of than QQ1.
 
 ## QQ2: Change in Composite Score - Jitter Plot
 
