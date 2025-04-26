@@ -1236,7 +1236,9 @@ wrap_plots(plot_list) +
 
 # QQ2
 
-This section was easier to create categories out of than QQ1.
+*"What are some reasons you think people believe false ideas circulating online?"*
+
+The responses stayed nearly identical. This section was easier to create categories out of than QQ1.
 
 I believe there's a difference between seeing information for the first time, because this was never stated anyways with "don't take time to fact check" and "believe first thing they see".
 
@@ -1244,8 +1246,201 @@ I believe there's a difference between seeing information for the first time, be
 
 ```{r categorical_data_before_and_after, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
+### PROPORTION (by percentage, for all Genders combined)
+
+# Step 1: Reshape, exclude Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response values to readable labels
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Step 3: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot (no facet for Gender)
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ2 Responses Before vs. After Ad (All Groups)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Themes") +  # Legend title changed here
+  
+  theme_minimal() #+
+  #theme(legend.position = "bottom")  # Move legend to bottom
+
+# Step 6: Print the plot
+plot
+
+### SIDE-BY-SIDE PLOT OF PROPORTIONAL VALUES FOR GENDER BY CATEGORY
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response values to shorter category descriptions
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Step 3: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ2 Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Themes") +  # Legend title
+  
+  facet_wrap(~ Gender) +
+  
+  theme_minimal() #+
+  #theme(legend.position = "bottom")  # Move legend below the plots
+
+# Step 6: Print the plot
+plot
+
+### SPLIT BY AD GROUPS
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response values to shorter category descriptions
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Step 3: Count and calculate percentages grouped by GROUP and QuestionType
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            #fontface = "bold",
+            color = "black") +
+  
+  labs(title = "QQ2 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Themes") +  # Legend title = "Category"
+  
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal() #+
+  #theme(legend.position = "bottom")  # Move legend below plots
+
+# Step 6: Print the plot
+plot
+
 
 ```
+
+The first category, "Believes first thing they see," increases and remains the dominant category exact for the group who listened to the audio ad, which decreased and was replaced by the category "Doesn't take time to fact check." This was already a common response among participants that upon filling out the questionnaire on the second attempt, they may have simply switched over to the default value.
+
+However, when you zoom back and look at the responses overall, porportionally they remained the same where either ad seemed to had no significant effect on changing the responses.
+
+"1" = "Don't take time to fact check and verify information.",
+"2" = "Believe first thing they see; source seems real, important, or is popular.",
+"3" = "Look for ideas confirming pre-existing beliefs, or for entertaining, dramatic ideas.",
+"4" = "Unsure.",
+"5" = "Other.",
+"6" = "There's too much misinformation available that gets spread around easily."
 
 ## QQ2: Change in Composite Score - Jitter Plot
 
@@ -2091,9 +2286,9 @@ ggplot(filtered_data, aes(x = Politics, fill = FUTURE_STUDY)) +
 
 ```
 
-Future Direction
+# Future Direction
 
-Use that software to perform themeatic analysis.
+Use that software to perform themeatic analysis. Gather more data.
 
 # Conclusions
 
