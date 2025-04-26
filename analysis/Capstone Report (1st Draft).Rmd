@@ -637,18 +637,433 @@ Participant 17 had the largest change, whose values septupled (600%)! Participan
 
 So, looking at values above 1, meaing that the combined words and sentences doubled and went up by 100%.
 
-## QQ1: Categorical Data Before
+## QQ1: Categorical Data Before & After Ad, All
 
-```{r categorical_data_before, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r categorical_data_before_and_after_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
+### PROPORTION (by percentage, for all Genders combined)
+
+# Step 1: Reshape, exclude Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages for all Genders
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)  # Calculate percentage
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot (no facet for Gender)
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentage instead of count)
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  # No facet by Gender (combine all Genders)
+  labs(title = "Responses Before vs. After Ad (All Genders Combined)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+
+### COUNT, ALL GENDER
+
+# Step 1: Reshape, exclude Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count (no percentage calculation needed for counts)
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot (no facet for Gender)
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show count instead of percentage)
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "Responses Before vs. After Ad (All Genders Combined)",
+       x = "\nResponses",
+       y = "Count\n") +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+#plot
+
+
+### PROPORTION (by percentage, split by Gender)
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)  # Calculate percentage
+
+# Step 3: Calculate total counts per Gender and QuestionType
+# This step is no longer needed since we removed the total count from the plot
+# total_counts <- lie_counts %>%
+#   group_by(Gender, QuestionType) %>%
+#   summarise(total_n = sum(n))
+
+# Step 4: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentage instead of count)
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  # Remove total count on top (so this part is removed entirely)
+  # geom_text(data = total_counts,
+  #           aes(x = QuestionType, y = total_n, label = total_n),
+  #           vjust = -0.5,
+  #           size = 3,
+  #           fontface = "bold",     # Make it bold
+  #           color = "black",
+  #           inherit.aes = FALSE) +
+  
+  # Remove y-axis limit (let it auto scale)
+  # scale_y_continuous(limits = c(0, 90)) +   # Removed the y-axis limit
+  
+  labs(title = "Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  # Facet by Gender
+  facet_wrap(~ Gender) +  # Split by Gender here
+  
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
+
+### PROPORTION (by count, split by Gender)
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count (no need to calculate percentage here)
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Calculate total counts per Gender and QuestionType
+total_counts <- lie_counts %>%
+  group_by(Gender, QuestionType) %>%
+  summarise(total_n = sum(n))
+
+# Step 4: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+total_counts$QuestionType <- factor(total_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show count instead of percentage)
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  # Total count on top of each bar (bold, size 4)
+  geom_text(data = total_counts,
+            aes(x = QuestionType, y = total_n, label = total_n),
+            vjust = -0.5,
+            size = 4,       # Font size 4
+            fontface = "bold",     # Make it bold
+            color = "black",
+            inherit.aes = FALSE) +
+  
+  # Set y-axis limit to 90
+  scale_y_continuous(limits = c(0, 90)) +   # Set y-axis max to 90
+  
+  labs(title = "Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Count\n") +
+  
+  # Facet by Gender
+  facet_wrap(~ Gender) +  # Split by Gender here
+  
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
 
 ```
 
-## QQ1: Categorical Data After
+The top 3 responses are:
 
-```{r categorical_data_after, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+-   4 - Confirmation bias; wanting to be a part of a community of like-minded people, to not feel lonley.
 
+-   5 - Feeling helpless and believe in the group's cause, that they can make change and life better. (Ex: Frustrated with the existing system and believe that change can only be accomplish through extreme, radical action.)
 
+-   6 - Curious about checking out the group; group seems large and powerful and different, that it could be fun to join, an energy to the group; could gain status; the feel of power; to not feel bored (aesthetics of being associated with a group) **[COULD THE NEW FRIENDS AD INFLUENCE THIS?]**
+
+## Testing to See if New Friends Ad Has Anything to do with This
+
+```{r experiment_new_friends_influence, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### COUNT
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count grouped by GROUP, QuestionType, and Response
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show counts)
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "Responses Before vs. After Ad (Split by GROUP)",
+       x = "\nResponses",
+       y = "Count\n") +
+  
+  # Facet by GROUP
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+# plot
+
+### PERCENTAGE
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages grouped by GROUP and QuestionType
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)  # Calculate percentage within each GROUP + QuestionType
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentages)
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "Responses Before vs. After Ad (Split by GROUP)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+
+```
+
+## QQ1: Categorical Data Before & After Ad, by Gender
+
+```{r categorical_data_before_and_after_by_gender, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### BY COUNT
+
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  # Step 1.5: Split and unnest responses
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count (no percentage calculation needed)
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = n),    # <-- show count (n) instead of percentage
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
+
+### BY PERCENTAGE
+
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  # Step 1.5: Split and unnest responses
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages for each Gender
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
 ```
 
 ## **QQ1: Composite Score - Jitter Plots**
@@ -825,16 +1240,9 @@ This section was easier to create categories out of than QQ1.
 
 I believe there's a difference between seeing information for the first time, because this was never stated anyways with "don't take time to fact check" and "believe first thing they see".
 
-## QQ2: Categorical Data Before
+## QQ2: Categorical Data Before & After, All Gender & Categorical Genders
 
-```{r categorical_data_before, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
-
-
-```
-
-## QQ2: Categorical Data After
-
-```{r categorical_data_after, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r categorical_data_before_and_after, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 
 ```
@@ -1026,6 +1434,10 @@ wrap_plots(plot_list) +
 ```
 
 The drop was the same percentage for Test Group - Visual and Audio: 57.2% and 57.1%, respectively; but the word count more than doubled for Visual in the Test Group. and was slightly larger for the Control Group, although the drop in word and sentence count was the highest in this group, with 59.1%.
+
+# **QQ3**
+
+The ad doesn't really say anything about lying, so instead of looking at each GROUP (Test vs. Control) category, which didn't show much of a difference **[NEED TO PLOT THIS]**, I decided to look at just gender and found some very interesting results.
 
 ## **QQ3: Composite Score - Pie Charts**
 
