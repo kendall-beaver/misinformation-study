@@ -637,6 +637,13 @@ Participant 17 had the largest change, whose values septupled (600%)! Participan
 
 So, looking at values above 1, meaing that the combined words and sentences doubled and went up by 100%.
 
+## QQ1: Categorical Data
+
+```{r categorical_data, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+
+```
+
 ## **QQ1: Composite Score - Jitter Plots**
 
 ```{r qq1_jitter_plots, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
