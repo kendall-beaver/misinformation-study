@@ -8,7 +8,11 @@
 
 
 ## Overview
-This repository is organized as a reproducible research compendium. Future updates to this compendium will include a Dockerfile and Binder Container
+This repository is organized as a reproducible research compendium. There are three main sources of information: 
+
+1. The original dataset located at analysis/data: "sketches_for_skepticism_original.xlsx"
+2. A shortened version of the above mentioned dataset used for analysis in R: "lying_data.xlsx"
+3. The R Studio file the produced the report:
 
 ## File Organization
 
