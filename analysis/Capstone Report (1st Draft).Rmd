@@ -2091,6 +2091,10 @@ ggplot(filtered_data, aes(x = Politics, fill = FUTURE_STUDY)) +
 
 ```
 
+Future Direction
+
+Use that software to perform themeatic analysis.
+
 # Conclusions
 
 The visual ads, whether for control or not, seemed to have some positive influence on the participants.
