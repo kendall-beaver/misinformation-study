@@ -2275,7 +2275,7 @@ I created my own variable SENTIMENT, which I read all the responses across the r
 
 4.  Please tell us any other thoughts you have about the ad.
 
-## Sentiment towards ads - Pie Charts
+## THIS ONE: Sentiment Towards Ads - Pie Charts
 
 ```{r ad_sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -2329,6 +2329,52 @@ ggplot(data_for_plot, aes(x = "", y = prop, fill = SENTIMENT)) +
       "Positive" = "skyblue"
     )
   )
+
+### STACKED BAR CHART ###
+
+# Prepare the data
+data_for_plot <- lying %>%
+  group_by(GROUP, SENTIMENT) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop)
+  )
+
+# Create the stacked bar plot with custom colors
+ggplot(data_for_plot, aes(x = GROUP, y = prop, fill = SENTIMENT)) +
+  geom_bar(stat = "identity", color = "black") +
+  
+  geom_text(aes(label = percent_label),
+            position = position_stack(vjust = 0.5),
+            color = "black",
+            size = 3,
+            fontface = "bold") +
+  
+  labs(
+    title = "Sentiment Towards Ad by Group\n",
+    x = "\nGroup",  # Add line break before "Group"
+    y = "Proportion\n",  # Add line break after "Proportion"
+    fill = "Sentiment"
+  ) +
+  
+  scale_fill_manual(
+    values = c(
+      "Negative" = "#E15759",          # Keep Negative red
+      "Neutral" = "#76B7B2",           # Make Neutral BLUE
+      "Positive" = "#59A14F"           # Make Positive GREEN
+    )
+  ) +
+  
+  scale_x_discrete(labels = c(
+    "Control Group (Audio)" = "Control Group\n(Audio)",
+    "Control Group (Visual)" = "Control Group\n(Visual)",
+    "Test Group (Audio)" = "Test Group\n(Audio)",
+    "Test Group (Visual)" = "Test Group\n(Visual)"
+  )) +
+  
+  theme_minimal()
 ```
 
 Positive Sentime - These participants stated that the liked something about the ad, usually a line a character said or usually a positive sentiment such as one character inviting the friend to come out to karaoke with him and his friends.
@@ -2396,6 +2442,37 @@ ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
     values = color_map,
     drop = FALSE  # Ensures full legend even if a group has fewer categories
   )
+
+### STACKED BAR CHART ###
+
+## Create the stacked bar chart with modified x-axis labels
+ggplot(data_for_plot, aes(x = GROUP, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", color = "black") +
+  
+  geom_text(aes(label = percent_label),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  ggtitle("Sentiment Towards Participating in a Future Study\n") +
+  
+  scale_fill_manual(
+    name = "Willingness",
+    values = color_map,
+    drop = FALSE
+  ) +
+  
+  labs(x = "\nGroup", y = "Proportion\n") +
+  
+  scale_x_discrete(labels = c(
+    "Control Group (Audio)" = "Control Group\n(Audio)",
+    "Control Group (Visual)" = "Control Group\n(Visual)",
+    "Test Group (Audio)" = "Test Group\n(Audio)",
+    "Test Group (Visual)" = "Test Group\n(Visual)"
+  )) +
+  
+  theme_minimal()
 
 ```
 
