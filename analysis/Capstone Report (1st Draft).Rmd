@@ -50,6 +50,8 @@ I'm glad Video ads are still showing promise on deeper analysis. We should pursu
 
 # Intro
 
+Diana focused on where participants get their source of information from, so I'm going to focus more on the ad listening behavior of participants. Diana also looked at the test results from GCBS, MIST-20 & IT-MIST, which I may briefly touch upon in this report but will mostly leave the more in-depth analysis to be reviewed in her report.
+
 ```{r load_libraries, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Load libraries
@@ -1470,12 +1472,7 @@ The first category, "Believes first thing they see," increases and remains the d
 
 However, when you zoom back and look at the responses overall, porportionally they remained the same where either ad seemed to had no significant effect on changing the responses.
 
-"1" = "Don't take time to fact check and verify information.",
-"2" = "Believe first thing they see; source seems real, important, or is popular.",
-"3" = "Look for ideas confirming pre-existing beliefs, or for entertaining, dramatic ideas.",
-"4" = "Unsure.",
-"5" = "Other.",
-"6" = "There's too much misinformation available that gets spread around easily."
+"1" = "Don't take time to fact check and verify information.", "2" = "Believe first thing they see; source seems real, important, or is popular.", "3" = "Look for ideas confirming pre-existing beliefs, or for entertaining, dramatic ideas.", "4" = "Unsure.", "5" = "Other.", "6" = "There's too much misinformation available that gets spread around easily."
 
 ## THIS ONE - QQ2: Change in Composite Score - Jitter Plot
 
@@ -1723,18 +1720,18 @@ This significantly dropped, and surprisingly the audio had the greatest increase
 
 ```{r qq3_categorical_, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
+### BAR PLOT FOR ALL
+
 # Step 1: Reshape, exclude Gender, relabel columns
 type_of_lie_long <- lying %>%
-  select(QQ3_BEFORE, QQ3_AFTER) %>%
-  pivot_longer(cols = c(QQ3_BEFORE, QQ3_AFTER),
+  select(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
                names_to = "QuestionType",
                values_to = "Response") %>%
   drop_na() %>%
   mutate(QuestionType = recode(QuestionType,
-                               QQ3_BEFORE = "Before Ad",
-                               QQ3_AFTER = "After Ad"))
-
-# 🚫 No str_split, no unnest, no str_trim 🚫
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
 
 # Step 2: Count and calculate percentages
 lie_counts <- type_of_lie_long %>%
@@ -1765,6 +1762,93 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
 # Step 5: Print the plot
 plot
 
+### SIDE BY SIDE - GENDER
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ3 Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +  # Keep raw responses as legend
+  
+  facet_wrap(~ Gender) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+
+### SIDE BY SIDE CONTROL VS. TEST GROUP
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ3 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +
+  
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
 ```
 
 ## **QQ3: Composite Scores as Pie Charts (Bad & Hard to Decipher)**
@@ -2149,7 +2233,7 @@ plot_list[[2]]  # Usually "Female"
 
 # Additional Sentiment
 
-## Sentiment towards ads
+## Sentiment towards ads - Pie Charts
 
 ```{r ad_sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -2420,6 +2504,8 @@ ggplot(filtered_data, aes(x = Politics, fill = FUTURE_STUDY)) +
 # Future Direction
 
 Use that software to perform themeatic analysis. Gather more data.
+
+The audio ad seems to have something to do with the results being really weird across every category measurable.
 
 # Conclusions
 
