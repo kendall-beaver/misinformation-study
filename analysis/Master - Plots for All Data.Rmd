@@ -139,7 +139,7 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
 
 ```{r gender_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-## GENDER PIE CHART ###
+### GENDER PIE CHART BY PERCENTAGE ###
 
 # Create dataframe with counts & percentages for Gender
 gender_counts <- as.data.frame(table(lying$Gender))
@@ -169,6 +169,38 @@ ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
             aes(label = Label), 
             position = position_nudge(x = 0.3),  # Adjust x as needed
             color = "black", size = 4)
+
+### GENDER PIE CHART BY COUNT ###
+
+# Create dataframe with counts for Gender
+gender_counts <- as.data.frame(table(lying$Gender))
+colnames(gender_counts) <- c("Gender", "Count")
+
+# (Optional) Create label with just the Count
+gender_counts <- gender_counts %>%
+  mutate(Label = Count)
+
+# Plot Gender Distribution Pie Chart
+ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Gender Distribution (by Count)") +
+  theme(legend.title = element_blank(),
+        plot.title = element_text(hjust = 0.5)) +
+
+  # Text for genders EXCEPT "Prefer not to say"
+  geom_text(data = subset(gender_counts, Gender != "Prefer not to say"),
+            aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 4) +
+
+  # Text for "Prefer not to say" with adjusted position
+  geom_text(data = subset(gender_counts, Gender == "Prefer not to say"),
+            aes(label = Label), 
+            position = position_nudge(x = 0.3),  # Adjust x as needed
+            color = "black", size = 4)
+
 ```
 
 # Social Media Habits

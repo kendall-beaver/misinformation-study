@@ -1,0 +1,2556 @@
+---
+title: "Capstone Report (Final Draft)"
+author: "Kendall Beaver"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+# Outline
+
+## Intro
+
+## Demographics
+
+1.  Overview of participants
+    1.  149 students partook in Part I, but only 99 students wait until Part 2.
+2.  Charts of
+    1.  **Age & Gender (side-by-side)**
+    2.  **Social Media Platforms & Time Spent Online**
+    3.  **Top 3 Entertainment_1 &/or Top 3 Educational_1, & Ad-skipping habits (Only applicable to those who listen to podcasts)**
+
+## Qualitative Questions Analysis
+
+1.  QQ1 After Ad (Did views and length change?)
+2.  QQ2 After Ad
+3.  QQ3 After Ad
+    1.  5 types of comment length (count count)
+
+## Test Score Analysis
+
+1.  GBCS
+2.  MIST-20
+3.  IT-MIST
+
+## Additional Sentiment Discovered From Other Questions
+
+1.  Sentiment towards ads
+2.  Sentiment about participating in future studies
+
+## GenAI Study & Results
+
+## Future Direction
+
+And yes, audio ads are not a great way to reach people, though they may still be effective in more typical listening conditions. In future work, ideally, we would have participants queue up media they already planned to listen to, and then embed our ad in it while they engage however they usually do (exercising, cleaning, driving).
+
+I'm glad Video ads are still showing promise on deeper analysis. We should pursue that in ads on YouTube podcasts, since many cannot skip those.More testing might be good first, ideally targeting more specific falsehoods and problems.
+
+## References
+
+------------------------------------------------------------------------
+
+# Intro
+
+Diana focused on where participants get their source of information from, so I'm going to focus more on the ad listening behavior of participants. Diana also looked at the test results from GCBS, MIST-20 & IT-MIST, which I may briefly touch upon in this report but will mostly leave the more in-depth analysis to be reviewed in her report.
+
+```{r load_libraries, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Load libraries
+library(tidyr)
+library(gridExtra)
+library(readxl)
+library(dplyr)
+library(corrplot)
+library(writexl)
+library(ggplot2)
+library(stringr)
+library(scales)
+library(patchwork)
+#library(gt)
+
+# Load datasets
+
+lying <- read_excel("data/lying_data.xlsx")
+```
+
+1.  Intro of misinformation and purpose of study, to study the prebunking effects using comedy sketch ads to see how effective they will be.
+2.  Two different ads
+    1.  Control ad: Was not a neutral ad. It was an ad with negative emotion, which is impactful but confused the results. In the future a neutral ad will be chosen, in terms of content, tone and emotion.
+        1.  The United States Post Office. Every now and then, something good happens here." This ad is about two friends waiting in line, or at least Jessica takes a number to wait. Jessica and Mel: Jessica has just completed bowling with her friends because they're morning people. What can you do? Mel jokes and says she can get new friends, and she snaps, then apologizes. She says her fingers were too small and she was kicked out. Mel acknowledges that that sucks, then he invites her to come hang with his karaoke friends at night, to which Jessica displays interest. Then it cuts to her singing and having fun. So completely random.
+3.  Method: used Descript program to create ads.
+4.  My help/work needed: Looking at qualitative questions that was asked before viewing the ad and after reviewing the ad.
+
+# Demographics
+
+## Age
+
+```{r age_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### AGE PIE CHART ###
+
+#range(lying$Age, na.rm = TRUE)
+# 18 - 48 years old
+
+# Bin:
+# 18 - 19
+# 20 - 29
+# 30 - 39
+# 40 - 49
+
+# 1. Create age bins
+age_bins <- cut(lying$Age,
+                breaks = c(17, 19, 29, 39, 49),
+                labels = c("18–19", "20–29", "30–39", "40–49"),
+                right = TRUE)
+
+# 2. Create dataframe with counts & percentages
+age_counts <- as.data.frame(table(age_bins))
+colnames(age_counts) <- c("AgeGroup", "Count")
+
+age_counts <- age_counts %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+# 3. Plot with percentage labels, black borders, and reduced font size
+ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +  # Black border around slices
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Age Distribution in Bins") +
+  guides(fill = guide_legend(title = "Age Range")) +  # Add legend title
+  
+  # 4. Add text for larger slices (inside the pie)
+  geom_text(aes(label = ifelse(AgeGroup %in% c("18–19", "20–29"), Label, "")), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 4) +  # Reduced font size
+  
+  # 5. Add text for smaller slices (outside the pie)
+  geom_text(aes(label = ifelse(AgeGroup == "30–39", Label, "")),
+            position = position_nudge(x = 0.2),  # Adjust x to move the text for 30–39
+            color = "black", size = 4) +  # Reduced font size
+  
+  geom_text(aes(label = ifelse(AgeGroup == "40–49", Label, "")),
+            position = position_nudge(x = 0.35),  # Adjust x to move the text for 40–49
+            color = "black", size = 4) +  # Reduced font size
+  
+  theme(plot.title = element_text(hjust = 0.5))  # Center the title
+```
+
+## Gender
+
+```{r gender_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### GENDER PIE CHART BY PERCENTAGE ###
+
+# Create dataframe with counts & percentages for Gender
+gender_counts <- as.data.frame(table(lying$Gender))
+colnames(gender_counts) <- c("Gender", "Count")
+
+gender_counts <- gender_counts %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+# Plot Gender Distribution Pie Chart
+ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Gender Distribution") +
+  theme(legend.title = element_blank(),
+        plot.title = element_text(hjust = 0.5)) +
+
+  # Text for genders EXCEPT "Prefer not to say"
+  geom_text(data = subset(gender_counts, Gender != "Prefer not to say"),
+            aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 4) +
+
+  # Text for "Prefer not to say" with adjusted position
+  geom_text(data = subset(gender_counts, Gender == "Prefer not to say"),
+            aes(label = Label), 
+            position = position_nudge(x = 0.3),  # Adjust x as needed
+            color = "black", size = 4)
+
+### GENDER PIE CHART BY COUNT ###
+
+# Create dataframe with counts for Gender
+gender_counts <- as.data.frame(table(lying$Gender))
+colnames(gender_counts) <- c("Gender", "Count")
+
+# (Optional) Create label with just the Count
+gender_counts <- gender_counts %>%
+  mutate(Label = Count)
+
+# Plot Gender Distribution Pie Chart
+ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Gender Distribution (by Count)") +
+  theme(legend.title = element_blank(),
+        plot.title = element_text(hjust = 0.5)) +
+
+  # Text for genders EXCEPT "Prefer not to say"
+  geom_text(data = subset(gender_counts, Gender != "Prefer not to say"),
+            aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 4) +
+
+  # Text for "Prefer not to say" with adjusted position
+  geom_text(data = subset(gender_counts, Gender == "Prefer not to say"),
+            aes(label = Label), 
+            position = position_nudge(x = 0.3),  # Adjust x as needed
+            color = "black", size = 4)
+
+```
+
+# Social Media Habits
+
+## Social Media Platform Used by Participants
+
+This indicates the main sources of news that people get.
+
+```{r social_media, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### TYPES OF SOCIAL MEDIA PLATFORMS - PIE CHART ###
+
+#unique(lying$Platforms)
+#unique(lying$Platforms_6_TEXT)
+# "YouTube" "Discord" "Tumblr" "Reddit" "MEANS.TV" "Telegram" "Snapchat"
+
+### JUST NORMAL PIE CHART WITH OTHER ###
+
+# Step 1: Split out the Platforms column into individual rows
+platform_counts <- lying %>%
+  separate_rows(Platforms, sep = ",") %>%
+  mutate(Platforms = str_trim(Platforms)) %>%
+  filter(!is.na(Platforms), Platforms != "", Platforms != "None") %>%
+  count(Platforms) %>%
+  mutate(Percent = round(n / sum(n) * 100, 1),
+         Label = paste0(Platforms, " (", Percent, "%)"))
+
+# Step 2: Replace "Other (please specify)" with "Other"
+platform_counts <- platform_counts %>%
+  mutate(Platforms = ifelse(Platforms == "Other (please specify)", "Other", Platforms))
+
+# Step 3: Make the pie chart
+ggplot(platform_counts, aes(x = "", y = n, fill = Platforms)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  labs(title = "Social Media Platform Usage") +
+  theme_void() +
+  theme(legend.title = element_text(face = "bold", size = 12),
+        plot.title = element_text(hjust = 0.5)) +
+  guides(fill = guide_legend(title = "Social Media Platform")) +  # Add legend title
+
+  # Display percentages for all slices
+  geom_text(aes(label = paste0(Percent, "%")),
+            position = position_stack(vjust = 0.5),
+            color = "black", size = 4)
+
+### HISTOGRAM ###
+
+ggplot(platform_counts, aes(x = reorder(Platforms, -n), y = n, fill = Platforms)) +
+  geom_col(color = "black") +
+  labs(
+    title = "Social Media Platform Usage",
+    x = "Platform",
+    y = "Number of Mentions"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",  # Still hiding the legend
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 9)
+  ) +
+  geom_text(aes(label = n), vjust = -0.5, size = 3.5)  # Count labels above bars
+```
+
+The "Other" category includes 2 mentions of Reddit, and 1 mention of Discord, MEANS.TV, Telegram, Tumblr, and YouTube.
+
+## Number of Platforms Used
+
+```{r number_of_platforms, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Create a new column 'PlatformCount' to store the number of platforms each person uses
+lying <- lying %>%
+  mutate(PlatformCount = str_count(Platforms, ",") + 1)  # Count commas and add 1 for platform count
+
+# head(lying$PlatformCount)
+
+platform_summary <- lying %>%
+  count(PlatformCount, name = "Count") %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+#ggplot(platform_summary, aes(x = "", y = Count, fill = factor(PlatformCount))) +
+#  geom_bar(stat = "identity", width = 1, color = "black") +
+#  coord_polar(theta = "y") +
+#  theme_void() +
+#  labs(title = "Number of Platforms Used by Participants") +
+#  theme(plot.title = element_text(hjust = 0.5),
+#        legend.title = element_blank()) +
+#  geom_text(aes(label = Label), 
+#            position = position_stack(vjust = 0.5), 
+#            color = "black", size = 5)
+
+### HISTOGRAM ###
+
+ggplot(platform_summary, aes(x = factor(PlatformCount), y = Count, fill = factor(PlatformCount))) +
+  geom_col(color = "black") +
+  labs(
+    title = "Number of Platforms Used by Participants",
+    x = "Number of Platforms",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    legend.position = "none"
+  ) +
+  geom_text(aes(label = paste0(Percent, "%")), vjust = -0.5, size = 4)
+
+```
+
+## Hours Spent on Social Media
+
+The amount of time exposed to news and information on these platforms.
+
+```{r time_spent_on_social_media, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# unique(lying$`Time Spent`)
+# 6 values:
+# "Over 2 hours"
+# "Between 1 hour, 30 minutes - 2 hours"
+# "Between 30 minutes - 1 hour"
+# "Between 1 hour - 1 hour, 30 minutes" 
+# "Between 5 minutes - 30 minutes"
+# "No time"       
+
+### PIE CHART ###
+
+# Clean and summarize the 'Time Spent' column
+time_summary <- lying %>%
+  filter(!is.na(`Time Spent`)) %>%
+  count(`Time Spent`, name = "Count") %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+ggplot(time_summary, aes(x = "", y = Count, fill = `Time Spent`)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Time Spent Listening to Podcasts") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank()) +
+  geom_text(aes(label = Label),
+            position = position_stack(vjust = 0.5),
+            color = "black", size = 5)
+
+### BAR CHART ###
+
+# Define the desired order and new labels
+original_order <- c(
+  "No time",
+  "Between 5 minutes - 30 minutes",
+  "Between 30 minutes - 1 hour",
+  "Between 1 hour - 1 hour, 30 minutes",
+  "Between 1 hour, 30 minutes - 2 hours",
+  "Over 2 hours"
+)
+
+new_labels <- c(
+  "No time",
+  "5 - 30 mins",
+  "30 - 60 mins",
+  "60 - 90 mins",
+  "90 - 120 mins",
+  "120+ mins"
+)
+
+# Apply reordering and relabeling
+time_summary <- time_summary %>%
+  mutate(`Time Spent` = factor(`Time Spent`, levels = original_order, labels = new_labels))
+
+ggplot(time_summary, aes(x = `Time Spent`, y = Count, fill = `Time Spent`)) +
+  geom_bar(stat = "identity", color = "black") +
+  labs(title = "Time Spent Listening to Podcasts",
+       x = "\nTime Spent",
+       y = "Number of Participants\n") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_text(angle = 0, vjust = 1)  # Straight x-axis labels
+  ) +
+  geom_text(aes(label = Count), vjust = -0.3, size = 4)
+
+### PIE CHART ###
+
+# Clean and summarize the 'Time Spent' column
+time_summary <- lying %>%
+  filter(!is.na(`Time Spent`)) %>%
+  count(`Time Spent`, name = "Count") %>%
+  mutate(
+    `Time Spent` = factor(`Time Spent`, levels = original_order, labels = new_labels),  # Apply ordering & relabeling
+    Percent = round(Count / sum(Count) * 100, 1),
+    Label = paste0(Percent, "%")
+  )
+
+# Pie chart with updated labels
+ggplot(time_summary, aes(x = "", y = Count, fill = `Time Spent`)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Time Spent on Social Media") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.title = element_text(size = 10, face = "bold"),  # Optional: adjust style
+    legend.text = element_text(size = 9)
+  ) +
+  guides(fill = guide_legend(title = "Length of Time\nSpent on Social Media")) +  # Custom legend title
+  geom_text(aes(label = Label),
+            position = position_stack(vjust = 0.5),
+            color = "black", size = 5)
+
+```
+
+## Gathering News From Social Media
+
+```{r news_from_social_media, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(ggplot2)
+library(dplyr)
+library(scales)
+
+# Prepare the data
+data_for_plot <- lying %>%
+  count(News_From_Social) %>%
+  mutate(prop = n / sum(n),
+         percent_label = percent(prop))
+
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = News_From_Social)) +
+  geom_col(width = 1, color = "black") +  # dark border with color = "black"
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sources of News from Social Media")
+
+
+```
+
+## Podcast Recommendation
+
+```{r podcast_recommendation, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Prepare the data
+data_for_plot <- lying %>%
+  count(Podcast_Recommendation) %>%
+  mutate(prop = n / sum(n),
+         percent_label = percent(prop))
+
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = Podcast_Recommendation)) +
+  geom_col(width = 1, color = "black") +  # dark border
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Recommending Podcast to a Friend")
+```
+
+# Podcasts & Podcast Habits
+
+## Background Research on Educational Podcasts
+
+```{r educational_podcasts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### BACKGROUND RESEARCH OF TYPES OF PODCASTS ###
+
+#unique(na.omit(lying$`Top 3 Educational _1`))
+# 50 unedited podcasts
+
+#length(unique(na.omit(lying$`Top 3 Educational _1`)))
+# 50 unedited podcasts
+
+lying <- lying %>%
+  mutate(
+    podcast_clean = str_trim(str_to_lower(`Top 3 Educational _1`)),
+    
+    podcast_standard = case_when(
+      # Remove non-informative answers
+      str_detect(podcast_clean, "^(n[./\\s-]*a|none|not applicable|nothing|no podcast)$") ~ NA_character_,
+
+      # Match actual podcasts
+      str_detect(podcast_clean, "joe rogan") ~ "joe rogan experience",
+      str_detect(podcast_clean, "mel robbins") ~ "mel robbins podcast",
+      str_detect(podcast_clean, "ted ?talks?") ~ "ted talks",
+      str_detect(podcast_clean, "npr") ~ "npr",
+      str_detect(podcast_clean, "cnn") ~ "cnn",
+      str_detect(podcast_clean, "ed mylett") ~ "the ed mylett show",
+      str_detect(podcast_clean, "jay shetty") ~ "jay shetty",
+      str_detect(podcast_clean, "pod save america") ~ "pod save america",
+      str_detect(podcast_clean, "craig groeschel") ~ "craig groeschel leadership podcast",
+      str_detect(podcast_clean, "science vs") ~ "science vs",
+      str_detect(podcast_clean, "the psychology of your 20") ~ "the psychology of your 20's",
+      str_detect(podcast_clean, "easy spanish") ~ "easy spanish",
+      str_detect(podcast_clean, "stuff you should know") ~ "stuff you should know",
+      str_detect(podcast_clean, "pat mcafee") ~ "pat mcafee show",
+      str_detect(podcast_clean, "planet money") ~ "planet money",
+      str_detect(podcast_clean, "morning brew") ~ "morning brew",
+      str_detect(podcast_clean, "apple news today") ~ "apple news today",
+      str_detect(podcast_clean, "on the media") ~ "on the media",
+      str_detect(podcast_clean, "the weeds") ~ "the weeds",
+      str_detect(podcast_clean, "the muckrake") ~ "the muckrake podcast",
+      str_detect(podcast_clean, "majority report") ~ "the majority report",
+      str_detect(podcast_clean, "comment section") ~ "the comment section",
+      str_detect(podcast_clean, "book review") ~ "the book review",
+      str_detect(podcast_clean, "unbiased") ~ "unbiased",
+      str_detect(podcast_clean, "turning point usa") ~ "turning point usa",
+      str_detect(podcast_clean, "textory") ~ "textory",
+      str_detect(podcast_clean, "rrc") ~ "rrc",
+      str_detect(podcast_clean, "israel: state of a nation") ~ "israel: state of a nation",
+
+      # Otherwise, return cleaned raw input
+      TRUE ~ podcast_clean
+    )
+  )
+
+# unique(lying$podcast_standard)
+# 37 including missing values
+
+# unique(na.omit(lying$podcast_standard))
+# 36 different podcasts
+
+#length(unique(na.omit(lying$podcast_standard)))
+# 36 different podcasts
+
+#"joe rogan experience" #1–5 hours              
+#"dead meat podcast" #1-2 hors
+#"school"
+#"the psychology of your 20's" # 1 hour (50 mins)
+#"jay shetty"
+#"the ed mylett show"                 
+#"turning point usa"                  
+#"the bill simmons"                  
+#"cnn"
+#"the book review"
+#"the comment section"
+#"bigdeal"                           
+#"mel robbins podcast"
+#"phnx arizona cardinals podcast"
+#"ted talks"
+#"pod save america"                  
+#"easy spanish"
+#"podsave america"
+#"craig groeschel leadership podcast"
+#"the weeds"                         
+#"rrc"
+#"israel: state of a nation"
+#"textory"
+#"the muckrake podcast"
+#"npr"
+#"the majority report"
+#"unbiased"
+#"apple news today"                  
+#"on the media"
+#"stuff you should know"
+#"pat mcafee show"
+#"science vs"                        
+#"morning brew"
+#"planet money"
+#"tangle"
+#"the ultimate human"
+```
+
+## Podcast vs. Non-Podcast Listeners
+
+Percentage of non-podcast listeners vs. people who have listen to at least one educational type of podcast.
+
+```{r podcast_vs_non-podcast_listeners_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PODCAST VS. NON-PODCAST LISTENERS PIE CHART ###
+
+# Assuming podcast_standard is a column in a dataframe called 'lying'
+podcast_status <- ifelse(is.na(lying$podcast_standard) | lying$podcast_standard == "", 
+                         "Doesn't Listen to Podcast", 
+                         "Listens to Podcast")
+podcast_status <- factor(podcast_status, levels = c("Listens to Podcast", "Doesn't Listen to Podcast"))
+
+podcast_summary <- as.data.frame(table(podcast_status))
+colnames(podcast_summary) <- c("Status", "Count")
+
+podcast_summary <- podcast_summary %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+ggplot(podcast_summary, aes(x = "", y = Count, fill = Status)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Proportion of Participants Who Listens to a Podcast") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank()) +
+  geom_text(aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 5)
+```
+
+## Proportion of Podcast Listeners Who Skip Ads vs. Fast-Forwards
+
+```{r skipping_ads, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+#unique(lying$`Ad Skipping`)
+
+# Create a cleaned version of the column
+ad_skipping_clean <- lying$`Ad Skipping` %>%
+  na.omit() %>%
+  recode("I sometimes skip past ads." = "Sometimes skips ads",
+         "I always skip past ads."   = "Always skips ads",
+         "I never skip past ads."    = "Never skips ads")
+
+ad_skip_summary <- as.data.frame(table(ad_skipping_clean))
+colnames(ad_skip_summary) <- c("AdSkipping", "Count")
+
+ad_skip_summary <- ad_skip_summary %>%
+  mutate(Percent = round(Count / sum(Count) * 100, 1),
+         Label = paste0(Percent, "%"))
+
+ggplot(ad_skip_summary, aes(x = "", y = Count, fill = AdSkipping)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Ad Skipping Behavior") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank()) +
+  geom_text(aes(label = Label), 
+            position = position_stack(vjust = 0.5), 
+            color = "black", size = 5)
+
+```
+
+# ITMIST Scores
+
+```{r itmist_box_2, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+
+```
+
+# II: Analysis of Qualitative Questions
+
+I've performed thematic analysis/content analysis on the responses from the first question and found seven main themes: (I can look at using Atlas.ti)
+
+Category 2: perhaps a somebody in their life is forcing them to join. Powerful people could be preying on the weak.
+
+Category 4 is a social answer because you want to seek people who have the same views as you. We seek communities of like-minded people. People with similar ideas make someone feels valued and listened to, and you feel like you belong and matter to that person and community. Everything ultimately comes down to community.
+
+Category 6: "Safety in numbers"
+
+Category 8: "Other" - This is if the student didn't understand the question.
+
+You could have a group of similar ideas, but that may not be proposing change necessarily, such as groups that promote conspiracy theories that the moon landing never happened, or that dinosaurs are a hoax, etc.
+
+There were vague answers such as "sense of empowerment," but never stated what gave them a sense of empowerment. This could result from a narcasistic leader giving them the sense of empowerment, but simply belonging to a tribe and community is the base, fundamental level to give someone a sense of empowerment.
+
+There were some vague answers, that "they're missing something within themselves." I attributed this to Category 4 because community is the only thing that matters to human, has mattered for millennia since it's how we survive, how we produce offspring and have a purpose.
+
+```{r table_of_previous, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.align='center', results='asis'}
+
+# Just display the questions here? Not sure where I was going with this...
+```
+
+## QQ1: Change in **Content of Answer**
+
+I had to manually read each response and subjectively determined if their answer changed. A more optimal method to counter this would be to have multiple people reviewing this and comparing the results with a Gini index, which was not afforded to this project since I was the sole researcher.
+
+Change in word count. I looked at the amount of sentences and words per sentence, then took an average of words per sentence divided by the number of sentences to measure how each participant writes a sentence and relatively increased or decreased their thoughts
+
+Participant 17 had the largest change, whose values septupled (600%)! Participant 83 had the lowest. A composite score of 1 means that the values doubled, and a composite score of 2 means that it tripled.
+
+So, looking at values above 1, meaning that the combined words and sentences doubled and went up by 100%.
+
+## QQ1: Categorical Data Before & After Ad, All
+
+```{r categorical_data_before_and_after_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PROPORTION (by percentage, for all Genders combined)
+
+# Step 1: Reshape, exclude Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response numbers to detailed text labels
+response_labels <- c(
+  "1" = "Coerced into joining group",
+  "2" = "Influenced to join a group in a non-coercive manner",
+  "3" = "Drawn to narcissists; to people who are passionate,\nconfident, and charismatic",
+  "4" = "Confirmation bias; wanting to be part of a\ncommunity of like-minded people, to not feel lonely",
+  "5" = "Feeling helpless and believe in the group's cause;\nthat they can make change and life better",
+  "6" = "Curious about checking out the group;\ngroup seems large, powerful, different; could be fun,\ncould gain status; to not feel bored",
+  "7" = "Are narcissists themselves and want to influence\nor have power over people; enjoy expressing their views",
+  "8" = "Unsure why people are attracted to radical groups",
+  "9" = "Other; response is too broad, unclear,\nand/or doesn't match any other categories"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels)) %>%
+  mutate(Response = factor(Response, levels = response_labels))  # <-- Force order!
+
+# Step 3: Count and calculate percentages for all Genders
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot (no facet for Gender)
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ1 Responses Before vs. After Ad (All Groups)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Categories") +
+  
+  theme_minimal() #+
+  # theme(legend.position = "bottom")  # Optional: move legend below
+
+# Step 6: Print the plot
+plot
+
+### COUNT, ALL GENDER
+
+# Step 1: Reshape, exclude Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count (no percentage calculation needed for counts)
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot (no facet for Gender)
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show count instead of percentage)
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "Responses Before vs. After Ad (All Genders Combined)",
+       x = "\nResponses",
+       y = "Count\n") +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+#plot
+
+
+### PROPORTION (by percentage, split by Gender)
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)  # Calculate percentage
+
+# Step 3: Calculate total counts per Gender and QuestionType
+# This step is no longer needed since we removed the total count from the plot
+# total_counts <- lie_counts %>%
+#   group_by(Gender, QuestionType) %>%
+#   summarise(total_n = sum(n))
+
+# Step 4: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentage instead of count)
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  # Remove total count on top (so this part is removed entirely)
+  # geom_text(data = total_counts,
+  #           aes(x = QuestionType, y = total_n, label = total_n),
+  #           vjust = -0.5,
+  #           size = 3,
+  #           fontface = "bold",     # Make it bold
+  #           color = "black",
+  #           inherit.aes = FALSE) +
+  
+  # Remove y-axis limit (let it auto scale)
+  # scale_y_continuous(limits = c(0, 90)) +   # Removed the y-axis limit
+  
+  labs(title = "Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  # Facet by Gender
+  facet_wrap(~ Gender) +  # Split by Gender here
+  
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
+
+### PROPORTION (by count, split by Gender)
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count (no need to calculate percentage here)
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Calculate total counts per Gender and QuestionType
+total_counts <- lie_counts %>%
+  group_by(Gender, QuestionType) %>%
+  summarise(total_n = sum(n))
+
+# Step 4: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+total_counts$QuestionType <- factor(total_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show count instead of percentage)
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  # Total count on top of each bar (bold, size 4)
+  geom_text(data = total_counts,
+            aes(x = QuestionType, y = total_n, label = total_n),
+            vjust = -0.5,
+            size = 4,       # Font size 4
+            fontface = "bold",     # Make it bold
+            color = "black",
+            inherit.aes = FALSE) +
+  
+  # Set y-axis limit to 90
+  scale_y_continuous(limits = c(0, 90)) +   # Set y-axis max to 90
+  
+  labs(title = "Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Count\n") +
+  
+  # Facet by Gender
+  facet_wrap(~ Gender) +  # Split by Gender here
+  
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
+
+### PERCENTAGE
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages grouped by GROUP and QuestionType
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)  # Calculate percentage within each GROUP + QuestionType
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentages)
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "QQ1 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+```
+
+The top 3 responses are 4, 5 & 6:
+
+-   4 - Confirmation bias; wanting to be a part of a community of like-minded people, to not feel lonley.
+
+-   5 - Feeling helpless and believe in the group's cause, that they can make change and life better. (Ex: Frustrated with the existing system and believe that change can only be accomplish through extreme, radical action.)
+
+-   6 - Curious about checking out the group; group seems large and powerful and different, that it could be fun to join, an energy to the group; could gain status; the feel of power; to not feel bored (aesthetics of being associated with a group) **[COULD THE NEW FRIENDS AD INFLUENCE THIS?]**
+
+All responses are:
+
+1.  Coerced into joining group, don't really have a choice; brainwashed.
+
+2.  Influenced to join a group in a non-coercive manner (family & friends); have more of a choice.
+
+3.  Drawn to narcissists, to people who are passionate, confident, and charismatic; wanting to be inferior/submissive to a superior.
+
+4.  Confirmation bias; wanting to be a part of a community of like-minded people, to not feel lonely.
+
+5.  Feeling helpless and believe in the group's cause, that they can make change and life better. (Ex: Frustrated with the existing system and believe that change can only be accomplish through extreme, radical action.)
+
+6.  Curious about checking out the group; group seems large and powerful and different, that it could be fun to join, an energy to the group; could gain status; the feel of power; to not feel bored (aesthetics of being associated with a group).
+
+7.  Are narcissists\` themselves and want to influence or have power over people; enjoy expressing their views.
+
+8.  Unsure why people are attracted to radical groups.
+
+9.  Other; too broad, unclear, or doesn't match any other categories
+
+## THIS ONE - Testing to See if New Friends Ad Has Anything to do with This
+
+```{r experiment_new_friends_influence, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### COUNT
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count grouped by GROUP, QuestionType, and Response
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show counts)
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "Responses Before vs. After Ad (Split by GROUP)",
+       x = "\nResponses",
+       y = "Count\n") +
+  
+  # Facet by GROUP
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+# plot
+```
+
+## QQ1: Categorical Data Before & After Ad, by Gender
+
+```{r categorical_data_before_and_after_by_gender, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### BY COUNT
+
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  # Step 1.5: Split and unnest responses
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count (no percentage calculation needed)
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop")
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = n),    # <-- show count (n) instead of percentage
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
+
+### BY PERCENTAGE
+
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  # Step 1.5: Split and unnest responses
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages for each Gender
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
+```
+
+## **THIS ONE - QQ1: Composite Score - Jitter Plots**
+
+```{r qq1_jitter_plots, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Define the updated sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  
+  # Match sentence-ending punctuation only
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  
+  # If no punctuation but text exists, count as 1 sentence
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  
+  return(count)
+}
+
+# Simple word count function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Compute word/sentence changes and composite score
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+### JITTER PLOT
+
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
+  labs(
+    title = "Jittered Plot of Normalized Composite Change — All Groups",
+    x = "\nGroup",
+    y = "Normalized Composite Difference\n"
+  ) +
+  theme_minimal() #+
+  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+```
+
+## **QQ1: Composite Score - Pie Charts**
+
+```{r qq1_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+lying <- lying %>%
+  mutate(
+    change_bucket = case_when(
+      composite_diff_norm < -0.5 ~ "< -50%",
+      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
+      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
+      composite_diff_norm >= 0.5 ~ ">= 50%"
+    )
+  )
+
+lying$change_bucket <- factor(
+  lying$change_bucket,
+  levels = c(
+    "< -50%",
+    "-50% to 0%",
+    "0% to 49%",
+    ">= 50%"
+  )
+)
+
+bucket_counts <- lying %>%
+  group_by(change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1),
+    pct_label = paste0(percentage, "%")
+  )
+
+ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(label = pct_label),
+    position = position_stack(vjust = 0.6),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "< -50%" = "red",
+      "-50% to 0%" = "orange",
+      "0% to 49%" = "yellow",
+      ">= 50%" = "skyblue"
+    )
+  ) +
+  labs(
+    title = "Composite Change Distribution by Bucket",
+    fill = "Change Bucket"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+### 4-PLOTS-IN-1 ###
+
+# Create an empty list to hold plots
+plot_list <- list()
+
+# Loop over each group and create pie charts
+for (grp in groups) {
+  
+  bucket_counts_group <- lying %>%
+    filter(GROUP == grp) %>%
+    group_by(change_bucket) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(
+      percentage = round(100 * count / sum(count), 1),
+      pct_label = paste0(percentage, "%")
+    )
+  
+  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +
+    coord_polar("y", start = 0) +
+    geom_text(
+      aes(label = pct_label),
+      position = position_stack(vjust = 0.6),
+      size = 3,
+      color = "black",
+      fontface = "bold"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "< -50%" = "red",
+        "-50% to 0%" = "orange",
+        "0% to 49%" = "yellow",
+        ">= 50%" = "skyblue"
+      )
+    ) +
+    labs(
+      title = paste(grp),
+      fill = "Change Bucket"
+    ) +
+    theme_void() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(size = 10)
+    )
+  
+  # Add to plot list
+  plot_list[[grp]] <- p
+}
+
+# Combine all plots into one using patchwork
+wrap_plots(plot_list) +
+  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+```
+
+# QQ2
+
+*"What are some reasons you think people believe false ideas circulating online?"*
+
+There were six main themes to this question. The responses stayed nearly identical. This section was easier to create categories out of than QQ1.
+
+I believe there's a difference between seeing information for the first time, because this was never stated anyways with "don't take time to fact check" and "believe first thing they see".
+
+## THIS ONE - QQ2: Categorical Data Before & After, All Categories
+
+```{r categorical_data_before_and_after, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PROPORTION (by percentage, for all Genders combined)
+
+# Step 1: Reshape, exclude Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response values to readable labels
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Step 3: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot (no facet for Gender)
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ2 Responses Before vs. After Ad (All Groups)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Themes") +  # Legend title changed here
+  
+  theme_minimal() #+
+  #theme(legend.position = "bottom")  # Move legend to bottom
+
+# Step 6: Print the plot
+plot
+
+### SIDE-BY-SIDE PLOT OF PROPORTIONAL VALUES FOR GENDER BY CATEGORY
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response values to shorter category descriptions
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Step 3: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ2 Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Themes") +  # Legend title
+  
+  facet_wrap(~ Gender) +
+  
+  theme_minimal() #+
+  #theme(legend.position = "bottom")  # Move legend below the plots
+
+# Step 6: Print the plot
+plot
+
+### SPLIT BY AD GROUPS
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response values to shorter category descriptions
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Step 3: Count and calculate percentages grouped by GROUP and QuestionType
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            #fontface = "bold",
+            color = "black") +
+  
+  labs(title = "QQ2 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Themes") +  # Legend title = "Category"
+  
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal() #+
+  #theme(legend.position = "bottom")  # Move legend below plots
+
+# Step 6: Print the plot
+plot
+
+
+```
+
+The first category, "Believes first thing they see," increases and remains the dominant category exact for the group who listened to the audio ad, which decreased and was replaced by the category "Doesn't take time to fact check." This was already a common response among participants that upon filling out the questionnaire on the second attempt, they may have simply switched over to the default value.
+
+However, when you zoom back and look at the responses overall, porportionally they remained the same where either ad seemed to had no significant effect on changing the responses.
+
+"1" = "Don't take time to fact check and verify information.", "2" = "Believe first thing they see; source seems real, important, or is popular.", "3" = "Look for ideas confirming pre-existing beliefs, or for entertaining, dramatic ideas.", "4" = "Unsure.", "5" = "Other.", "6" = "There's too much misinformation available that gets spread around easily."
+
+## THIS ONE - QQ2: Change in Composite Score - Jitter Plot
+
+```{r qq2_composite_jitter_plot, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Define the updated sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  
+  # Match sentence-ending punctuation only
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  
+  # If no punctuation but text exists, count as 1 sentence
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  
+  return(count)
+}
+
+# Simple word count function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Compute word/sentence changes and composite score
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2 = sapply(QQ2_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ2_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+### JITTER PLOT
+
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
+  labs(
+    title = "Jittered Plot of Normalized Composite Change QQ2 — All Groups",
+    x = "\nGroup",
+    y = "Normalized Composite Difference\n"
+  ) +
+  theme_minimal() #+
+  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+```
+
+## **QQ2: Composite Score - Pie Charts**
+
+```{r qq2_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# SET CODE TO QQ2
+
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2 = sapply(QQ2_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ2_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+# NORMAL OPERATIONS LIKE ABOVE
+
+lying <- lying %>%
+  mutate(
+    change_bucket = case_when(
+      composite_diff_norm < -0.5 ~ "< -50%",
+      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
+      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
+      composite_diff_norm >= 0.5 ~ ">= 50%"
+    )
+  )
+
+lying$change_bucket <- factor(
+  lying$change_bucket,
+  levels = c(
+    "< -50%",
+    "-50% to 0%",
+    "0% to 49%",
+    ">= 50%"
+  )
+)
+
+bucket_counts <- lying %>%
+  group_by(change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1),
+    pct_label = paste0(percentage, "%")
+  )
+
+ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(label = pct_label),
+    position = position_stack(vjust = 0.6),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "< -50%" = "red",
+      "-50% to 0%" = "orange",
+      "0% to 49%" = "yellow",
+      ">= 50%" = "skyblue"
+    )
+  ) +
+  labs(
+    title = "Composite Change Distribution by Bucket",
+    fill = "Change Bucket"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+### 4-PLOTS-IN-1 ###
+
+# Create an empty list to hold plots
+plot_list <- list()
+
+# Loop over each group and create pie charts
+for (grp in groups) {
+  
+  bucket_counts_group <- lying %>%
+    filter(GROUP == grp) %>%
+    group_by(change_bucket) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(
+      percentage = round(100 * count / sum(count), 1),
+      pct_label = paste0(percentage, "%")
+    )
+  
+  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +
+    coord_polar("y", start = 0) +
+    geom_text(
+      aes(label = pct_label),
+      position = position_stack(vjust = 0.6),
+      size = 3,
+      color = "black",
+      fontface = "bold"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "< -50%" = "red",
+        "-50% to 0%" = "orange",
+        "0% to 49%" = "yellow",
+        ">= 50%" = "skyblue"
+      )
+    ) +
+    labs(
+      title = paste(grp),
+      fill = "Change Bucket"
+    ) +
+    theme_void() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(size = 10)
+    )
+  
+  # Add to plot list
+  plot_list[[grp]] <- p
+}
+
+# Combine all plots into one using patchwork
+wrap_plots(plot_list) +
+  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+```
+
+The drop was the same percentage for Test Group - Visual and Audio: 57.2% and 57.1%, respectively; but the word count more than doubled for Visual in the Test Group. and was slightly larger for the Control Group, although the drop in word and sentence count was the highest in this group, with 59.1%.
+
+# **QQ3**
+
+The ad doesn't really say anything about lying, so instead of looking at each GROUP (Test vs. Control) category, which didn't show much of a difference **[NEED TO PLOT THIS]**, I decided to look at just gender and found some very interesting results.
+
+## **THIS ONE - QQ3: Composite Score - Pie Charts**
+
+```{r qq3_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### ONE I WANT
+
+# Step 1: Recalculate word/sentence/composite differences for QQ3
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2 = sapply(QQ3_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ3_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+# Step 2: (optional) Create change buckets again if you still want them
+lying <- lying %>%
+  mutate(
+    change_bucket = case_when(
+      composite_diff_norm < -0.5 ~ "< -50%",
+      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
+      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
+      composite_diff_norm >= 0.5 ~ ">= 50%"
+    )
+  )
+
+lying$change_bucket <- factor(
+  lying$change_bucket,
+  levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%")
+)
+
+# Step 3: Jitter Plot for QQ3 Composite Diff Norm
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
+  labs(
+    title = "Jittered Plot of Normalized Composite Change QQ3 — All Groups",
+    x = "\nGroup",
+    y = "Normalized Composite Difference\n"
+  ) +
+  theme_minimal()
+```
+
+This significantly dropped, and surprisingly the audio had the greatest increase amount of words and sentences, but also the greatest drop, too.
+
+## THIS ONE - QQ3: Categorical Data Before & After, All Categories
+
+```{r qq3_categorical_, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### BAR PLOT FOR ALL
+
+# Step 1: Reshape, exclude Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create the plot
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ3 Responses Before vs. After Ad (All Groups)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +  # Keep raw responses as legend
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+
+### SIDE BY SIDE - GENDER
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create plot, faceting by Gender
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ3 Responses Before vs. After Ad (By Gender)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +  # Keep raw responses as legend
+  
+  facet_wrap(~ Gender) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+
+### SIDE BY SIDE CONTROL VS. TEST GROUP
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ3 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +
+  
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+```
+
+## **QQ3: Composite Scores as Pie Charts (Bad & Hard to Decipher)**
+
+```{r qq3_supplemental_info, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# SET CODE TO QQ3
+
+lying <- lying %>%
+  mutate(
+    word_count_day1 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2 = sapply(QQ3_AFTER, count_words),
+    
+    sentence_count_day1 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2 = sapply(QQ3_AFTER, count_sentences),
+
+    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
+    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+
+    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+  )
+
+# NORMAL OPERATIONS LIKE ABOVE
+
+lying <- lying %>%
+  mutate(
+    change_bucket = case_when(
+      composite_diff_norm < -0.5 ~ "< -50%",
+      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
+      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
+      composite_diff_norm >= 0.5 ~ ">= 50%"
+    )
+  )
+
+lying$change_bucket <- factor(
+  lying$change_bucket,
+  levels = c(
+    "< -50%",
+    "-50% to 0%",
+    "0% to 49%",
+    ">= 50%"
+  )
+)
+
+bucket_counts <- lying %>%
+  group_by(change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1),
+    pct_label = paste0(percentage, "%")
+  )
+
+ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
+  geom_bar(stat = "identity", width = 1, color = "black") +
+  coord_polar("y", start = 0) +
+  geom_text(
+    aes(label = pct_label),
+    position = position_stack(vjust = 0.6),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "< -50%" = "red",
+      "-50% to 0%" = "orange",
+      "0% to 49%" = "yellow",
+      ">= 50%" = "skyblue"
+    )
+  ) +
+  labs(
+    title = "Composite Change Distribution by Bucket",
+    fill = "Change Bucket"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10)
+  )
+
+### 4-PLOTS-IN-1 ###
+
+# Create an empty list to hold plots
+plot_list <- list()
+
+# Loop over each group and create pie charts
+for (grp in groups) {
+  
+  bucket_counts_group <- lying %>%
+    filter(GROUP == grp) %>%
+    group_by(change_bucket) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(
+      percentage = round(100 * count / sum(count), 1),
+      pct_label = paste0(percentage, "%")
+    )
+  
+  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+    geom_bar(stat = "identity", width = 1, color = "black") +
+    coord_polar("y", start = 0) +
+    geom_text(
+      aes(label = pct_label),
+      position = position_stack(vjust = 0.6),
+      size = 3,
+      color = "black",
+      fontface = "bold"
+    ) +
+    scale_fill_manual(
+      values = c(
+        "< -50%" = "red",
+        "-50% to 0%" = "orange",
+        "0% to 49%" = "yellow",
+        ">= 50%" = "skyblue"
+      )
+    ) +
+    labs(
+      title = paste(grp),
+      fill = "Change Bucket"
+    ) +
+    theme_void() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(size = 10)
+    )
+  
+  # Add to plot list
+  plot_list[[grp]] <- p
+}
+
+# Combine all plots into one using patchwork
+wrap_plots(plot_list) +
+  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+```
+
+## QQ3: Percentage Change in Views/Answers
+
+```{r qq3_stacked_bars_change_in_answer_percentage, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each GROUP
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per GROUP
+plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
+  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Group:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal() #+
+    #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+})
+
+# Step 5: Print each plot
+plot_list[[1]]  # Control Group (Visual)
+plot_list[[2]]  # Test Group (Visual)
+plot_list[[3]]  # Control Group (Audio)
+plot_list[[4]]  # Test Group (Audio)
+```
+
+## QQ3: Change in Views - Histogram (Counts)
+
+Overall, the ad didn't have that much of an effect on any of the groups in their response.
+
+There were four main responses to QQ3:
+
+1.  White Lie
+2.  Keeping friend from danger and/or punishment
+3.  Would tell truth over supporting friends
+4.  Unsure
+
+While the Test Group (Audio) went from 7.1% to 14.3%, everything stayed exactly the same except for "Unsure." The Control Group (Audio) seems to have had some effect on the getting respondants to put a different answer, "Keeping friend from danger and/or punishment" to "White Lie," dropping by 25% and increasing by 7.8%.
+
+```{r qq3_stacked_bars_change_in_answer_count, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### ALL GROUPS (COUNT)
+
+# Step 1: Reshape, drop Gender
+type_of_lie_long <- lying %>%
+  select(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages (no Gender)
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Plot single combined bar plot
+ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  labs(
+    title = "Type of Lie (All Groups)",
+    x = "\nQQ3",
+    y = "Count\n"
+  ) +
+  theme_minimal()
+
+
+### ALL GROUPS (PERCENTAGE)
+
+ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  labs(
+    title = "Type of Lie (All Groups)",
+    x = "\nQQ3",
+    y = "Count\n"
+  ) +
+  theme_minimal()
+
+
+### 4 SEPARATE BAR CHARTS
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each GROUP
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per GROUP
+plot_list <- lapply(unique(lie_counts$GROUP), function(g) {
+  ggplot(filter(lie_counts, GROUP == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = n),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Group:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print each plot
+plot_list[[1]]  # Control Group (Visual)
+plot_list[[2]]  # Test Group (Visual)
+plot_list[[3]]  # Control Group (Audio)
+plot_list[[4]]  # Test Group (Audio)
+```
+
+## QQ3: Views Between Males & Females
+
+```{r males_and_females_qq3, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each Gender
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = n),
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
+
+### PORPORTION
+
+# Step 1: Reshape, include Gender instead of GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages for each Gender
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create one plot per Gender
+plot_list <- lapply(unique(lie_counts$Gender), function(g) {
+  ggplot(filter(lie_counts, Gender == g), aes(x = QuestionType, y = n, fill = Response)) +
+    geom_bar(stat = "identity", position = "stack", color = "black") +
+    geom_text(aes(label = paste0(round(perc, 1), "%")),  # Show percentages instead of count
+              position = position_stack(vjust = 0.5),
+              size = 3,
+              color = "black") +
+    labs(title = paste("Gender:", g),
+         x = "\nResponses",
+         y = "Count\n") +
+    theme_minimal()
+})
+
+# Step 5: Print both gender-specific plots
+plot_list[[1]]  # Usually "Male"
+plot_list[[2]]  # Usually "Female"
+
+```
+
+# Additional Sentiment
+
+I created my own variable SENTIMENT, which I read all the responses across the row for a participant, but felt that Question 4 is where the participant conveyed their true feeling about the ad after listening to it. So I put more emphasis on this question when collectively evaluating the responses.
+
+1.  What did you like most about the ad?
+
+2.  What did you like least about the ad?
+
+3.  Which words or phrases in the ad, if any, made you feel particularly good or bad?
+
+4.  Please tell us any other thoughts you have about the ad.
+
+## Sentiment towards ads - Pie Charts
+
+```{r ad_sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+## SENTIMENT TOWARDS AD - PIE CHART ###
+
+# Prepare the data
+data_for_plot <- lying %>%
+  count(SENTIMENT) %>%
+  mutate(prop = n / sum(n),
+         percent_label = percent(prop))
+
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = SENTIMENT)) +
+  geom_col(width = 1, color = "black") +  # dark border with color = "black"
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sentiment Towards Ad") +
+  scale_fill_manual(
+    values = c(
+        "Negative" = "red",
+        "Neutral" = "yellow",
+        "Positive" = "skyblue"
+      ))
+
+### SEPARATE PLOTS FOR GROUPS
+
+# Prepare the data: calculate proportion per SENTIMENT per GROUP
+data_for_plot <- lying %>%
+  group_by(GROUP, SENTIMENT) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop)
+  )
+
+# Create the faceted pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = SENTIMENT)) +
+  geom_col(width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  facet_wrap(~ GROUP) +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sentiment Towards Ad by Group\n") +
+  scale_fill_manual(
+    name = "Sentiment",
+    values = c(
+      "Negative" = "red",
+      "Neutral" = "yellow",
+      "Positive" = "skyblue"
+    )
+  )
+```
+
+Positive Sentime - These participants stated that the liked something about the ad, usually a line a character said or usually a positive sentiment such as one character inviting the friend to come out to karaoke with him and his friends.
+
+## Sentiment about participating in future studies
+
+```{r future_study_sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Set desired order for consistent coloring and legend
+ordered_levels <- c("Very Willing", "Slightly Willing", "Slightly Unwilling", "Very Unwilling")
+color_map <- c(
+  "Very Willing"       = "#59A14F",
+  "Slightly Willing"   = "#76B7B2",
+  "Slightly Unwilling" = "#F28E2B",
+  "Very Unwilling"     = "#E15759"
+)
+
+# SINGLE PIE CHART
+
+# Prepare the data
+data_for_plot <- lying %>%
+  count(FUTURE_STUDY) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop),
+    FUTURE_STUDY = factor(FUTURE_STUDY, levels = ordered_levels)
+  )
+
+# Create pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
+  geom_col(width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5)) +
+  ggtitle("Sentiment Towards Future Study") +
+  scale_fill_manual(
+    name = "Willingness",
+    values = color_map,
+    drop = FALSE  # Keeps all levels in the legend, even if missing from data
+  )
+
+# SEPARATE PLOTS FOR GROUPS
+
+# Prepare data, filtering out missing levels per group but keeping the color map consistent
+data_for_plot <- lying %>%
+  group_by(GROUP, FUTURE_STUDY) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop),
+    FUTURE_STUDY = factor(FUTURE_STUDY, levels = ordered_levels)  # for consistent fill color mapping
+  )
+
+# Create the faceted pie chart
+ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
+  geom_col(width = 1, color = "black") +
+  coord_polar(theta = "y") +
+  facet_wrap(~ GROUP) +
+  theme_void() +
+  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5), size = 3) +
+  ggtitle("Sentiment Towards Participating in a Future Study\n") +
+  scale_fill_manual(
+    name = "Willingness",
+    values = color_map,
+    drop = FALSE  # Ensures full legend even if a group has fewer categories
+  )
+
+```
+
+## Ethnicity, Religion & Politics - Future Participation Study (All Willing & Unwilling Categories)
+
+```{r ERP_future_study_all_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+full_data <- lying  # no filtering applied
+
+ggplot(full_data, aes(x = Ethnicity, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Ethnicity by Willingness to Participate in Future Study",
+       x = "Ethnicity", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(full_data, aes(x = Religion, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Religion by Willingness to Participate in Future Study",
+       x = "Religion", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(full_data, aes(x = Politics, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Politics by Willingness to Participate in Future Study",
+       x = "Politics", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# NORMALIZE THE COUNTS
+
+ethnicity_prop <- full_data %>%
+  count(Ethnicity, FUTURE_STUDY) %>%
+  group_by(Ethnicity) %>%
+  mutate(prop = n / sum(n))
+
+ggplot(ethnicity_prop, aes(x = Ethnicity, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Ethnicity (Proportional)",
+       x = "Ethnicity", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Politics
+
+# Prepare data
+politics_prop <- full_data %>%
+  count(Politics, FUTURE_STUDY) %>%
+  group_by(Politics) %>%
+  mutate(prop = n / sum(n))
+
+# Plot
+ggplot(politics_prop, aes(x = Politics, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Political Affiliation (Proportional)",
+       x = "Politics", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Religion
+
+# Prepare data
+religion_prop <- full_data %>%
+  count(Religion, FUTURE_STUDY) %>%
+  group_by(Religion) %>%
+  mutate(prop = n / sum(n))
+
+# Plot
+ggplot(religion_prop, aes(x = Religion, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Religion (Proportional)",
+       x = "Religion", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# GENDER
+
+# Prepare data
+gender_prop <- full_data %>%
+  count(Gender, FUTURE_STUDY) %>%
+  group_by(Gender) %>%
+  mutate(prop = n / sum(n))
+
+# Plot
+ggplot(gender_prop, aes(x = Gender, y = prop, fill = FUTURE_STUDY)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Willingness to Participate by Gender (Proportional)",
+       x = "Gender", y = "Proportion") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# I need to remove/be mindful of those values where only 1 person identifies in that category
+```
+
+## Ethnicity, Religion & Politics - Future Participation Study ("Very Willing" & "Very Unwilling")
+
+```{r ERP_future_study_very_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Filter data down for 2 categories in FUTURE_STUDY
+#filtered_data <- lying %>%
+#  filter(FUTURE_STUDY %in% c("Very Willing", "Very Unwilling"))
+#summary(filtered_data)
+# 33 rows total
+
+# PLOTTING ALL 3 TOGETHER
+
+long_data <- filtered_data %>%
+  pivot_longer(cols = c(Ethnicity, Religion, Politics),
+               names_to = "Feature",
+               values_to = "Value")
+
+ggplot(long_data, aes(x = Value, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~ Feature, scales = "free_x") +
+  labs(title = "Demographics by Willingness to Participate",
+       x = "", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# PLOTTING SEPARATELY
+
+# Ethnicity
+ggplot(filtered_data, aes(x = Ethnicity, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Ethnicity by Willingness to Participate in Future Study",
+       x = "Ethnicity", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Religion
+ggplot(filtered_data, aes(x = Religion, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Religion by Willingness to Participate in Future Study",
+       x = "Religion", y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Politics
+ggplot(filtered_data, aes(x = Politics, fill = FUTURE_STUDY)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Politics by Willingness to Participate in Future Study",
+       x = "Politics", y = "Count") +
+  theme_minimal()
+
+```
+
+# Future Direction
+
+Use that software to perform themeatic analysis. Gather more data.
+
+The audio ad seems to have something to do with the results being really weird across every category measurable.
+
+# Conclusions
+
+The visual ads, whether for control or not, seemed to have some positive influence on the participants.
+
+# References
