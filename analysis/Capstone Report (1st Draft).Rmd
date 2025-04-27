@@ -2233,6 +2233,16 @@ plot_list[[2]]  # Usually "Female"
 
 # Additional Sentiment
 
+I created my own variable SENTIMENT, which I read all the responses across the row for a participant, but felt that Question 4 is where the participant conveyed their true feeling about the ad after listening to it. So I put more emphasis on this question when collectively evaluating the responses.
+
+1.  What did you like most about the ad?
+
+2.  What did you like least about the ad?
+
+3.  Which words or phrases in the ad, if any, made you feel particularly good or bad?
+
+4.  Please tell us any other thoughts you have about the ad.
+
 ## Sentiment towards ads - Pie Charts
 
 ```{r ad_sentiment, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
