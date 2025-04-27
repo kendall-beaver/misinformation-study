@@ -1191,7 +1191,7 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = n, fill = Response)) +
 # plot
 ```
 
-## QQ1: Categorical Data Before & After Ad, by Gender
+## THIS ONE: QQ1 "GENDER" - Categorical Data Before & After Ad, by Gender
 
 ```{r categorical_data_before_and_after_by_gender, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -1283,6 +1283,30 @@ plot_list <- lapply(unique(lie_counts$Gender), function(g) {
 plot_list[[1]]  # Usually "Male"
 plot_list[[2]]  # Usually "Female"
 ```
+
+1.  **Coerced into joining group, don't really have a choice; brainwashed.**
+
+    1.  This is an interesting one where males didn't list being coerced into a group, but after hearing the ad this jumped to 10% of answers.
+
+2.  Influenced to join a group in a non-coercive manner (family & friends); have more of a choice.
+
+3.  Drawn to narcissists, to people who are passionate, confident, and charismatic; wanting to be inferior/submissive to a superior.
+
+4.  Confirmation bias; wanting to be part of a\\ncommunity.
+
+5.  Feeling helpless and believe in the group's\\ncause.
+
+6.  Curious about checking out the group;\\ngroup seems large, powerful & different.
+
+    1.  (This one doubled for Females; the main character was checking out a new group.)
+
+7.  Are narcissists\` themselves and want to influence or have power over people; enjoy expressing their views.
+
+8.  Unsure why people are attracted to radical groups.
+
+9.  Other; too broad, unclear, or doesn't match any other categories.
+
+Females had all 9 categories, but males only had 8 categories before the ad, then down to 7 categories after the ad, where they had an answer that fit into one of the main themes. Females stated "Unsure" as an answer before and after their ad, although between 2.7% - 3.7% before and after viewing the ad.
 
 ## **THIS ONE - QQ1: Composite Score - Jitter Plots**
 
@@ -1651,9 +1675,11 @@ plot
 
 #### Control Ad
 
+There really was one significant finding: "Believes first thing they see" increased while "Doesn't take time to fact check" slightly decreased. It is possible that this was reflected in Jessica's character believing what she saw online.
+
 #### Test Ad
 
-#### 
+No consistent trends.
 
 #### Original Thoughts
 
@@ -1662,6 +1688,74 @@ The first category, "Believes first thing they see," increases and remains the d
 However, when you zoom back and look at the responses overall, porportionally they remained the same where either ad seemed to had no significant effect on changing the responses.
 
 "1" = "Don't take time to fact check and verify information.", "2" = "Believe first thing they see; source seems real, important, or is popular.", "3" = "Look for ideas confirming pre-existing beliefs, or for entertaining, dramatic ideas.", "4" = "Unsure.", "5" = "Other.", "6" = "There's too much misinformation available that gets spread around easily."
+
+## THIS ONE: QQ2 "GENDER" - Categorical Data Before & After Ad, by Gender
+
+```{r qq2_gender, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PROPORTION (by percentage, split by Gender: Male and Female)
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%   # <-- Corrected to Gender
+  filter(Gender %in% c("Male", "Female")) %>%                    # <-- Corrected to Gender
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Map Response values to readable labels
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+type_of_lie_long <- type_of_lie_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Step 3: Count and calculate percentages (split by Gender)
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%    # <-- Corrected to Gender
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 4: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create plot (faceted by Gender)
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(title = "QQ2 Responses Before vs. After Ad (Male vs. Female)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Common Themes") +
+  
+  facet_wrap(~Gender) +     # <-- Corrected to Gender
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
+
+```
+
+Males and females had the same ideas about QQ2, about why people believe misinformation online.
 
 ## THIS ONE - QQ2: Change in Composite Score - Jitter Plot
 
@@ -1853,7 +1947,7 @@ The drop was the same percentage for Test Group - Visual and Audio: 57.2% and 57
 
 # **QQ3**
 
-The ad doesn't really say anything about lying, so instead of looking at each GROUP (Test vs. Control) category, which didn't show much of a difference **[NEED TO PLOT THIS]**, I decided to look at just gender and found some very interesting results.
+The ad doesn't really say anything about lying, so instead of looking at each GROUP (Test vs. Control) category, which didn't show much of a difference (the second plot below), I decided to look at just gender and found some very interesting results.
 
 ## **THIS ONE - QQ3: Composite Score - Pie Charts**
 
@@ -1951,11 +2045,12 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
 # Step 5: Print the plot
 plot
 
-### SIDE BY SIDE - GENDER
+### SIDE BY SIDE - GENDER (Male and Female only)
 
 # Step 1: Reshape, include Gender, relabel columns
 type_of_lie_long <- lying %>%
   select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  filter(Gender %in% c("Male", "Female")) %>%    # <-- Added filter for Male/Female
   pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
                names_to = "QuestionType",
                values_to = "Response") %>%
@@ -1983,7 +2078,7 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
             size = 3,
             color = "black") +
   
-  labs(title = "QQ3 Responses Before vs. After Ad (By Gender)",
+  labs(title = "QQ3 Responses Before vs. After Ad (By Gender: Male and Female Only)",
        x = "\nResponses",
        y = "Percentage\n",
        fill = "Response Categories") +  # Keep raw responses as legend
@@ -1994,6 +2089,7 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
 
 # Step 5: Print the plot
 plot
+
 
 ### SIDE BY SIDE CONTROL VS. TEST GROUP
 
@@ -2039,6 +2135,8 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
 # Step 5: Print the plot
 plot
 ```
+
+**Significant finding:** Women are willing to tell the truth more than men, 11.1% vs. 2.6% of men.
 
 ## **QQ3: Composite Scores as Pie Charts (Bad & Hard to Decipher)**
 
@@ -2173,6 +2271,8 @@ for (grp in groups) {
 wrap_plots(plot_list) +
   plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
 ```
+
+Significant finding: 57% of respondents decreased their answer for QQ3. In total, 63.7% had decreased their answers compared to 36.3% who increased their answers.
 
 ## QQ3: Percentage Change in Views/Answers
 
@@ -2534,7 +2634,9 @@ ggplot(data_for_plot, aes(x = GROUP, y = prop, fill = SENTIMENT)) +
   theme_minimal()
 ```
 
-Positive Sentime - These participants stated that the liked something about the ad, usually a line a character said or usually a positive sentiment such as one character inviting the friend to come out to karaoke with him and his friends.
+Positive Sentiment - These participants stated that they liked something about the ad, usually a line a character said or usually a positive sentiment such as one character inviting the friend to come out to karaoke with him and his friends.
+
+**Significant Finding:** It's possible that there will always be a group of people who don't like audio only ads, especially when they don't make sense (control ad). However, it may not be the channel/medium that this was delivered, but the ad itself was the issue. Follow-up questions and interviews are needed to confirm this.
 
 ## Sentiment about participating in future studies
 
@@ -2573,7 +2675,7 @@ ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
     drop = FALSE  # Keeps all levels in the legend, even if missing from data
   )
 
-# SEPARATE PLOTS FOR GROUPS
+### THIS SPLITS EVERYTHING UP FOR GROUP, WHICH IS NEEDED FOR NEXT 2 PLOTS ###
 
 # Prepare data, filtering out missing levels per group but keeping the color map consistent
 data_for_plot <- lying %>%
@@ -2586,21 +2688,7 @@ data_for_plot <- lying %>%
     FUTURE_STUDY = factor(FUTURE_STUDY, levels = ordered_levels)  # for consistent fill color mapping
   )
 
-# Create the faceted pie chart
-ggplot(data_for_plot, aes(x = "", y = prop, fill = FUTURE_STUDY)) +
-  geom_col(width = 1, color = "black") +
-  coord_polar(theta = "y") +
-  facet_wrap(~ GROUP) +
-  theme_void() +
-  geom_text(aes(label = percent_label), position = position_stack(vjust = 0.5), size = 3) +
-  ggtitle("Sentiment Towards Participating in a Future Study\n") +
-  scale_fill_manual(
-    name = "Willingness",
-    values = color_map,
-    drop = FALSE  # Ensures full legend even if a group has fewer categories
-  )
-
-### STACKED BAR CHART ###
+### STACKED BAR CHART, BASED ON GROUP (CONTROL VS. TEST AD) ###
 
 ## Create the stacked bar chart with modified x-axis labels
 ggplot(data_for_plot, aes(x = GROUP, y = prop, fill = FUTURE_STUDY)) +
@@ -2631,7 +2719,59 @@ ggplot(data_for_plot, aes(x = GROUP, y = prop, fill = FUTURE_STUDY)) +
   
   theme_minimal()
 
+### STACKED PIE CHART BASED ON GENDER ###
+
+# Set desired order for consistent coloring and legend
+ordered_levels <- c("Very Willing", "Slightly Willing", "Slightly Unwilling", "Very Unwilling")
+color_map <- c(
+  "Very Willing"       = "#59A14F",
+  "Slightly Willing"   = "#76B7B2",
+  "Slightly Unwilling" = "#F28E2B",
+  "Very Unwilling"     = "#E15759"
+)
+
+# STACKED BAR CHART (By Gender: Male and Female)
+
+# Prepare the data
+data_for_plot <- lying %>%
+  filter(Gender %in% c("Male", "Female")) %>%     # <-- Filter for Male/Female
+  count(Gender, FUTURE_STUDY) %>%                 # <-- Count by Gender AND FUTURE_STUDY
+  group_by(Gender) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop),
+    FUTURE_STUDY = factor(FUTURE_STUDY, levels = ordered_levels)
+  ) %>%
+  ungroup()
+
+# Create stacked bar chart
+ggplot(data_for_plot, aes(x = Gender, y = prop, fill = FUTURE_STUDY)) +
+  geom_col(color = "black") +
+  
+  geom_text(aes(label = percent_label),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(
+    title = "Sentiment Towards Future Study (by Gender)",
+    x = "Gender",
+    y = "Proportion",
+    fill = "Willingness"
+  ) +
+  
+  scale_fill_manual(
+    values = color_map,
+    drop = FALSE
+  ) +
+  
+  theme_minimal()
+
 ```
+
+**Test Group:** Just looking at Willing (Slightly + Very) against Unwilling (Slightly + Very), the percentages are the same across the board: 69.45% vs. 30.55%. However, there is a difference between men and women.
+
+**By Gender:** For females, 74.5% were Willing (Slightly + Very) vs. 25.5% for Unwilling (Slightly + Very). And for males, 65.8% were Willing (Slightly + Very) compared to 34.2% for Unwilling (Slightly + Very).
 
 ## Ethnicity, Religion & Politics - Future Participation Study (All Willing & Unwilling Categories)
 
@@ -2779,7 +2919,7 @@ ggplot(filtered_data, aes(x = Politics, fill = FUTURE_STUDY)) +
 
 # Future Direction
 
-Use that software to perform themeatic analysis. Gather more data.
+Use that software to perform themeatic analysis. Gather more data. And also get multiple annotators then compare with a composite score (Ginni index?) between annotators to have a more objective evaluation of the qualitative data/responses.
 
 The audio ad seems to have something to do with the results being really weird across every category measurable.
 
