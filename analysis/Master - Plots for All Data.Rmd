@@ -990,7 +990,156 @@ All responses are:
 
 9.  Other; too broad, unclear, or doesn't match any other categories
 
-## THIS ONE - Testing to See if New Friends Ad Has Anything to do with This
+## Top 3 Categories for QQ1
+
+```{r top_three_categories_for_qq1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Reshape, include GROUP, relabel columns, and filter for Response values 4, 5, 6 for display
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages for all 9 categories (including 1 to 9)
+lie_counts_all <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc_all = n / sum(n) * 100)  # Calculate percentage for all 9 categories
+
+# Step 3: Filter for just the categories 4, 5, 6 to display
+lie_counts_filtered <- lie_counts_all %>%
+  filter(Response %in% c("4", "5", "6"))  # Keep only categories 4, 5, and 6
+
+# Step 4: Set the factor levels for QuestionType so that "Before Ad" is on the left and "After Ad" on the right
+lie_counts_filtered$QuestionType <- factor(lie_counts_filtered$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts_filtered, aes(x = QuestionType, y = perc_all, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentages based on all 9 values)
+  geom_text(aes(label = paste0(round(perc_all, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "QQ1 Top 3 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  facet_wrap(~ GROUP) +
+  
+  # Modify the legend labels for "4", "5", and "6"
+  scale_fill_manual(
+    values = c("4" = "#59A14F", "5" = "#76B7B2", "6" = "#F28E2B"),  # Set color mapping
+    labels = c(
+      "4" = "Confirmation bias; wanting to be part of a\ncommunity of like-minded people, to not feel lonely\n",
+      "5" = "Feeling helpless and believe in the group's cause;\nthat they can make change and life better\n",
+      "6" = "Curious about checking out the group;\ngroup seems large, powerful, different;\ncould be fun, could gain status; to not feel bored"
+    )
+  ) +
+  
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
+```
+
+## THIS ONE: Top 5 Responses for QQ1
+
+```{r top_five_categories_for_qq1, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Reshape, include GROUP, relabel columns, and filter for Response values 3, 4, 5, 6, and 9 for display
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages for all 9 categories (including 1 to 9)
+lie_counts_all <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc_all = n / sum(n) * 100)  # Calculate percentage for all 9 categories
+
+# Step 3: Filter for just the categories 3, 4, 5, 6, and 9 to display
+lie_counts_filtered <- lie_counts_all %>%
+  filter(Response %in% c("3", "4", "5", "6", "9"))  # Keep only categories 3, 4, 5, 6, and 9
+
+# Step 4: Set the factor levels for QuestionType so that "Before Ad" is on the left and "After Ad" on the right
+lie_counts_filtered$QuestionType <- factor(lie_counts_filtered$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts_filtered, aes(x = QuestionType, y = perc_all, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentages based on all 9 values)
+  geom_text(aes(label = paste0(round(perc_all, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "QQ1 Top 5 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  facet_wrap(~ GROUP) +
+  
+  # Modify the legend labels for "3", "4", "5", "6", and "9"
+  scale_fill_manual(
+    values = c("3" = "#F28E2B", "4" = "#59A14F", "5" = "#76B7B2", "6" = "#E15759", "9" = "#9D76B8"),  # Set color mapping
+    labels = c(
+      "3" = "Drawn to narcissists.",
+      "4" = "Confirmation bias; wanting to be part of a\ncommunity.",
+      "5" = "Feeling helpless and believe in the group's\ncause.",
+      "6" = "Curious about checking out the group;\ngroup seems large, powerful & different.",
+      "9" = "Other; too broad, unclear, or doesn't\nmatch any other categories."
+    )
+  ) +
+  
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
+
+```
+
+For Control, "Curious about checking out the group" and "Other" had the largest increase, plus "Drawn to narcissists" for the first one; otherwise, all other categorical values declined. It is possible that this reflects the character's willingness to want to check out the group of new friends, that she wasn't drawn to narcissists because narcissists were specifically mention as being part of the new group.
+
+For Test, "Confirmation bias" significantly went up. This could reflect something in the ad...[INSERT EXCERPT FROM TRANSCRIPT/EVIDENCE]. "Feeling helpless" went down for both, as well as "Drawn to narcissists", and "Other" significantly increased for Test Group (Visual), an increase of 384%, from 2.5% to 12.1%.
+
+#### Control Ad
+
+The only thing that decreased was "believing in the group's mission, that it can improve their lives." Since no radical group was mentioned in the ad, it's possible this could have influenced people's answers.
+
+[The difference is that her friends aren't trying to storm the post office. The only thing wrong with them is that they go bowling too early, in the morning. They could possibly be seen as productive people and if Jessica doesn't want to go with them in the morning, then maybe she's not a match to having morning friends, which Mel has friends who enjoy doing stuff at night, which Jessica is interested in hanging out with these people.]
+
+#### Test Ad
+
+Since the "confirmation bias and wanting to be part of a community" significantly went up, It's possible that Jessica was wanting to be a part of a radical group.
+
+The narcissists answers decreases for both. Regardless of what exactly influenced their answers, **responses relating to "confirmation bias and joining a radical group" significantly increase, perhaps due to Jessica joining a radical group before her old friend Mel gets her to hang out with him and his (normal) friends. [This is really the only thing that I can say with certainty.]**
+
+## Testing to See if New Friends Ad Has Anything to do with This
 
 ```{r experiment_new_friends_influence, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -1499,6 +1648,14 @@ plot
 
 
 ```
+
+#### Control Ad
+
+#### Test Ad
+
+#### 
+
+#### Original Thoughts
 
 The first category, "Believes first thing they see," increases and remains the dominant category exact for the group who listened to the audio ad, which decreased and was replaced by the category "Doesn't take time to fact check." This was already a common response among participants that upon filling out the questionnaire on the second attempt, they may have simply switched over to the default value.
 
