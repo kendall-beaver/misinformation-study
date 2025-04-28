@@ -115,8 +115,12 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
   geom_bar(stat = "identity", width = 1, color = "black") +  # Black border around slices
   coord_polar(theta = "y") +
   theme_void() +
-  labs(title = "Age Distribution in Bins") +
+  labs(title = "Age Distribution by Age Range") +
   guides(fill = guide_legend(title = "Age Range")) +  # Add legend title
+  scale_fill_manual(values = c("18–19" = "#66c2a5", 
+                               "20–29" = "#fc8d62", 
+                               "30–39" = "#8da0cb", 
+                               "40–49" = "#e78ac3")) +  # Manually set nicer colors
   
   # 4. Add text for larger slices (inside the pie)
   geom_text(aes(label = ifelse(AgeGroup %in% c("18–19", "20–29"), Label, "")), 
@@ -133,6 +137,7 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
             color = "black", size = 4) +  # Reduced font size
   
   theme(plot.title = element_text(hjust = 0.5))  # Center the title
+
 ```
 
 ## Gender
@@ -157,7 +162,12 @@ ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
   labs(title = "Gender Distribution") +
   theme(legend.title = element_blank(),
         plot.title = element_text(hjust = 0.5)) +
-
+  
+  scale_fill_manual(values = c("Male" = "#66c2a5",
+                               "Female" = "#fc8d62",
+                               "Prefer not to say" = "#8da0cb",
+                               "Other" = "#e78ac3")) +   # Optional extra category
+  
   # Text for genders EXCEPT "Prefer not to say"
   geom_text(data = subset(gender_counts, Gender != "Prefer not to say"),
             aes(label = Label), 
@@ -188,7 +198,12 @@ ggplot(gender_counts, aes(x = "", y = Count, fill = Gender)) +
   labs(title = "Gender Distribution (by Count)") +
   theme(legend.title = element_blank(),
         plot.title = element_text(hjust = 0.5)) +
-
+  
+  scale_fill_manual(values = c("Male" = "#66c2a5",
+                               "Female" = "#fc8d62",
+                               "Prefer not to say" = "#8da0cb",
+                               "Other" = "#e78ac3")) +   # Optional extra category
+  
   # Text for genders EXCEPT "Prefer not to say"
   geom_text(data = subset(gender_counts, Gender != "Prefer not to say"),
             aes(label = Label), 
