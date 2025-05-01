@@ -37,6 +37,21 @@ We got to meet with the donor today. Diana couldn't make it. The donor wants a p
 
 Conduct research on previous GenAI models 3/3/25
 
+### Number of hours: 
+A quantity of hours, maybe towards specific tasks. 
+
+### Rose:
+The highlight from the previous weekly/bi-weekly working period, such as something you found particularly rewarding. This could also be something you're excited to implement now.
+
+### Bud: 
+Something that you are looking forward to digging into deeper. This could also be ideas on how to apply concepts to your research in the future. 
+
+### Thorn: 
+Something that was challenging that could be worked on, such as anything that wasn't 100% clear and could be elaborated on. Any sticking points should be addressed here. 
+
+## Additional thought
+Write anything that you think would be important for YOU later on.
+
 ---
 #### 3/8
 I began reading papers on GCBS, which she accidentally gave me a copy of. Then Kanian gave me access to another Google Drive, or G Drive for the first time.
@@ -48,21 +63,6 @@ I set up my GitHub account this week and spent a lot of time entering metadata i
 
 I want to compare my findings with Diana's findings, and possibly the demographic information to the main YouGov study.
 
-### Number of hours: 
-A quantity of hours, maybe towards specific tasks. 
-
-### Rose:
-The highlight from the previous weekly/bi-weekly working period, such as something you found particularly rewarding. This could also be something you're excited to implement now.
-
-### Bud: 
-Something that you are looking forward to digging into deeper. This could also be ideas on how to apply concepts to your research in the future. 
-
-### Thorn: 
-Something that was challenging that could be worked on, such as anything that wasn't 100% clear and could be elaborated on. Any sticking points should be addressed here. 
-
-## Additional thought
-Write anything that you think would be important for YOU later on.
-
 ---
 
 ### Date: 
@@ -73,21 +73,6 @@ I'm currently looking into the different types of lies. One interesting paper is
 Diana and I were supposed to meet on Thursday 4/3, from 10-11 am,  but have decided to push this back to next Wednesday 4/9, from 1-2 pm. 
 
 I want to compare my findings with Diana's findings, and possibly the demographic information to the main YouGov study.
-
-### Number of hours: 
-A quantity of hours, maybe towards specific tasks. 
-
-### Rose:
-The highlight from the previous weekly/bi-weekly working period, such as something you found particularly rewarding. This could also be something you're excited to implement now.
-
-### Bud: 
-Something that you are looking forward to digging into deeper. This could also be ideas on how to apply concepts to your research in the future. 
-
-### Thorn: 
-Something that was challenging that could be worked on, such as anything that wasn't 100% clear and could be elaborated on. Any sticking points should be addressed here. 
-
-## Additional thought
-Write anything that you think would be important for YOU later on.
 
 ---
 
@@ -111,21 +96,6 @@ So I'm just running one pilot.
 
 I tried transcribing the audio with a free-open sourced software called Whisper, and it actually works, but I found out that I could just transcribe the audio myself much quicker than the program, but this will be useful for people who need to transcribe something else. 
 
-### Number of hours: 
-A quantity of hours, maybe towards specific tasks. 
-
-### Rose:
-The highlight from the previous weekly/bi-weekly working period, such as something you found particularly rewarding. This could also be something you're excited to implement now.
-
-### Bud: 
-Something that you are looking forward to digging into deeper. This could also be ideas on how to apply concepts to your research in the future. 
-
-### Thorn: 
-Something that was challenging that could be worked on, such as anything that wasn't 100% clear and could be elaborated on. Any sticking points should be addressed here. 
-
-## Additional thought
-Write anything that you think would be important for YOU later on.
-
 ---
 
 ### Date: 
@@ -135,21 +105,6 @@ The composite score has changed everything!
 
 One idea I had was to gather the time for audio podcasts and compare it to the category for skipping ads, assuming that participants will choose to skip ads for longer ones versus short ads. However, I couldn't find an easy way to gather the information so I abondoned that and instead chose to just count only one educational podcast in my chart.
 
-### Number of hours: 
-A quantity of hours, maybe towards specific tasks. 
-
-### Rose:
-The highlight from the previous weekly/bi-weekly working period, such as something you found particularly rewarding. This could also be something you're excited to implement now.
-
-### Bud: 
-Something that you are looking forward to digging into deeper. This could also be ideas on how to apply concepts to your research in the future. 
-
-### Thorn: 
-Something that was challenging that could be worked on, such as anything that wasn't 100% clear and could be elaborated on. Any sticking points should be addressed here. 
-
-## Additional thought
-Write anything that you think would be important for YOU later on.
-
 ---
 
 ### Date: 
@@ -158,21 +113,6 @@ Write anything that you think would be important for YOU later on.
 I starting on the thing I've been avoiding and afraid to tackle, performing thematic analysis on QQ1 (and also QQ2). 
 
 I didn't know until today that there's content analytical software for this, which is available in the main library and engineering library.
-
-### Number of hours: 
-A quantity of hours, maybe towards specific tasks. 
-
-### Rose:
-The highlight from the previous weekly/bi-weekly working period, such as something you found particularly rewarding. This could also be something you're excited to implement now.
-
-### Bud: 
-Something that you are looking forward to digging into deeper. This could also be ideas on how to apply concepts to your research in the future. 
-
-### Thorn: 
-Something that was challenging that could be worked on, such as anything that wasn't 100% clear and could be elaborated on. Any sticking points should be addressed here. 
-
-## Additional thought
-Write anything that you think would be important for YOU later on.
 
 ---
 
@@ -186,18 +126,3 @@ a podcast layout instead of just a traditional layout.
 
 I also wasn't sure if I should present my themeatic analysis as is, and she recommended possibly splitting the difference between "light vs. heavy" qualitative results. I'll think
 more about that, but good feedback all around.
-
-### Number of hours: 
-A quantity of hours, maybe towards specific tasks. 
-
-### Rose:
-The highlight from the previous weekly/bi-weekly working period, such as something you found particularly rewarding. This could also be something you're excited to implement now.
-
-### Bud: 
-Something that you are looking forward to digging into deeper. This could also be ideas on how to apply concepts to your research in the future. 
-
-### Thorn: 
-Something that was challenging that could be worked on, such as anything that wasn't 100% clear and could be elaborated on. Any sticking points should be addressed here. 
-
-## Additional thought
-Write anything that you think would be important for YOU later on.
