@@ -115,7 +115,7 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
   geom_bar(stat = "identity", width = 1, color = "black") +  # Black border around slices
   coord_polar(theta = "y") +
   theme_void() +
-  labs(title = "Age Distribution by Age Range") +
+  labs(title = "Age Range of Participants") +
   guides(fill = guide_legend(title = "Age Range")) +  # Add legend title
   scale_fill_manual(values = c("18–19" = "#66c2a5", 
                                "20–29" = "#fc8d62", 
@@ -1347,32 +1347,31 @@ count_words <- function(text) {
   return(length(unlist(strsplit(text, "\\s+"))))
 }
 
-# Compute word/sentence changes and composite score
+# Compute word/sentence changes and composite score for QQ1
 lying <- lying %>%
   mutate(
-    word_count_day1 = sapply(QQ1_BEFORE, count_words),
-    word_count_day2 = sapply(QQ1_AFTER, count_words),
+    word_count_day1_QQ1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2_QQ1 = sapply(QQ1_AFTER, count_words),
     
-    sentence_count_day1 = sapply(QQ1_BEFORE, count_sentences),
-    sentence_count_day2 = sapply(QQ1_AFTER, count_sentences),
+    sentence_count_day1_QQ1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2_QQ1 = sapply(QQ1_AFTER, count_sentences),
 
-    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
-    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+    word_count_change_QQ1 = (word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1),
+    sentence_count_change_QQ1 = (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1),
 
-    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+    composite_diff_norm_QQ1 = (word_count_change_QQ1 + sentence_count_change_QQ1) / 2
   )
 
-### JITTER PLOT
-
-ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+# Jitter Plot for QQ1
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm_QQ1)) +
   geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
   labs(
-    title = "Jittered Plot of Normalized Composite Change — All Groups",
+    title = "Jittered Plot of Normalized Composite Change QQ1 — All Groups",
     x = "\nGroup",
     y = "Normalized Composite Difference\n"
   ) +
-  theme_minimal() #+
-  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+  theme_minimal()
+
 ```
 
 ## **QQ1: Composite Score - Pie Charts**
@@ -1489,6 +1488,39 @@ for (grp in groups) {
 # Combine all plots into one using patchwork
 wrap_plots(plot_list) +
   plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+```
+
+```{r qq1_composite_score_table, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+
+lying_summary <- lying %>%
+  group_by(GROUP) %>%
+  summarise(
+    Mean = mean(composite_diff_norm, na.rm = TRUE),
+    Median = median(composite_diff_norm, na.rm = TRUE),
+    SD = sd(composite_diff_norm, na.rm = TRUE),
+    N = n()
+  )
+
+print(lying_summary)
+
+# Create a summary table by group and change bucket
+summary_table <- lying %>%
+  group_by(GROUP, change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1)
+  ) %>%
+  select(GROUP, change_bucket, percentage) %>%
+  pivot_wider(
+    names_from = change_bucket,
+    values_from = percentage,
+    values_fill = 0  # Fill missing with 0%
+  )
+
+print(summary_table)
 ```
 
 # QQ2
@@ -1796,32 +1828,30 @@ count_words <- function(text) {
   return(length(unlist(strsplit(text, "\\s+"))))
 }
 
-# Compute word/sentence changes and composite score
+# Compute word/sentence changes and composite score for QQ2
 lying <- lying %>%
   mutate(
-    word_count_day1 = sapply(QQ2_BEFORE, count_words),
-    word_count_day2 = sapply(QQ2_AFTER, count_words),
+    word_count_day1_QQ2 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2_QQ2 = sapply(QQ2_AFTER, count_words),
     
-    sentence_count_day1 = sapply(QQ2_BEFORE, count_sentences),
-    sentence_count_day2 = sapply(QQ2_AFTER, count_sentences),
+    sentence_count_day1_QQ2 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2_QQ2 = sapply(QQ2_AFTER, count_sentences),
 
-    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),  # Avoid division by 0
-    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+    word_count_change_QQ2 = (word_count_day2_QQ2 - word_count_day1_QQ2) / pmax(word_count_day1_QQ2, 1),
+    sentence_count_change_QQ2 = (sentence_count_day2_QQ2 - sentence_count_day1_QQ2) / pmax(sentence_count_day1_QQ2, 1),
 
-    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+    composite_diff_norm_QQ2 = (word_count_change_QQ2 + sentence_count_change_QQ2) / 2
   )
 
-### JITTER PLOT
-
-ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+# Jitter Plot for QQ2
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm_QQ2)) +
   geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
   labs(
     title = "Jittered Plot of Normalized Composite Change QQ2 — All Groups",
     x = "\nGroup",
     y = "Normalized Composite Difference\n"
   ) +
-  theme_minimal() #+
-  #theme(axis.text.x = element_text(angle = 15, hjust = 1))
+  theme_minimal()
 ```
 
 ## **QQ2: Composite Score - Pie Charts**
@@ -1973,36 +2003,36 @@ The ad doesn't really say anything about lying, so instead of looking at each GR
 # Step 1: Recalculate word/sentence/composite differences for QQ3
 lying <- lying %>%
   mutate(
-    word_count_day1 = sapply(QQ3_BEFORE, count_words),
-    word_count_day2 = sapply(QQ3_AFTER, count_words),
+    word_count_day1_QQ3 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2_QQ3 = sapply(QQ3_AFTER, count_words),
     
-    sentence_count_day1 = sapply(QQ3_BEFORE, count_sentences),
-    sentence_count_day2 = sapply(QQ3_AFTER, count_sentences),
+    sentence_count_day1_QQ3 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2_QQ3 = sapply(QQ3_AFTER, count_sentences),
 
-    word_count_change = (word_count_day2 - word_count_day1) / pmax(word_count_day1, 1),
-    sentence_count_change = (sentence_count_day2 - sentence_count_day1) / pmax(sentence_count_day1, 1),
+    word_count_change_QQ3 = (word_count_day2_QQ3 - word_count_day1_QQ3) / pmax(word_count_day1_QQ3, 1),
+    sentence_count_change_QQ3 = (sentence_count_day2_QQ3 - sentence_count_day1_QQ3) / pmax(sentence_count_day1_QQ3, 1),
 
-    composite_diff_norm = (word_count_change + sentence_count_change) / 2
+    composite_diff_norm_QQ3 = (word_count_change_QQ3 + sentence_count_change_QQ3) / 2
   )
 
-# Step 2: (optional) Create change buckets again if you still want them
+# Step 2: (optional) Create change buckets again for QQ3
 lying <- lying %>%
   mutate(
-    change_bucket = case_when(
-      composite_diff_norm < -0.5 ~ "< -50%",
-      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
-      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
-      composite_diff_norm >= 0.5 ~ ">= 50%"
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ3 >= -0.5 & composite_diff_norm_QQ3 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ3 >= 0.5 ~ ">= 50%"
     )
   )
 
-lying$change_bucket <- factor(
-  lying$change_bucket,
+lying$change_bucket_QQ3 <- factor(
+  lying$change_bucket_QQ3,
   levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%")
 )
 
 # Step 3: Jitter Plot for QQ3 Composite Diff Norm
-ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
+ggplot(lying, aes(x = GROUP, y = composite_diff_norm_QQ3)) +
   geom_jitter(width = 0.15, height = 0, alpha = 0.6, color = "steelblue", size = 2) +
   labs(
     title = "Jittered Plot of Normalized Composite Change QQ3 — All Groups",
@@ -2013,6 +2043,39 @@ ggplot(lying, aes(x = GROUP, y = composite_diff_norm)) +
 ```
 
 This significantly dropped, and surprisingly the audio had the greatest increase amount of words and sentences, but also the greatest drop, too.
+
+```{r qq3_composite_score_table, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+library(dplyr)
+
+lying_summary <- lying %>%
+  group_by(GROUP) %>%
+  summarise(
+    Mean = mean(composite_diff_norm, na.rm = TRUE),
+    Median = median(composite_diff_norm, na.rm = TRUE),
+    SD = sd(composite_diff_norm, na.rm = TRUE),
+    N = n()
+  )
+
+print(lying_summary)
+
+# Create a summary table by group and change bucket
+summary_table <- lying %>%
+  group_by(GROUP, change_bucket) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1)
+  ) %>%
+  select(GROUP, change_bucket, percentage) %>%
+  pivot_wider(
+    names_from = change_bucket,
+    values_from = percentage,
+    values_fill = 0  # Fill missing with 0%
+  )
+
+print(summary_table)
+```
 
 ## THIS ONE - QQ3: Categorical Data Before & After, All Categories
 
