@@ -2889,13 +2889,58 @@ formattable(final_combined, style_list_green)
 
 ```
 
-# All - Summary Table (25% Threshold)
+# All - Summary Table (25% & 50% Threshold)
 
-```{r summary_table_all_25, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r summary_table_all_25_and_50, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Load necessary libraries
 library(dplyr)
 library(formattable)
+
+# Compute word/sentence changes and composite score for QQ1
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2_QQ1 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1_QQ1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2_QQ1 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change_QQ1 = (word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1),
+    sentence_count_change_QQ1 = (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1),
+
+    composite_diff_norm_QQ1 = (word_count_change_QQ1 + sentence_count_change_QQ1) / 2
+  )
+
+# Compute word/sentence changes and composite score for QQ2
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ2 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2_QQ2 = sapply(QQ2_AFTER, count_words),
+    
+    sentence_count_day1_QQ2 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2_QQ2 = sapply(QQ2_AFTER, count_sentences),
+
+    word_count_change_QQ2 = (word_count_day2_QQ2 - word_count_day1_QQ2) / pmax(word_count_day1_QQ2, 1),
+    sentence_count_change_QQ2 = (sentence_count_day2_QQ2 - sentence_count_day1_QQ2) / pmax(sentence_count_day1_QQ2, 1),
+
+    composite_diff_norm_QQ2 = (word_count_change_QQ2 + sentence_count_change_QQ2) / 2
+  )
+
+# Step 1: Recalculate word/sentence/composite differences for QQ3
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ3 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2_QQ3 = sapply(QQ3_AFTER, count_words),
+    
+    sentence_count_day1_QQ3 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2_QQ3 = sapply(QQ3_AFTER, count_sentences),
+
+    word_count_change_QQ3 = (word_count_day2_QQ3 - word_count_day1_QQ3) / pmax(word_count_day1_QQ3, 1),
+    sentence_count_change_QQ3 = (sentence_count_day2_QQ3 - sentence_count_day1_QQ3) / pmax(sentence_count_day1_QQ3, 1),
+
+    composite_diff_norm_QQ3 = (word_count_change_QQ3 + sentence_count_change_QQ3) / 2
+  )
 
 # Step 1: Create change buckets for QQ1, QQ2, and QQ3 with < -25% and >= 25%
 lying <- lying %>%
