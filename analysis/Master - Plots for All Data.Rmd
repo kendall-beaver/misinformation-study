@@ -2701,9 +2701,9 @@ plot_list[[2]]  # Usually "Female"
 
 ```
 
-# All - Summary Table
+# All - Summary Table (50% Threshold)
 
-```{r summary_table_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r summary_table_all_50, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Step 1: Create change buckets for QQ1, QQ2, and QQ3
 lying <- lying %>%
@@ -2816,6 +2816,262 @@ final_combined <- summary_QQ1 %>%
 
 # View
 final_combined
+
+###
+
+#install.packages("formattable")
+library(formattable)
+
+# Highlight top 2 values in each column (excluding GROUP)
+highlight_top_2 <- function(column) {
+  ranks <- rank(-column, ties.method = "first")
+  formatter("span",
+            style = x ~ ifelse(ranks <= 2,
+                               "background-color:orange;font-weight:bold;",
+                               NA))
+}
+
+# Apply formatting
+formattable(final_combined, lapply(final_combined[-1], highlight_top_2))
+
+###
+
+cols_to_check <- names(final_combined)[-1]  # Exclude 'GROUP'
+final_combined[cols_to_check] <- lapply(final_combined[cols_to_check], as.numeric)
+
+library(formattable)
+
+# Custom highlighter for red
+highlight_top_2_red <- function(column) {
+  formatter("span",
+            style = function(x) {
+              ranks <- rank(-x, ties.method = "first")
+              ifelse(ranks <= 2,
+                     "background-color: lightcoral; font-weight: bold;",
+                     NA)
+            })
+}
+
+# Select columns with "< -50%" in their names
+red_columns <- names(final_combined)[grepl("< -50%", names(final_combined))]
+
+# Build style list for formattable
+style_list_red <- setNames(
+  lapply(final_combined[red_columns], highlight_top_2_red),
+  red_columns
+)
+
+# Display table
+formattable(final_combined, style_list_red)
+
+# Custom highlighter for green
+highlight_top_2_green <- function(column) {
+  formatter("span",
+            style = function(x) {
+              ranks <- rank(-x, ties.method = "first")
+              ifelse(ranks <= 2,
+                     "background-color: lightgreen; font-weight: bold;",
+                     NA)
+            })
+}
+
+# Select columns with ">= 50%" in their names
+green_columns <- names(final_combined)[grepl(">= 50%", names(final_combined))]
+
+# Build style list
+style_list_green <- setNames(
+  lapply(final_combined[green_columns], highlight_top_2_green),
+  green_columns
+)
+
+# Display table
+formattable(final_combined, style_list_green)
+
+```
+
+# All - Summary Table (25% Threshold)
+
+```{r summary_table_all_25, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Load necessary libraries
+library(dplyr)
+library(formattable)
+
+# Step 1: Create change buckets for QQ1, QQ2, and QQ3 with < -25% and >= 25%
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -0.25 ~ "< -25%",
+      composite_diff_norm_QQ1 >= 0.25 ~ ">= 25%",
+      TRUE ~ "Other"
+    ),
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -0.25 ~ "< -25%",
+      composite_diff_norm_QQ2 >= 0.25 ~ ">= 25%",
+      TRUE ~ "Other"
+    ),
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -0.25 ~ "< -25%",
+      composite_diff_norm_QQ3 >= 0.25 ~ ">= 25%",
+      TRUE ~ "Other"
+    )
+  )
+
+# Step 2: Create summary table for QQ1, QQ2, and QQ3 with only < -25% and >= 25%
+summary_table_QQ1 <- lying %>%
+  group_by(GROUP, change_bucket_QQ1) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(percentage = round(100 * count / sum(count), 1)) %>%
+  filter(change_bucket_QQ1 %in% c("< -25%", ">= 25%")) %>%
+  select(GROUP, change_bucket_QQ1, percentage) %>%
+  pivot_wider(names_from = change_bucket_QQ1, values_from = percentage, values_fill = 0)
+
+summary_table_QQ2 <- lying %>%
+  group_by(GROUP, change_bucket_QQ2) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(percentage = round(100 * count / sum(count), 1)) %>%
+  filter(change_bucket_QQ2 %in% c("< -25%", ">= 25%")) %>%
+  select(GROUP, change_bucket_QQ2, percentage) %>%
+  pivot_wider(names_from = change_bucket_QQ2, values_from = percentage, values_fill = 0)
+
+summary_table_QQ3 <- lying %>%
+  group_by(GROUP, change_bucket_QQ3) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(percentage = round(100 * count / sum(count), 1)) %>%
+  filter(change_bucket_QQ3 %in% c("< -25%", ">= 25%")) %>%
+  select(GROUP, change_bucket_QQ3, percentage) %>%
+  pivot_wider(names_from = change_bucket_QQ3, values_from = percentage, values_fill = 0)
+
+# Step 3: Combine the summary tables by joining them on GROUP
+final_combined <- summary_table_QQ1 %>%
+  full_join(summary_table_QQ2, by = "GROUP") %>%
+  full_join(summary_table_QQ3, by = "GROUP")
+
+# Step 4: Custom highlighter function for highlighting
+highlight_top_2_red <- function(column) {
+  formatter("span",
+            style = function(x) {
+              ranks <- rank(-x, ties.method = "first")
+              ifelse(ranks <= 2,
+                     "background-color: lightcoral; font-weight: bold;",
+                     NA)
+            })
+}
+
+highlight_top_2_green <- function(column) {
+  formatter("span",
+            style = function(x) {
+              ranks <- rank(-x, ties.method = "first")
+              ifelse(ranks <= 2,
+                     "background-color: lightgreen; font-weight: bold;",
+                     NA)
+            })
+}
+
+# Step 5: Apply red highlighting for < -25% and green highlighting for >= 25%
+formattable(final_combined, list(
+  "< -25%.x" = highlight_top_2_red(final_combined$`< -25%.x`),
+  "< -25%.y" = highlight_top_2_red(final_combined$`< -25%.y`),
+  "< -25%"   = highlight_top_2_red(final_combined$`< -25%`),
+  
+  ">= 25%.x" = highlight_top_2_green(final_combined$`>= 25%.x`),
+  ">= 25%.y" = highlight_top_2_green(final_combined$`>= 25%.y`),
+  ">= 25%"   = highlight_top_2_green(final_combined$`>= 25%`)
+))
+
+### 25%
+
+# Load necessary libraries
+library(dplyr)
+library(formattable)
+
+# Step 1: Create change buckets for QQ1, QQ2, and QQ3 with < -50% and >= 50%
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ1 >= 0.5 ~ ">= 50%",
+      TRUE ~ "Other"
+    ),
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ2 >= 0.5 ~ ">= 50%",
+      TRUE ~ "Other"
+    ),
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ3 >= 0.5 ~ ">= 50%",
+      TRUE ~ "Other"
+    )
+  )
+
+# Step 2: Create summary table for QQ1, QQ2, and QQ3 with only < -50% and >= 50%
+summary_table_QQ1 <- lying %>%
+  group_by(GROUP, change_bucket_QQ1) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(percentage = round(100 * count / sum(count), 1)) %>%
+  filter(change_bucket_QQ1 %in% c("< -50%", ">= 50%")) %>%
+  select(GROUP, change_bucket_QQ1, percentage) %>%
+  pivot_wider(names_from = change_bucket_QQ1, values_from = percentage, values_fill = 0)
+
+summary_table_QQ2 <- lying %>%
+  group_by(GROUP, change_bucket_QQ2) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(percentage = round(100 * count / sum(count), 1)) %>%
+  filter(change_bucket_QQ2 %in% c("< -50%", ">= 50%")) %>%
+  select(GROUP, change_bucket_QQ2, percentage) %>%
+  pivot_wider(names_from = change_bucket_QQ2, values_from = percentage, values_fill = 0)
+
+summary_table_QQ3 <- lying %>%
+  group_by(GROUP, change_bucket_QQ3) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(percentage = round(100 * count / sum(count), 1)) %>%
+  filter(change_bucket_QQ3 %in% c("< -50%", ">= 50%")) %>%
+  select(GROUP, change_bucket_QQ3, percentage) %>%
+  pivot_wider(names_from = change_bucket_QQ3, values_from = percentage, values_fill = 0)
+
+# Step 3: Combine the summary tables by joining them on GROUP
+final_combined <- summary_table_QQ1 %>%
+  full_join(summary_table_QQ2, by = "GROUP") %>%
+  full_join(summary_table_QQ3, by = "GROUP")
+
+# Step 4: Custom highlighter function for highlighting
+highlight_top_2_red <- function(column) {
+  formatter("span",
+            style = function(x) {
+              ranks <- rank(-x, ties.method = "first")
+              ifelse(ranks <= 2,
+                     "background-color: lightcoral; font-weight: bold;",
+                     NA)
+            })
+}
+
+highlight_top_2_green <- function(column) {
+  formatter("span",
+            style = function(x) {
+              ranks <- rank(-x, ties.method = "first")
+              ifelse(ranks <= 2,
+                     "background-color: lightgreen; font-weight: bold;",
+                     NA)
+            })
+}
+
+# Step 5: Apply red highlighting for < -50% and green highlighting for >= 50%
+formattable(final_combined, list(
+  "< -50%.x" = highlight_top_2_red(final_combined$`< -50%.x`),
+  "< -50%.y" = highlight_top_2_red(final_combined$`< -50%.y`),
+  "< -50%"   = highlight_top_2_red(final_combined$`< -50%`),
+  
+  ">= 50%.x" = highlight_top_2_green(final_combined$`>= 50%.x`),
+  ">= 50%.y" = highlight_top_2_green(final_combined$`>= 50%.y`),
+  ">= 50%"   = highlight_top_2_green(final_combined$`>= 50%`)
+))
 
 ```
 
