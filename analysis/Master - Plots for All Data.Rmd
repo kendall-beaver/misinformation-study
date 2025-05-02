@@ -1492,35 +1492,99 @@ wrap_plots(plot_list) +
 
 ```{r qq1_composite_score_table, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-library(dplyr)
-
-lying_summary <- lying %>%
-  group_by(GROUP) %>%
-  summarise(
-    Mean = mean(composite_diff_norm, na.rm = TRUE),
-    Median = median(composite_diff_norm, na.rm = TRUE),
-    SD = sd(composite_diff_norm, na.rm = TRUE),
-    N = n()
+# Step 1: Create QQ1 change bucket
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ1 >= -0.5 & composite_diff_norm_QQ1 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ1 >= 0.5 ~ ">= 50%"
+    )
   )
 
-print(lying_summary)
+lying$change_bucket_QQ1 <- factor(
+  lying$change_bucket_QQ1,
+  levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%")
+)
 
-# Create a summary table by group and change bucket
-summary_table <- lying %>%
-  group_by(GROUP, change_bucket) %>%
+# Step 2: Create summary table for QQ1
+summary_table_QQ1 <- lying %>%
+  group_by(GROUP, change_bucket_QQ1) %>%
   summarise(count = n(), .groups = "drop") %>%
   group_by(GROUP) %>%
   mutate(
     percentage = round(100 * count / sum(count), 1)
   ) %>%
-  select(GROUP, change_bucket, percentage) %>%
+  select(GROUP, change_bucket_QQ1, percentage) %>%
   pivot_wider(
-    names_from = change_bucket,
+    names_from = change_bucket_QQ1,
     values_from = percentage,
-    values_fill = 0  # Fill missing with 0%
+    values_fill = 0
   )
 
-print(summary_table)
+summary_table_QQ1
+
+####
+
+library(ggplot2)
+library(dplyr)
+library(scales)
+library(patchwork)  # for combining plots
+
+# Create an empty list to hold plots
+plot_list_QQ1 <- list()
+
+# Loop over each group and create pie charts for QQ1
+for (grp in unique(lying$GROUP)) {
+  
+  # Filter data for the current group and compute percentage
+  bucket_counts_group <- lying %>%
+    filter(GROUP == grp) %>%
+    group_by(change_bucket_QQ1) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    mutate(
+      percentage = count / sum(count),
+      pct_label = paste0(round(percentage * 100, 1), "%")
+    )
+  
+  # Create the pie chart for the current group
+  p <- ggplot(bucket_counts_group, aes(x = "", y = percentage, fill = change_bucket_QQ1)) +
+    geom_col(width = 1, color = "black") +
+    geom_text(
+      aes(label = pct_label),
+      position = position_stack(vjust = 0.5),
+      color = "black",
+      size = 4
+    ) +
+    coord_polar(theta = "y") +
+    scale_fill_manual(
+      values = c(
+        "< -50%" = "red",
+        "-50% to 0%" = "orange",
+        "0% to 49%" = "yellow",
+        ">= 50%" = "skyblue"
+      )
+    ) +
+    labs(
+      title = paste(grp),
+      fill = "Change Bucket"
+    ) +
+    theme_void() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      legend.position = "bottom",
+      legend.title = element_text(face = "bold"),
+      legend.text = element_text(size = 10)
+    )
+  
+  # Add the plot to the plot list
+  plot_list_QQ1[[grp]] <- p
+}
+
+# Combine all plots into one using patchwork
+wrap_plots(plot_list_QQ1) +
+  plot_layout(ncol = 2)  # Adjust the layout: for example, 2x2 grid
 ```
 
 # QQ2
@@ -1854,6 +1918,42 @@ ggplot(lying, aes(x = GROUP, y = composite_diff_norm_QQ2)) +
   theme_minimal()
 ```
 
+```{r qq2_composite_score_table, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Create change buckets for QQ2
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ2 >= -0.5 & composite_diff_norm_QQ2 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ2 >= 0.5 ~ ">= 50%"
+    )
+  )
+
+lying$change_bucket_QQ2 <- factor(
+  lying$change_bucket_QQ2,
+  levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%")
+)
+
+# Step 2: Create summary table for QQ2
+summary_table_QQ2 <- lying %>%
+  group_by(GROUP, change_bucket_QQ2) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1)
+  ) %>%
+  select(GROUP, change_bucket_QQ2, percentage) %>%
+  pivot_wider(
+    names_from = change_bucket_QQ2,
+    values_from = percentage,
+    values_fill = 0  # Fill missing values with 0%
+  )
+
+summary_table_QQ2
+```
+
 ## **QQ2: Composite Score - Pie Charts**
 
 ```{r qq2_composite_score_pie_chart, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
@@ -2046,35 +2146,38 @@ This significantly dropped, and surprisingly the audio had the greatest increase
 
 ```{r qq3_composite_score_table, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
-library(dplyr)
-
-lying_summary <- lying %>%
-  group_by(GROUP) %>%
-  summarise(
-    Mean = mean(composite_diff_norm, na.rm = TRUE),
-    Median = median(composite_diff_norm, na.rm = TRUE),
-    SD = sd(composite_diff_norm, na.rm = TRUE),
-    N = n()
+# Step 1: Create change buckets for QQ3 (same as in your code)
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ3 >= -0.5 & composite_diff_norm_QQ3 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ3 >= 0.5 ~ ">= 50%"
+    )
   )
 
-print(lying_summary)
+lying$change_bucket_QQ3 <- factor(
+  lying$change_bucket_QQ3,
+  levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%")
+)
 
-# Create a summary table by group and change bucket
-summary_table <- lying %>%
-  group_by(GROUP, change_bucket) %>%
+# Step 2: Create the summary table for QQ3
+summary_table_QQ3 <- lying %>%
+  group_by(GROUP, change_bucket_QQ3) %>%
   summarise(count = n(), .groups = "drop") %>%
   group_by(GROUP) %>%
   mutate(
     percentage = round(100 * count / sum(count), 1)
   ) %>%
-  select(GROUP, change_bucket, percentage) %>%
+  select(GROUP, change_bucket_QQ3, percentage) %>%
   pivot_wider(
-    names_from = change_bucket,
+    names_from = change_bucket_QQ3,
     values_from = percentage,
-    values_fill = 0  # Fill missing with 0%
+    values_fill = 0  # Fill missing values with 0%
   )
 
-print(summary_table)
+summary_table_QQ3
 ```
 
 ## THIS ONE - QQ3: Categorical Data Before & After, All Categories
@@ -2595,6 +2698,124 @@ plot_list <- lapply(unique(lie_counts$Gender), function(g) {
 # Step 5: Print both gender-specific plots
 plot_list[[1]]  # Usually "Male"
 plot_list[[2]]  # Usually "Female"
+
+```
+
+# All - Summary Table
+
+```{r summary_table_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Step 1: Create change buckets for QQ1, QQ2, and QQ3
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ1 >= -0.5 & composite_diff_norm_QQ1 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ1 >= 0.5 ~ ">= 50%"
+    ),
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ2 >= -0.5 & composite_diff_norm_QQ2 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ2 >= 0.5 ~ ">= 50%"
+    ),
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ3 >= -0.5 & composite_diff_norm_QQ3 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ3 >= 0.5 ~ ">= 50%"
+    )
+  )
+
+# Convert to factor for proper order
+lying$change_bucket_QQ1 <- factor(lying$change_bucket_QQ1, levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%"))
+lying$change_bucket_QQ2 <- factor(lying$change_bucket_QQ2, levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%"))
+lying$change_bucket_QQ3 <- factor(lying$change_bucket_QQ3, levels = c("< -50%", "-50% to 0%", "0% to 49%", ">= 50%"))
+
+# Step 2: Create summary table for QQ1
+summary_table_QQ1 <- lying %>%
+  group_by(GROUP, change_bucket_QQ1) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1)
+  ) %>%
+  select(GROUP, change_bucket_QQ1, percentage) %>%
+  pivot_wider(
+    names_from = change_bucket_QQ1,
+    values_from = percentage,
+    values_fill = list(percentage = 0)
+  )
+
+# Step 3: Create summary table for QQ2
+summary_table_QQ2 <- lying %>%
+  group_by(GROUP, change_bucket_QQ2) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1)
+  ) %>%
+  select(GROUP, change_bucket_QQ2, percentage) %>%
+  pivot_wider(
+    names_from = change_bucket_QQ2,
+    values_from = percentage,
+    values_fill = list(percentage = 0)
+  )
+
+# Step 4: Create summary table for QQ3
+summary_table_QQ3 <- lying %>%
+  group_by(GROUP, change_bucket_QQ3) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    percentage = round(100 * count / sum(count), 1)
+  ) %>%
+  select(GROUP, change_bucket_QQ3, percentage) %>%
+  pivot_wider(
+    names_from = change_bucket_QQ3,
+    values_from = percentage,
+    values_fill = list(percentage = 0)
+  )
+
+# Step 5: Combine all summary tables into one table
+combined_summary <- summary_table_QQ1 %>%
+  full_join(summary_table_QQ2, by = "GROUP") %>%
+  full_join(summary_table_QQ3, by = "GROUP")
+
+# View the final combined summary table
+combined_summary
+
+###
+# Helper function to summarize for one QQ
+summarize_bucket <- function(df, bucket_col, bucket_name) {
+  df %>%
+    group_by(GROUP, .data[[bucket_col]]) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(GROUP) %>%
+    mutate(percentage = round(100 * count / sum(count), 1)) %>%
+    filter(.data[[bucket_col]] %in% c("< -50%", ">= 50%")) %>%
+    select(GROUP, !!bucket_col := .data[[bucket_col]], percentage) %>%
+    pivot_wider(
+      names_from = !!sym(bucket_col),
+      values_from = percentage,
+      values_fill = 0
+    ) %>%
+    rename_with(~ paste(bucket_name, ., sep = ": "), -GROUP)
+}
+
+# Create individual summaries for QQ1, QQ2, QQ3
+summary_QQ1 <- summarize_bucket(lying, "change_bucket_QQ1", "QQ1")
+summary_QQ2 <- summarize_bucket(lying, "change_bucket_QQ2", "QQ2")
+summary_QQ3 <- summarize_bucket(lying, "change_bucket_QQ3", "QQ3")
+
+# Join into one combined table
+final_combined <- summary_QQ1 %>%
+  full_join(summary_QQ2, by = "GROUP") %>%
+  full_join(summary_QQ3, by = "GROUP")
+
+# View
+final_combined
 
 ```
 
