@@ -107,7 +107,7 @@ age_counts <- as.data.frame(table(age_bins))
 colnames(age_counts) <- c("AgeGroup", "Count")
 
 age_counts <- age_counts %>%
-  mutate(Percent = round(Count / sum(Count) * 100, 1),
+  mutate(Percent = round(Count / sum(Count) * 100, 2),
          Label = paste0(Percent, "%"))
 
 # 3. Plot with percentage labels, black borders, and reduced font size
@@ -2319,6 +2319,130 @@ plot
 
 **Significant finding:** Women are willing to tell the truth more than men, 11.1% vs. 2.6% of men.
 
+```{r left_side, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+### PLOT 1: All Groups Combined ###
+
+# Step 1: Reshape data
+type_of_lie_long <- lying %>%
+  select(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and percentage
+lie_counts <- type_of_lie_long %>%
+  group_by(QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create plot
+plot_all <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "black") +
+  labs(title = "QQ3 Responses Before vs. After Ad (All Groups)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +
+  theme_minimal() +
+  theme(legend.position = "left")
+
+plot_all
+
+
+### PLOT 2: Faceted by Gender (Male & Female only) ###
+
+# Step 1: Reshape with gender
+type_of_lie_long_gender <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  filter(Gender %in% c("Male", "Female")) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and percentage
+lie_counts_gender <- type_of_lie_long_gender %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts_gender$QuestionType <- factor(lie_counts_gender$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create faceted plot
+plot_gender <- ggplot(lie_counts_gender, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "black") +
+  labs(title = "QQ3 Responses Before vs. After Ad (By Gender: Male and Female Only)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +
+  facet_wrap(~ Gender) +
+  theme_minimal() +
+  theme(legend.position = "left")
+
+plot_gender
+
+
+### PLOT 3: Faceted by Group (Test vs. Control) ###
+
+# Step 1: Reshape with group
+type_of_lie_long_group <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and percentage
+lie_counts_group <- type_of_lie_long_group %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts_group$QuestionType <- factor(lie_counts_group$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create faceted plot
+plot_group <- ggplot(lie_counts_group, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "black") +
+  labs(title = "QQ3 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Response Categories") +
+  facet_wrap(~ GROUP) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+plot_group
+```
+
 ## **QQ3: Composite Scores as Pie Charts (Bad & Hard to Decipher)**
 
 ```{r qq3_supplemental_info, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
@@ -2705,6 +2829,52 @@ plot_list[[2]]  # Usually "Female"
 
 ```{r summary_table_all_50, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
+
+# Compute word/sentence changes and composite score for QQ1
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2_QQ1 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1_QQ1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2_QQ1 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change_QQ1 = (word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1),
+    sentence_count_change_QQ1 = (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1),
+
+    composite_diff_norm_QQ1 = (word_count_change_QQ1 + sentence_count_change_QQ1) / 2
+  )
+
+# Compute word/sentence changes and composite score for QQ2
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ2 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2_QQ2 = sapply(QQ2_AFTER, count_words),
+    
+    sentence_count_day1_QQ2 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2_QQ2 = sapply(QQ2_AFTER, count_sentences),
+
+    word_count_change_QQ2 = (word_count_day2_QQ2 - word_count_day1_QQ2) / pmax(word_count_day1_QQ2, 1),
+    sentence_count_change_QQ2 = (sentence_count_day2_QQ2 - sentence_count_day1_QQ2) / pmax(sentence_count_day1_QQ2, 1),
+
+    composite_diff_norm_QQ2 = (word_count_change_QQ2 + sentence_count_change_QQ2) / 2
+  )
+
+# Step 1: Recalculate word/sentence/composite differences for QQ3
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ3 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2_QQ3 = sapply(QQ3_AFTER, count_words),
+    
+    sentence_count_day1_QQ3 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2_QQ3 = sapply(QQ3_AFTER, count_sentences),
+
+    word_count_change_QQ3 = (word_count_day2_QQ3 - word_count_day1_QQ3) / pmax(word_count_day1_QQ3, 1),
+    sentence_count_change_QQ3 = (sentence_count_day2_QQ3 - sentence_count_day1_QQ3) / pmax(sentence_count_day1_QQ3, 1),
+
+    composite_diff_norm_QQ3 = (word_count_change_QQ3 + sentence_count_change_QQ3) / 2
+  )
+
 # Step 1: Create change buckets for QQ1, QQ2, and QQ3
 lying <- lying %>%
   mutate(
@@ -2892,148 +3062,39 @@ formattable(final_combined, style_list_green)
 # All - Summary Table (25% & 50% Threshold)
 
 ```{r summary_table_all_25_and_50, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
-
 # Load necessary libraries
 library(dplyr)
+library(tidyr)
 library(formattable)
 
-# Compute word/sentence changes and composite score for QQ1
+# Assume count_words() and count_sentences() are already defined
+
+### Step 1: Compute composite scores if not already done
 lying <- lying %>%
   mutate(
     word_count_day1_QQ1 = sapply(QQ1_BEFORE, count_words),
     word_count_day2_QQ1 = sapply(QQ1_AFTER, count_words),
-    
     sentence_count_day1_QQ1 = sapply(QQ1_BEFORE, count_sentences),
     sentence_count_day2_QQ1 = sapply(QQ1_AFTER, count_sentences),
-
-    word_count_change_QQ1 = (word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1),
-    sentence_count_change_QQ1 = (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1),
-
-    composite_diff_norm_QQ1 = (word_count_change_QQ1 + sentence_count_change_QQ1) / 2
-  )
-
-# Compute word/sentence changes and composite score for QQ2
-lying <- lying %>%
-  mutate(
+    composite_diff_norm_QQ1 = ((word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1) +
+                               (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1)) / 2,
+    
     word_count_day1_QQ2 = sapply(QQ2_BEFORE, count_words),
     word_count_day2_QQ2 = sapply(QQ2_AFTER, count_words),
-    
     sentence_count_day1_QQ2 = sapply(QQ2_BEFORE, count_sentences),
     sentence_count_day2_QQ2 = sapply(QQ2_AFTER, count_sentences),
+    composite_diff_norm_QQ2 = ((word_count_day2_QQ2 - word_count_day1_QQ2) / pmax(word_count_day1_QQ2, 1) +
+                               (sentence_count_day2_QQ2 - sentence_count_day1_QQ2) / pmax(sentence_count_day1_QQ2, 1)) / 2,
 
-    word_count_change_QQ2 = (word_count_day2_QQ2 - word_count_day1_QQ2) / pmax(word_count_day1_QQ2, 1),
-    sentence_count_change_QQ2 = (sentence_count_day2_QQ2 - sentence_count_day1_QQ2) / pmax(sentence_count_day1_QQ2, 1),
-
-    composite_diff_norm_QQ2 = (word_count_change_QQ2 + sentence_count_change_QQ2) / 2
-  )
-
-# Step 1: Recalculate word/sentence/composite differences for QQ3
-lying <- lying %>%
-  mutate(
     word_count_day1_QQ3 = sapply(QQ3_BEFORE, count_words),
     word_count_day2_QQ3 = sapply(QQ3_AFTER, count_words),
-    
     sentence_count_day1_QQ3 = sapply(QQ3_BEFORE, count_sentences),
     sentence_count_day2_QQ3 = sapply(QQ3_AFTER, count_sentences),
-
-    word_count_change_QQ3 = (word_count_day2_QQ3 - word_count_day1_QQ3) / pmax(word_count_day1_QQ3, 1),
-    sentence_count_change_QQ3 = (sentence_count_day2_QQ3 - sentence_count_day1_QQ3) / pmax(sentence_count_day1_QQ3, 1),
-
-    composite_diff_norm_QQ3 = (word_count_change_QQ3 + sentence_count_change_QQ3) / 2
+    composite_diff_norm_QQ3 = ((word_count_day2_QQ3 - word_count_day1_QQ3) / pmax(word_count_day1_QQ3, 1) +
+                               (sentence_count_day2_QQ3 - sentence_count_day1_QQ3) / pmax(sentence_count_day1_QQ3, 1)) / 2
   )
 
-# Step 1: Create change buckets for QQ1, QQ2, and QQ3 with < -25% and >= 25%
-lying <- lying %>%
-  mutate(
-    change_bucket_QQ1 = case_when(
-      composite_diff_norm_QQ1 < -0.25 ~ "< -25%",
-      composite_diff_norm_QQ1 >= 0.25 ~ ">= 25%",
-      TRUE ~ "Other"
-    ),
-    change_bucket_QQ2 = case_when(
-      composite_diff_norm_QQ2 < -0.25 ~ "< -25%",
-      composite_diff_norm_QQ2 >= 0.25 ~ ">= 25%",
-      TRUE ~ "Other"
-    ),
-    change_bucket_QQ3 = case_when(
-      composite_diff_norm_QQ3 < -0.25 ~ "< -25%",
-      composite_diff_norm_QQ3 >= 0.25 ~ ">= 25%",
-      TRUE ~ "Other"
-    )
-  )
-
-# Step 2: Create summary table for QQ1, QQ2, and QQ3 with only < -25% and >= 25%
-summary_table_QQ1 <- lying %>%
-  group_by(GROUP, change_bucket_QQ1) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  group_by(GROUP) %>%
-  mutate(percentage = round(100 * count / sum(count), 1)) %>%
-  filter(change_bucket_QQ1 %in% c("< -25%", ">= 25%")) %>%
-  select(GROUP, change_bucket_QQ1, percentage) %>%
-  pivot_wider(names_from = change_bucket_QQ1, values_from = percentage, values_fill = 0)
-
-summary_table_QQ2 <- lying %>%
-  group_by(GROUP, change_bucket_QQ2) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  group_by(GROUP) %>%
-  mutate(percentage = round(100 * count / sum(count), 1)) %>%
-  filter(change_bucket_QQ2 %in% c("< -25%", ">= 25%")) %>%
-  select(GROUP, change_bucket_QQ2, percentage) %>%
-  pivot_wider(names_from = change_bucket_QQ2, values_from = percentage, values_fill = 0)
-
-summary_table_QQ3 <- lying %>%
-  group_by(GROUP, change_bucket_QQ3) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  group_by(GROUP) %>%
-  mutate(percentage = round(100 * count / sum(count), 1)) %>%
-  filter(change_bucket_QQ3 %in% c("< -25%", ">= 25%")) %>%
-  select(GROUP, change_bucket_QQ3, percentage) %>%
-  pivot_wider(names_from = change_bucket_QQ3, values_from = percentage, values_fill = 0)
-
-# Step 3: Combine the summary tables by joining them on GROUP
-final_combined <- summary_table_QQ1 %>%
-  full_join(summary_table_QQ2, by = "GROUP") %>%
-  full_join(summary_table_QQ3, by = "GROUP")
-
-# Step 4: Custom highlighter function for highlighting
-highlight_top_2_red <- function(column) {
-  formatter("span",
-            style = function(x) {
-              ranks <- rank(-x, ties.method = "first")
-              ifelse(ranks <= 2,
-                     "background-color: lightcoral; font-weight: bold;",
-                     NA)
-            })
-}
-
-highlight_top_2_green <- function(column) {
-  formatter("span",
-            style = function(x) {
-              ranks <- rank(-x, ties.method = "first")
-              ifelse(ranks <= 2,
-                     "background-color: lightgreen; font-weight: bold;",
-                     NA)
-            })
-}
-
-# Step 5: Apply red highlighting for < -25% and green highlighting for >= 25%
-formattable(final_combined, list(
-  "< -25%.x" = highlight_top_2_red(final_combined$`< -25%.x`),
-  "< -25%.y" = highlight_top_2_red(final_combined$`< -25%.y`),
-  "< -25%"   = highlight_top_2_red(final_combined$`< -25%`),
-  
-  ">= 25%.x" = highlight_top_2_green(final_combined$`>= 25%.x`),
-  ">= 25%.y" = highlight_top_2_green(final_combined$`>= 25%.y`),
-  ">= 25%"   = highlight_top_2_green(final_combined$`>= 25%`)
-))
-
-### 25%
-
-# Load necessary libraries
-library(dplyr)
-library(formattable)
-
-# Step 1: Create change buckets for QQ1, QQ2, and QQ3 with < -50% and >= 50%
+### Step 2: Categorize into 50% change buckets
 lying <- lying %>%
   mutate(
     change_bucket_QQ1 = case_when(
@@ -3053,40 +3114,30 @@ lying <- lying %>%
     )
   )
 
-# Step 2: Create summary table for QQ1, QQ2, and QQ3 with only < -50% and >= 50%
-summary_table_QQ1 <- lying %>%
-  group_by(GROUP, change_bucket_QQ1) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  group_by(GROUP) %>%
-  mutate(percentage = round(100 * count / sum(count), 1)) %>%
-  filter(change_bucket_QQ1 %in% c("< -50%", ">= 50%")) %>%
-  select(GROUP, change_bucket_QQ1, percentage) %>%
-  pivot_wider(names_from = change_bucket_QQ1, values_from = percentage, values_fill = 0)
+### Step 3: Create summary tables
 
-summary_table_QQ2 <- lying %>%
-  group_by(GROUP, change_bucket_QQ2) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  group_by(GROUP) %>%
-  mutate(percentage = round(100 * count / sum(count), 1)) %>%
-  filter(change_bucket_QQ2 %in% c("< -50%", ">= 50%")) %>%
-  select(GROUP, change_bucket_QQ2, percentage) %>%
-  pivot_wider(names_from = change_bucket_QQ2, values_from = percentage, values_fill = 0)
+make_summary_table <- function(df, bucket_col) {
+  df %>%
+    group_by(GROUP, !!sym(bucket_col)) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(GROUP) %>%
+    mutate(percentage = round(100 * count / sum(count), 1)) %>%
+    filter((!!sym(bucket_col)) %in% c("< -50%", ">= 50%")) %>%
+    select(GROUP, !!sym(bucket_col), percentage) %>%
+    pivot_wider(names_from = !!sym(bucket_col), values_from = percentage, values_fill = 0)
+}
 
-summary_table_QQ3 <- lying %>%
-  group_by(GROUP, change_bucket_QQ3) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  group_by(GROUP) %>%
-  mutate(percentage = round(100 * count / sum(count), 1)) %>%
-  filter(change_bucket_QQ3 %in% c("< -50%", ">= 50%")) %>%
-  select(GROUP, change_bucket_QQ3, percentage) %>%
-  pivot_wider(names_from = change_bucket_QQ3, values_from = percentage, values_fill = 0)
+summary_table_QQ1 <- make_summary_table(lying, "change_bucket_QQ1")
+summary_table_QQ2 <- make_summary_table(lying, "change_bucket_QQ2")
+summary_table_QQ3 <- make_summary_table(lying, "change_bucket_QQ3")
 
-# Step 3: Combine the summary tables by joining them on GROUP
+### Step 4: Combine all tables
 final_combined <- summary_table_QQ1 %>%
-  full_join(summary_table_QQ2, by = "GROUP") %>%
+  full_join(summary_table_QQ2, by = "GROUP", suffix = c(".QQ1", ".QQ2")) %>%
   full_join(summary_table_QQ3, by = "GROUP")
 
-# Step 4: Custom highlighter function for highlighting
+### Step 5: Highlighting functions
+
 highlight_top_2_red <- function(column) {
   formatter("span",
             style = function(x) {
@@ -3107,15 +3158,41 @@ highlight_top_2_green <- function(column) {
             })
 }
 
-# Step 5: Apply red highlighting for < -50% and green highlighting for >= 50%
+### Step 6: Format output table
 formattable(final_combined, list(
-  "< -50%.x" = highlight_top_2_red(final_combined$`< -50%.x`),
-  "< -50%.y" = highlight_top_2_red(final_combined$`< -50%.y`),
-  "< -50%"   = highlight_top_2_red(final_combined$`< -50%`),
+  "< -50%.QQ1" = highlight_top_2_red(final_combined$`< -50%.QQ1`),
+  "< -50%.QQ2" = highlight_top_2_red(final_combined$`< -50%.QQ2`),
+  "< -50%"     = highlight_top_2_red(final_combined$`< -50%`),
   
-  ">= 50%.x" = highlight_top_2_green(final_combined$`>= 50%.x`),
-  ">= 50%.y" = highlight_top_2_green(final_combined$`>= 50%.y`),
-  ">= 50%"   = highlight_top_2_green(final_combined$`>= 50%`)
+  ">= 50%.QQ1" = highlight_top_2_green(final_combined$`>= 50%.QQ1`),
+  ">= 50%.QQ2" = highlight_top_2_green(final_combined$`>= 50%.QQ2`),
+  ">= 50%"     = highlight_top_2_green(final_combined$`>= 50%`)
+))
+
+###
+
+#install.packages("formattable")
+#install.packages("webshot")
+#install.packages("htmlwidgets")
+#install.packages("htmltools")
+#webshot::install_phantomjs()
+
+library(formattable)
+library(htmltools)
+library(htmlwidgets)
+library(webshot)
+
+library(formattable)
+
+# Show the formatted table in the Viewer pane
+formattable(final_combined, list(
+  "< -50%.QQ1" = highlight_top_2_red(final_combined$`< -50%.QQ1`),
+  "< -50%.QQ2" = highlight_top_2_red(final_combined$`< -50%.QQ2`),
+  "< -50%"     = highlight_top_2_red(final_combined$`< -50%`),
+  
+  ">= 50%.QQ1" = highlight_top_2_green(final_combined$`>= 50%.QQ1`),
+  ">= 50%.QQ2" = highlight_top_2_green(final_combined$`>= 50%.QQ2`),
+  ">= 50%"     = highlight_top_2_green(final_combined$`>= 50%`)
 ))
 
 ```
