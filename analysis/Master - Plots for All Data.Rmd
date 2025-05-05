@@ -1115,7 +1115,8 @@ plot <- ggplot(lie_counts_filtered, aes(x = QuestionType, y = perc_all, fill = R
   
   labs(title = "QQ1 Top 5 Responses Before vs. After Ad (Control vs. Test Group)",
        x = "\nResponses",
-       y = "Percentage\n") +
+       y = "Percentage\n",
+       fill = "Response Categories") +
   
   facet_wrap(~ GROUP) +
   
@@ -1124,10 +1125,75 @@ plot <- ggplot(lie_counts_filtered, aes(x = QuestionType, y = perc_all, fill = R
     values = c("3" = "#F28E2B", "4" = "#59A14F", "5" = "#76B7B2", "6" = "#E15759", "9" = "#9D76B8"),  # Set color mapping
     labels = c(
       "3" = "Drawn to narcissists.",
-      "4" = "Confirmation bias; wanting to be part of a\ncommunity.",
-      "5" = "Feeling helpless and believe in the group's\ncause.",
-      "6" = "Curious about checking out the group;\ngroup seems large, powerful & different.",
-      "9" = "Other; too broad, unclear, or doesn't\nmatch any other categories."
+      "4" = "Confirmation bias; wanting\nto be part of a community.",
+      "5" = "Feeling helpless and believe\nin the group's cause.",
+      "6" = "Curious about checking\nout the group; group seems\nlarge, powerful & different.",
+      "9" = "Other; too broad, unclear,\nor doesn't match any other\ncategories."
+    )
+  ) +
+  
+  theme_minimal()
+
+# Step 6: Print the plot
+plot
+
+### GENDER ###
+
+# Step 1: Reshape, include Gender, relabel columns, and filter for Response values 3, 4, 5, 6, and 9 for display
+type_of_lie_long <- lying %>%
+  select(Gender, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages for all 9 categories (including 1 to 9)
+lie_counts_all <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc_all = n / sum(n) * 100)  # Calculate percentage for all 9 categories
+
+# Step 3: Filter for just the categories 3, 4, 5, 6, and 9 to display
+lie_counts_filtered <- lie_counts_all %>%
+  filter(Response %in% c("3", "4", "5", "6", "9"),
+         Gender %in% c("Male", "Female"))  # Keep only selected categories and genders
+
+# Step 4: Set the factor levels for QuestionType so that "Before Ad" is on the left and "After Ad" on the right
+lie_counts_filtered$QuestionType <- factor(lie_counts_filtered$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 5: Create ONE plot, faceting by Gender
+plot <- ggplot(lie_counts_filtered, aes(x = QuestionType, y = perc_all, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentages based on all 9 values)
+  geom_text(aes(label = paste0(round(perc_all, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "QQ1 Top 5 Responses Before vs. After Ad (Male vs. Female)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  facet_wrap(~ Gender) +  # Facet by Gender instead of Group
+  
+  # Modify the legend labels for "3", "4", "5", "6", and "9"
+  scale_fill_manual(
+    values = c("3" = "#F28E2B", "4" = "#59A14F", "5" = "#76B7B2", "6" = "#E15759", "9" = "#9D76B8"),
+    labels = c(
+      "3" = "Drawn to narcissists.",
+      "4" = "Confirmation bias; wanting\nto be part of a community.",
+      "5" = "Feeling helpless and believe\nin the group's cause.",
+      "6" = "Curious about checking\nout the group; group seems\nlarge, powerful & different.",
+      "9" = "Other; too broad, unclear,\nor doesn't match any other\ncategories."
     )
   ) +
   
@@ -1618,11 +1684,11 @@ type_of_lie_long <- lying %>%
 # Step 2: Map Response values to readable labels
 response_labels <- c(
   "1" = "Doesn't take time to fact check",
-  "2" = "Believes first thing they see",
+  "2" = "Believes first thing they see\nonline",
   "3" = "Looks for ideas that confirm\npre-existing beliefs",
   "4" = "Unsure",
   "5" = "Other",
-  "6" = "There's too much\nmisinformation available"
+  "6" = "There's too much\nmisinformation online"
 )
 
 type_of_lie_long <- type_of_lie_long %>%
@@ -1650,7 +1716,7 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
   labs(title = "QQ2 Responses Before vs. After Ad (All Groups)",
        x = "\nResponses",
        y = "Percentage\n",
-       fill = "Common Themes") +  # Legend title changed here
+       fill = "Response Categories") +  # Legend title changed here
   
   theme_minimal() #+
   #theme(legend.position = "bottom")  # Move legend to bottom
@@ -1676,12 +1742,12 @@ type_of_lie_long <- lying %>%
 
 # Step 2: Map Response values to shorter category descriptions
 response_labels <- c(
-  "1" = "Doesn't take time to fact check",
-  "2" = "Believes first thing they see",
-  "3" = "Looks for ideas that confirm\npre-existing beliefs",
-  "4" = "Unsure",
-  "5" = "Other",
-  "6" = "There's too much\nmisinformation available"
+  "1" = "Doesn't take time to fact check.",
+  "2" = "Believes first thing they see.",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs.",
+  "4" = "Unsure.",
+  "5" = "Other.",
+  "6" = "There's too much\nmisinformation online."
 )
 
 type_of_lie_long <- type_of_lie_long %>%
@@ -2271,12 +2337,15 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
 # Step 5: Print the plot
 plot
 
+### CONTROLLING VALUES IN LEGEND ###
 
-### SIDE BY SIDE CONTROL VS. TEST GROUP
+# Load necessary libraries
+library(tidyverse)
 
-# Step 1: Reshape, include GROUP, relabel columns
+# Step 1: Reshape, include Gender, relabel columns
 type_of_lie_long <- lying %>%
-  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  filter(Gender %in% c("Male", "Female")) %>%    # Filter for Male/Female
   pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
                names_to = "QuestionType",
                values_to = "Response") %>%
@@ -2287,15 +2356,23 @@ type_of_lie_long <- lying %>%
 
 # Step 2: Count and calculate percentages
 lie_counts <- type_of_lie_long %>%
-  group_by(GROUP, QuestionType, Response) %>%
+  group_by(Gender, QuestionType, Response) %>%
   summarise(n = n(), .groups = "drop") %>%
-  group_by(GROUP, QuestionType) %>%
+  group_by(Gender, QuestionType) %>%
   mutate(perc = n / sum(n) * 100)
 
 # Step 3: Set factor levels
 lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
 
-# Step 4: Create plot, faceting by GROUP
+# Step 4: Define mapping for legend labels with line breaks
+response_labels <- c(
+  "White Lie" = "White Lie",
+  "Keeping friend from danger and/or punishment" = "Protect friend from danger\n&/or punishment",
+  "Would tell truth over supporting friends" = "Would tell truth over\nsupporting friends",
+  "Unsure" = "Unsure"
+)
+
+# Step 4: Create plot, faceting by Gender, using default colors
 plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
   geom_bar(stat = "identity", position = "stack", color = "black") +
   
@@ -2304,17 +2381,21 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
             size = 3,
             color = "black") +
   
-  labs(title = "QQ3 Responses Before vs. After Ad (Control vs. Test Group)",
+  labs(title = "QQ3 Responses Before vs. After Ad (By Gender: Male and Female Only)",
        x = "\nResponses",
        y = "Percentage\n",
-       fill = "Response Categories") +
+       fill = "Response Categories") +  # Legend title
   
-  facet_wrap(~ GROUP) +
-  
+  facet_wrap(~ Gender) +
+
+  # Use default colors and custom legend labels
+  scale_fill_discrete(labels = response_labels) +  # <-- just map labels
+
   theme_minimal()
 
 # Step 5: Print the plot
 plot
+
 ```
 
 **Significant finding:** Women are willing to tell the truth more than men, 11.1% vs. 2.6% of men.
@@ -2437,8 +2518,8 @@ plot_group <- ggplot(lie_counts_group, aes(x = QuestionType, y = perc, fill = Re
        y = "Percentage\n",
        fill = "Response Categories") +
   facet_wrap(~ GROUP) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
+  theme_minimal() #+
+  #theme(legend.position = "bottom")
 
 plot_group
 ```
