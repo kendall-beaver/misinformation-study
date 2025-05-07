@@ -83,6 +83,19 @@ lying <- read_excel("data/lying_data.xlsx")
 
 ## Age
 
+The deadline to register is Tomorrow, May 6! This registration deadline is for the College of Information Science Convocation on May 14 at 9 a.m.
+
+Please keep your eyes out for emails with information about convocation and where you will be checking in and tickets. 
+
+At this ceremony, individual student names will be called, and you will cross the stage.  Those students who registered to attend online will also have their names called and a slide shown. The livestream link will be available on the convocation website prior to the start of the ceremony. 
+
+Please visit the website for detailed information for your guests.
+
+ALL guests must have a ticket to enter Centennial Hall, so it is very important for you to register and indicate how many tickets you will need. 
+
+Tickets will be electronic this year and information on how to collect your tickets will be sent out after the close of registration.  At this time, all ticket requests will be fulfilled. \
+Seating is on a first come first served basis other than reserved areas for graduating students, college staff and special guests. 
+
 ```{r age_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 ### AGE PIE CHART ###
@@ -139,6 +152,19 @@ ggplot(age_counts, aes(x = "", y = Count, fill = AgeGroup)) +
   theme(plot.title = element_text(hjust = 0.5))  # Center the title
 
 ```
+
+The deadline to register is Tomorrow, May 6! This registration deadline is for the College of Information Science Convocation on May 14 at 9 a.m.
+
+Please keep your eyes out for emails with information about convocation and where you will be checking in and tickets. 
+
+At this ceremony, individual student names will be called, and you will cross the stage.  Those students who registered to attend online will also have their names called and a slide shown. The livestream link will be available on the convocation website prior to the start of the ceremony. 
+
+Please visit the website for detailed information for your guests.
+
+ALL guests must have a ticket to enter Centennial Hall, so it is very important for you to register and indicate how many tickets you will need. 
+
+Tickets will be electronic this year and information on how to collect your tickets will be sent out after the close of registration.  At this time, all ticket requests will be fulfilled. \
+Seating is on a first come first served basis other than reserved areas for graduating students, college staff and special guests. 
 
 ## Gender
 
@@ -1446,11 +1472,25 @@ ggplot(lying, aes(x = GROUP, y = composite_diff_norm_QQ1)) +
 
 lying <- lying %>%
   mutate(
+    word_count_day1_QQ1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2_QQ1 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1_QQ1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2_QQ1 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change_QQ1 = (word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1),
+    sentence_count_change_QQ1 = (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1),
+
+    composite_diff_norm_QQ1 = (word_count_change_QQ1 + sentence_count_change_QQ1) / 2
+  )
+
+lying <- lying %>%
+  mutate(
     change_bucket = case_when(
-      composite_diff_norm < -0.5 ~ "< -50%",
-      composite_diff_norm >= -0.5 & composite_diff_norm < 0 ~ "-50% to 0%",
-      composite_diff_norm >= 0 & composite_diff_norm < 0.5 ~ "0% to 49%",
-      composite_diff_norm >= 0.5 ~ ">= 50%"
+      composite_diff_norm_QQ1 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ1 >= -0.5 & composite_diff_norm_QQ1 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ1 >= 0.5 ~ ">= 50%"
     )
   )
 
@@ -1507,53 +1547,54 @@ ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
 plot_list <- list()
 
 # Loop over each group and create pie charts
-for (grp in groups) {
+#for (grp in groups) {
   
-  bucket_counts_group <- lying %>%
-    filter(GROUP == grp) %>%
-    group_by(change_bucket) %>%
-    summarise(count = n(), .groups = "drop") %>%
-    mutate(
-      percentage = round(100 * count / sum(count), 1),
-      pct_label = paste0(percentage, "%")
-    )
+#  bucket_counts_group <- lying %>%
+#    filter(GROUP == grp) %>%
+#    group_by(change_bucket) %>%
+#    summarise(count = n(), .groups = "drop") %>%
+#    mutate(
+#      percentage = round(100 * count / sum(count), 1),
+#      pct_label = paste0(percentage, "%")
+#    )
   
-  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
-    geom_bar(stat = "identity", width = 1, color = "black") +
-    coord_polar("y", start = 0) +
-    geom_text(
-      aes(label = pct_label),
-      position = position_stack(vjust = 0.6),
-      size = 3,
-      color = "black",
-      fontface = "bold"
-    ) +
-    scale_fill_manual(
-      values = c(
-        "< -50%" = "red",
-        "-50% to 0%" = "orange",
-        "0% to 49%" = "yellow",
-        ">= 50%" = "skyblue"
-      )
-    ) +
-    labs(
-      title = paste(grp),
-      fill = "Change Bucket"
-    ) +
-    theme_void() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      legend.title = element_text(face = "bold"),
-      legend.text = element_text(size = 10)
-    )
+#  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+#    geom_bar(stat = "identity", width = 1, color = "black") +
+#    coord_polar("y", start = 0) +
+#    geom_text(
+#      aes(label = pct_label),
+#      position = position_stack(vjust = 0.6),
+#      size = 3,
+#      color = "black",
+#      fontface = "bold"
+#    ) +
+#    scale_fill_manual(
+#      values = c(
+#        "< -50%" = "red",
+#        "-50% to 0%" = "orange",
+#        "0% to 49%" = "yellow",
+#        ">= 50%" = "skyblue"
+#      )
+#    ) +
+#    labs(
+#      title = paste(grp),
+#      fill = "Change Bucket"
+#    ) +
+#    theme_void() +
+#    theme(
+#      plot.title = element_text(hjust = 0.5, face = "bold"),
+#      legend.title = element_text(face = "bold"),
+#      legend.text = element_text(size = 10)
+#    )
   
   # Add to plot list
-  plot_list[[grp]] <- p
-}
+#  plot_list[[grp]] <- p
+#}
 
 # Combine all plots into one using patchwork
-wrap_plots(plot_list) +
-  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+
+#wrap_plots(plot_list) +
+#  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
 ```
 
 ```{r qq1_composite_score_table, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
@@ -2105,53 +2146,54 @@ ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
 plot_list <- list()
 
 # Loop over each group and create pie charts
-for (grp in groups) {
+
+#for (grp in groups) {
   
-  bucket_counts_group <- lying %>%
-    filter(GROUP == grp) %>%
-    group_by(change_bucket) %>%
-    summarise(count = n(), .groups = "drop") %>%
-    mutate(
-      percentage = round(100 * count / sum(count), 1),
-      pct_label = paste0(percentage, "%")
-    )
+#  bucket_counts_group <- lying %>%
+#    filter(GROUP == grp) %>%
+#    group_by(change_bucket) %>%
+#    summarise(count = n(), .groups = "drop") %>%
+#    mutate(
+#      percentage = round(100 * count / sum(count), 1),
+#      pct_label = paste0(percentage, "%")
+#    )
   
-  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
-    geom_bar(stat = "identity", width = 1, color = "black") +
-    coord_polar("y", start = 0) +
-    geom_text(
-      aes(label = pct_label),
-      position = position_stack(vjust = 0.6),
-      size = 3,
-      color = "black",
-      fontface = "bold"
-    ) +
-    scale_fill_manual(
-      values = c(
-        "< -50%" = "red",
-        "-50% to 0%" = "orange",
-        "0% to 49%" = "yellow",
-        ">= 50%" = "skyblue"
-      )
-    ) +
-    labs(
-      title = paste(grp),
-      fill = "Change Bucket"
-    ) +
-    theme_void() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      legend.title = element_text(face = "bold"),
-      legend.text = element_text(size = 10)
-    )
+#  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+#    geom_bar(stat = "identity", width = 1, color = "black") +
+#    coord_polar("y", start = 0) +
+#    geom_text(
+#      aes(label = pct_label),
+#      position = position_stack(vjust = 0.6),
+#      size = 3,
+#      color = "black",
+#      fontface = "bold"
+#    ) +
+#    scale_fill_manual(
+#      values = c(
+#        "< -50%" = "red",
+#        "-50% to 0%" = "orange",
+#        "0% to 49%" = "yellow",
+#        ">= 50%" = "skyblue"
+#      )
+#    ) +
+#    labs(
+#      title = paste(grp),
+#      fill = "Change Bucket"
+#    ) +
+#    theme_void() +
+#    theme(
+#      plot.title = element_text(hjust = 0.5, face = "bold"),
+#      legend.title = element_text(face = "bold"),
+#      legend.text = element_text(size = 10)
+#    )
   
   # Add to plot list
-  plot_list[[grp]] <- p
-}
+#  plot_list[[grp]] <- p
+#}
 
 # Combine all plots into one using patchwork
-wrap_plots(plot_list) +
-  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+#wrap_plots(plot_list) +
+#  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
 ```
 
 The drop was the same percentage for Test Group - Visual and Audio: 57.2% and 57.1%, respectively; but the word count more than doubled for Visual in the Test Group. and was slightly larger for the Control Group, although the drop in word and sentence count was the highest in this group, with 59.1%.
@@ -2609,53 +2651,56 @@ ggplot(bucket_counts, aes(x = "", y = count, fill = change_bucket)) +
 plot_list <- list()
 
 # Loop over each group and create pie charts
-for (grp in groups) {
+
+#for (grp in groups) {
   
-  bucket_counts_group <- lying %>%
-    filter(GROUP == grp) %>%
-    group_by(change_bucket) %>%
-    summarise(count = n(), .groups = "drop") %>%
-    mutate(
-      percentage = round(100 * count / sum(count), 1),
-      pct_label = paste0(percentage, "%")
-    )
+#  bucket_counts_group <- lying %>%
+#    filter(GROUP == grp) %>%
+#    group_by(change_bucket) %>%
+#    summarise(count = n(), .groups = "drop") %>%
+#    mutate(
+#      percentage = round(100 * count / sum(count), 1),
+#      pct_label = paste0(percentage, "%")
+#    )
   
-  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
-    geom_bar(stat = "identity", width = 1, color = "black") +
-    coord_polar("y", start = 0) +
-    geom_text(
-      aes(label = pct_label),
-      position = position_stack(vjust = 0.6),
-      size = 3,
-      color = "black",
-      fontface = "bold"
-    ) +
-    scale_fill_manual(
-      values = c(
-        "< -50%" = "red",
-        "-50% to 0%" = "orange",
-        "0% to 49%" = "yellow",
-        ">= 50%" = "skyblue"
-      )
-    ) +
-    labs(
-      title = paste(grp),
-      fill = "Change Bucket"
-    ) +
-    theme_void() +
-    theme(
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      legend.title = element_text(face = "bold"),
-      legend.text = element_text(size = 10)
-    )
+#  p <- ggplot(bucket_counts_group, aes(x = "", y = count, fill = change_bucket)) +
+#    geom_bar(stat = "identity", width = 1, color = "black") +
+#    coord_polar("y", start = 0) +
+#    geom_text(
+#      aes(label = pct_label),
+#      position = position_stack(vjust = 0.6),
+#      size = 3,
+#      color = "black",
+#      fontface = "bold"
+#    ) +
+#    scale_fill_manual(
+#      values = c(
+#        "< -50%" = "red",
+#        "-50% to 0%" = "orange",
+#        "0% to 49%" = "yellow",
+#        ">= 50%" = "skyblue"
+#      )
+#    ) +
+#    labs(
+#      title = paste(grp),
+#      fill = "Change Bucket"
+#    ) +
+#    theme_void() +
+#    theme(
+#      plot.title = element_text(hjust = 0.5, face = "bold"),
+#      legend.title = element_text(face = "bold"),
+#      legend.text = element_text(size = 10)
+#    )
   
   # Add to plot list
-  plot_list[[grp]] <- p
-}
+
+#  plot_list[[grp]] <- p
+#}
 
 # Combine all plots into one using patchwork
-wrap_plots(plot_list) +
-  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
+
+#wrap_plots(plot_list) +
+#  plot_layout(ncol = 2)  # Adjust layout: 2x2 grid
 ```
 
 Significant finding: 57% of respondents decreased their answer for QQ3. In total, 63.7% had decreased their answers compared to 36.3% who increased their answers.
@@ -3628,8 +3673,8 @@ ggplot(gender_prop, aes(x = Gender, y = prop, fill = FUTURE_STUDY)) +
 ```{r ERP_future_study_very_categories, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 # Filter data down for 2 categories in FUTURE_STUDY
-#filtered_data <- lying %>%
-#  filter(FUTURE_STUDY %in% c("Very Willing", "Very Unwilling"))
+filtered_data <- lying %>%
+  filter(FUTURE_STUDY %in% c("Very Willing", "Very Unwilling"))
 #summary(filtered_data)
 # 33 rows total
 
