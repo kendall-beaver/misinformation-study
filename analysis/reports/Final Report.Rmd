@@ -50,29 +50,33 @@ $$
 
 In summary, participants' views remained mostly unchanged before and after an ad, except for QQ1, which had 9 categories (the most amount of categories for any QQ) and the largest amount of change. Additionally, the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad, and when the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question.
 
-This report is organized and presented as follows: QQs, Sentiment Analysis, plus Limitations and Future Discussions.
+This report is organized and presented in four main sections: *Categorical Responses for QQ1 - QQ3, Composite Score for QQ1 - QQ3, Sentiment Analysis of Each Ad,* and *plus Limitations and Future Discussions.*
 
-# Categorical Responses for QQ1 - QQ3
+# I. Categorical Responses for QQ1 - QQ3
 
 ## QQ1
 
-1.  "Coerced into joining group"
+There were 9 major themes found. While this list may seem long, categories have been combined that has some influence on each other. For example, with the largest category, number 4, below, people want to seek a community of like-minded people, "confirmation bias" means they're seeking people and sources that match their views. In other words, misinformation usually isn't objective and factual, but information that has been filtered subjectively or completely made up and seems real.
 
-2.  "Influenced to join a group in a non-coercive manner"
+1.  Coerced into joining group
 
-3.  "Drawn to narcissists; to people who are passionate, confident, and charismatic"
+2.  Influenced to join a group in a non-coercive manner
 
-4.  "Confirmation bias; wanting to be part of a community of like-minded people, to not feel lonely"
+3.  Drawn to narcissists; to people who are passionate, confident, and charismatic
 
-5.  "Feeling helpless and believe in the group's cause; that they can make change and life better"
+4.  Confirmation bias; wanting to be part of a community of like-minded people, to not feel lonely
 
-6.  "Curious about checking out the group; group seems large, powerful, different; could be fun, could gain status; to not feel bored"
+5.  Feeling helpless and believe in the group's cause; that they can make change and life better
 
-7.  "Are narcissists themselves and want to influence or have power over people; enjoy expressing their views"
+6.  Curious about checking out the group; group seems large, powerful, different; could be fun, could gain status; to not feel bored
 
-8.  "Unsure why people are attracted to radical groups"
+7.  Are narcissists themselves and want to influence or have power over people; enjoy expressing their views
 
-9.  "Other; response is too broad, unclear, and/or doesn't match any other categories"
+8.  Unsure [why people are attracted to radical groups]
+
+9.  Other; response is too broad, unclear, and/or doesn't match any other categories
+
+As can be seen in Fig. 1, the largest category, 4 - "Confirmation bias" - increased in both formats of the test ad by 28.21%, on average, whereas the ad decreased by an average of 7.07% for the control ad. The test ad did have the main female character, Jessica, joining a group of online radical friends,
 
 ```{r categorical_data_before_and_after_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -113,8 +117,7 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
             fontface = "bold",
             color = "black") +
   
-  labs(title = "QQ1 Responses Before vs. After Ad (Control vs. Test Group)",
-       x = "\nResponses",
+  labs(x = "\nResponses",
        y = "Percentage\n") +
   
   facet_wrap(~ GROUP) +
