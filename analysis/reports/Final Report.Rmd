@@ -1,0 +1,168 @@
+---
+title: "Graduate Capstone Report"
+author: "Kendall Beaver"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r load_libraries, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+#{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+
+# Load libraries
+library(tidyr)
+library(gridExtra)
+library(readxl)
+library(dplyr)
+library(corrplot)
+library(writexl)
+library(ggplot2)
+library(stringr)
+library(scales)
+library(patchwork)
+#library(gt)
+
+# Load datasets
+
+lying <- read_excel("../data/lying_data.xlsx")
+```
+
+# Intro
+
+This report critically assessed 594 written responses that were collected from 99 participants via a questionnaire in Dr. Diana Daly's pilot study, "Design of audio ads to prebunk misinformation and promote civil discourse", where participants were asked the following qualitative questions ("QQ"):
+
+-   QQ1: What are some reasons you think people are attracted to radical groups?
+
+-   QQ2: What are some reasons you think people believe false ideas circulating online?
+
+-   QQ3: Describe a situation in which supporting friends would be more important than telling the truth.
+
+These questions were asked before and after an ad was presented to a participant, which could be one of four ads: a control ad in an audio or visual-audio format, or a test ad in an audio or visual-audio format. The former ad was a random ad, whereas the latter was an experimental ad designed to increase participants' information literacy and make them more skeptical about misinformation. In addition to QQ1 - QQ3, participants were asked what they liked and disliked about their ad, plus any additional thoughts they had about said ad.
+
+Thematic and content analysis was performed on the responses to identify common theme. Every response was thoroughly reviewed several times, and if the meaning of a response still could not be understood after this process, the response was placed in the "Other" category—different from the "Unsure" category, where participants explicitly stated that they were unsure and did not have an answer for a QQ.
+
+A composite score was also developed to measure how much a person's response changed to each QQ, by taking the count of words and sentences before and after an ad, normalizing the counts to make them equivalent, adding them together, then dividing by two to produce an average score.
+
+$$
+\frac{\text{Normalized count of words} + \text{Normalized count of sentences}}{2}
+$$
+
+In summary, participants' views remained mostly unchanged before and after an ad, except for QQ1, which had 9 categories (the most amount of categories for any QQ) and the largest amount of change. Additionally, the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad, and when the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question.
+
+This report is organized and presented as follows: QQs, Sentiment Analysis, plus Limitations and Future Discussions.
+
+# Categorical Responses for QQ1 - QQ3
+
+## QQ1
+
+1.  "Coerced into joining group"
+
+2.  "Influenced to join a group in a non-coercive manner"
+
+3.  "Drawn to narcissists; to people who are passionate, confident, and charismatic"
+
+4.  "Confirmation bias; wanting to be part of a community of like-minded people, to not feel lonely"
+
+5.  "Feeling helpless and believe in the group's cause; that they can make change and life better"
+
+6.  "Curious about checking out the group; group seems large, powerful, different; could be fun, could gain status; to not feel bored"
+
+7.  "Are narcissists themselves and want to influence or have power over people; enjoy expressing their views"
+
+8.  "Unsure why people are attracted to radical groups"
+
+9.  "Other; response is too broad, unclear, and/or doesn't match any other categories"
+
+```{r categorical_data_before_and_after_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PROPORTION (%), BY AD GROUP ###
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages grouped by GROUP and QuestionType
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)  # Calculate percentage within each GROUP + QuestionType
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Create ONE plot, faceting by GROUP
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  # Internal labels for each part of the bar (show percentages)
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            fontface = "bold",
+            color = "black") +
+  
+  labs(title = "QQ1 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n") +
+  
+  facet_wrap(~ GROUP) +
+  
+  theme_minimal()
+
+# Step 5: Print the plot
+plot
+```
+
+## QQ2 
+
+```{r}
+
+```
+
+## QQ3
+
+```{r}
+
+```
+
+## Overall Effect
+
+```{r}
+
+```
+
+# Composite Score for QQ1 - QQ3
+
+```{r}
+
+```
+
+# Sentiment Analysis of Each Ad
+
+```{r}
+
+```
+
+# Other Project?
+
+This didn't pan out. The link is here, and is in the GitHub repository:
+
+# Limitations/Findings/Future Discussions
+
+Additionally, if a different advertisement was presented to participants then the views may or may not change based on the emotional impact an ad may have. The thematic analysis is also the views, as objective as possible, of just one person.
+
+This will be good to create categories for quicker analysis, especially if multiple studies want to be ran at once, and scaled up to occur more frequently. This pilot is a starting point, and additional comments can be left.
+
+In summary, no correlation was found between the type of ad and categorical responses changing, although the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad. When the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question, but overall, participants' views remained mostly unchanged before and after an ad.

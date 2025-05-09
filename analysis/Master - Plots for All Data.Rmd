@@ -168,7 +168,7 @@ Seating is on a first come first served basis other than reserved areas for grad
 
 ## Gender
 
-```{r gender_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r gender_pie_charts, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE, fig.width=6, fig.height=3}
 
 ### GENDER PIE CHART BY PERCENTAGE ###
 
