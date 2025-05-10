@@ -50,13 +50,15 @@ $$
 
 In summary, participants' views remained mostly unchanged before and after an ad, except for QQ1, which had 9 categories (the most amount of categories for any QQ) and the largest amount of change. Additionally, the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad, and when the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question.
 
-This report is organized and presented in four main sections: *Categorical Responses for QQ1 - QQ3, Composite Score for QQ1 - QQ3, Sentiment Analysis of Each Ad,* and *plus Limitations and Future Discussions.*
+This report is organized and presented in four main sections: I. Categorical Responses for QQ1 - QQ3; II. Composite Score for QQ1 - QQ3; III. Sentiment Analysis of Each Ad; and IV. Limitations and Future Discussions.
 
 # I. Categorical Responses for QQ1 - QQ3
 
 ## QQ1
 
-There were 9 major themes found. While this list may seem long, categories have been combined that has some influence on each other. For example, with the largest category, number 4, below, people want to seek a community of like-minded people, "confirmation bias" means they're seeking people and sources that match their views. In other words, misinformation usually isn't objective and factual, but information that has been filtered subjectively or completely made up and seems real.
+A total of 9 common themes were identified in the responses to QQ1, which are nearly twice as long as the themes identified in QQ2 & QQ3, and this could be due to the nature of the question—trying to understand the thoughts of somebody different than the participant and why they would be interested in joining a radical group. If a theme appeared at least 3 times then it was assigned its own category, but many themes were combined together if they had an influence on one another, helping to produce a more concise list.
+
+#### *"What are some reasons you think people are attracted to radical groups?"* 
 
 1.  Coerced into joining group
 
@@ -72,11 +74,69 @@ There were 9 major themes found. While this list may seem long, categories have 
 
 7.  Are narcissists themselves and want to influence or have power over people; enjoy expressing their views
 
-8.  Unsure [why people are attracted to radical groups]
+8.  Unsure why people are attracted to radical groups
 
 9.  Other; response is too broad, unclear, and/or doesn't match any other categories
 
-As can be seen in Fig. 1, the largest category, 4 - "Confirmation bias" - increased in both formats of the test ad by 28.21%, on average, whereas the ad decreased by an average of 7.07% for the control ad. The test ad did have the main female character, Jessica, joining a group of online radical friends,
+```{r one, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### STANDALONE PLOT FOR CONTROL + TEST GROUPS ###
+
+# Step 1: Reshape, include GROUP, relabel columns
+type_of_lie_long <- lying %>%
+  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
+  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ1_CATEGORY_BEFORE = "Before Ad",
+                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Step 2: Count and calculate percentages grouped by GROUP and QuestionType
+lie_counts <- type_of_lie_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels for consistent x-axis order
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Split into Control and Test groups
+control_groups <- lie_counts %>%
+  filter(GROUP %in% c("Control Group (Visual)", "Control Group (Audio)"))
+
+test_groups <- lie_counts %>%
+  filter(GROUP %in% c("Test Group (Visual)", "Test Group (Audio)"))
+
+# Step 5: Create Control plot
+plot_control <- ggplot(control_groups, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3, fontface = "bold", color = "black") +
+  labs(x = "\nResponses", y = "Percentage\n", title = "Control Groups") +
+  facet_wrap(~ GROUP) +
+  theme_minimal()
+
+# Step 6: Create Test plot
+plot_test <- ggplot(test_groups, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3, fontface = "bold", color = "black") +
+  labs(x = "\nResponses", y = "Percentage\n", title = "Test Groups") +
+  facet_wrap(~ GROUP) +
+  theme_minimal()
+
+# Step 7: Print both plots
+plot_control
+plot_test
+```
 
 ```{r categorical_data_before_and_after_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -128,13 +188,17 @@ plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
 plot
 ```
 
-## QQ2 
+As can be seen in Fig. 1, the largest category, 4 - "Confirmation bias" - increased in both formats of the test ad by 28.21%, on average, whereas the ad decreased by an average of 7.07% for the control ad. The test ad did have the main female character, Jessica, joining a group of online radical friends,
+
+Number 6 & 9 had some interesting trends, too.
+
+## QQ2: "What are some reasons you think people believe false ideas circulating online?"
 
 ```{r}
 
 ```
 
-## QQ3
+## QQ3: "Describe a situation in which supporting friends would be more important than telling the truth."
 
 ```{r}
 
@@ -164,8 +228,16 @@ This didn't pan out. The link is here, and is in the GitHub repository:
 
 # Limitations/Findings/Future Discussions
 
+### Cut stuff:
+
 Additionally, if a different advertisement was presented to participants then the views may or may not change based on the emotional impact an ad may have. The thematic analysis is also the views, as objective as possible, of just one person.
 
 This will be good to create categories for quicker analysis, especially if multiple studies want to be ran at once, and scaled up to occur more frequently. This pilot is a starting point, and additional comments can be left.
 
 In summary, no correlation was found between the type of ad and categorical responses changing, although the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad. When the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question, but overall, participants' views remained mostly unchanged before and after an ad.
+
+Many themes were combined together that have some type of relationship and influence on one another. For example,
+
+the categories in QQ1 have been combined that has some influence on each other. For example, with the largest category, 4 - Confirmation bias, people want to seek a community of like-minded people, "confirmation bias" means they're seeking people and sources that match their views. In other words, misinformation usually isn't objective and factual, but information that has been filtered subjectively or completely made up and seems real.
+
+This question asked people their views on relationships, specifically how people form social bonds with radical people, therefore it's possible that many themes appeared to explain this complex, multi-faceted dynamic.
