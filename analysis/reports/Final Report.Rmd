@@ -79,7 +79,7 @@ A total of 9 common themes were identified in the responses to QQ1, which are ne
 
 9.  Other; response is too broad, unclear, and/or doesn't match any other categories.
 
-Figures 1 & 2 below show the results of a change in these categories.
+Figures 1 & 2 below show the results of these categories changed after presenting an ad.
 
 ```{r control_group_plot, fig.width=5.5, fig.height=3.5, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -124,7 +124,7 @@ plot_control <- ggplot(control_groups, aes(x = QuestionType, y = perc, fill = Re
   theme_minimal()
 
 # Step 6: Create the caption text
-caption <- textGrob("Figure 1: Control Group Responses Before and After the Ad", 
+caption <- textGrob("Figure 1: Control Group (Visual & Audio) responses before and after the ad.", 
                     gp = gpar(fontsize = 10))
 
 # Step 7: Combine the plot and caption using grid.arrange()
@@ -150,18 +150,18 @@ plot_test <- ggplot(test_groups, aes(x = QuestionType, y = perc, fill = Response
   theme_minimal()
 
 # Step 6: Create the caption text
-caption <- textGrob("Figure 2: Control Group Responses Before and After the Ad", 
+caption <- textGrob("Figure 2: Test Group (Visual & Audio) responses before and after the ad.", 
                     gp = gpar(fontsize = 10))
 
 # Step 7: Combine the plot and caption using grid.arrange()
 grid.arrange(plot_test, caption, ncol = 1, heights = c(10, 1))
 ```
 
-The largest category for both ad groups was Category 4 ("Confirmation bias"), which composed over 40% of all responses for participants. However, this response decreased on average by 7.07% after the control ad was presented, whereas the responses increased on average by 28.21% after the test ad was viewed and listened by those participants.
+The largest category for both ad groups was Category 4 ("Confirmation bias"), which composed over 40% of all responses for participants. However, this response decreased on average by 7.07% after the control ad was presented, whereas responses increased by 28.21% on average after the test ad was presented to those participants.
 
-In the latter ad, a female character named Mel finds a group of online friends who want to storm the post office, but in the former ad, a female character named Jessica doesn't say or indicate that her in-person friends are radical, just that they're early bowlers. It's possible that the ad with radical, online friends could have influenced the responses, but more data and follow-up interviews would need to be conducted to validate this claim.
+In the latter ad, a female character named Mel finds a group of online friends who want to storm the post office, but in the former ad a female character named Jessica doesn't say that her friends are radical in any way, only that they're "early bowlers." It's possible that the ad with radical friends could have influenced the responses, but follow-up survey data and/or interviews need to be conducted to validate this.
 
-The second largest category for the control ad started off as Category 5 ("Believe group can make their life better"), but shared second place with Category 6 ("Group seems large, powerful and different; could be fun"). The second place for the test ad was mixed, where Categories 2, 1, 3, 6 & 9 alternated the spot for second place.
+The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") after the ad. Regarding the audio ad, Category 5 was the second largest category for the audio group while Category 3 ("Drawn to narcassists") held the same ranking for the visual group. After the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group while Categories 6 & 9 ("Other; response is too broad") equally took second place for the visual group.
 
 ## QQ2
 
