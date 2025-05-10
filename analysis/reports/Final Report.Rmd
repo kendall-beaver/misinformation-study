@@ -169,8 +169,123 @@ The second largest category for the control ad started off as Category 5 ("Belie
 
 ###  "What are some reasons you think people believe false ideas circulating online?"
 
-```{r}
+1.  Doesn't take time to fact check.
 
+2.  Believes first thing they see.
+
+3.  Looks for ideas that confirm pre-existing beliefs.
+
+4.  Unsure. (This only appears in 1 of the 4 ads.)
+
+5.  Other.
+
+6.  There's too much misinformation available.
+
+```{r control_group_qq2, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+### CONTROL GROUP: QQ2 Responses
+
+# Reshape, filter for Control Group
+control_long <- lying %>%
+  select(GROUP, QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  filter(GROUP %in% c("Control Group (Visual)", "Control Group (Audio)")) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Relabel responses
+response_labels <- c(
+  "1" = "Doesn't take time to fact check",
+  "2" = "Believes first thing they see",
+  "3" = "Looks for ideas that confirm\npre-existing beliefs",
+  "4" = "Unsure",
+  "5" = "Other",
+  "6" = "There's too much\nmisinformation available"
+)
+
+control_long <- control_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Count and percentage
+control_counts <- control_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+control_counts$QuestionType <- factor(control_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Plot
+third_plot <- ggplot(control_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "black") +
+  labs(x = "\nResponses", y = "Percentage\n", fill = "Common Themes") +
+  facet_wrap(~ GROUP) +
+  theme_minimal()
+
+# Step 6: Create the caption text
+caption <- textGrob("Figure 3: Control Group Responses Before and After the Ad", 
+                    gp = gpar(fontsize = 10))
+
+# Step 7: Combine the plot and caption using grid.arrange()
+grid.arrange(third_plot, caption, ncol = 1, heights = c(10, 1))
+```
+
+```{r test_group_qq2, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+### TEST GROUP: QQ2 Responses
+
+# Reshape, filter for Test Group
+test_long <- lying %>%
+  select(GROUP, QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER) %>%
+  filter(GROUP %in% c("Test Group (Visual)", "Test Group (Audio)")) %>%
+  pivot_longer(cols = c(QQ2_CATEGORY_BEFORE, QQ2_CATEGORY_AFTER),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ2_CATEGORY_BEFORE = "Before Ad",
+                               QQ2_CATEGORY_AFTER = "After Ad")) %>%
+  mutate(Response = str_split(Response, ";\\s*")) %>%
+  unnest(Response) %>%
+  mutate(Response = str_trim(Response))
+
+# Reuse the same labels
+test_long <- test_long %>%
+  mutate(Response = recode(Response, !!!response_labels))
+
+# Count and percentage
+test_counts <- test_long %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+test_counts$QuestionType <- factor(test_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Plot
+fourth_plot <- ggplot(test_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "black") +
+  labs(x = "\nResponses", y = "Percentage\n", fill = "Common Themes") +
+  facet_wrap(~ GROUP) +
+  theme_minimal()
+
+# Step 6: Create the caption text
+caption <- textGrob("Figure 4: Control Group Responses Before and After the Ad", 
+                    gp = gpar(fontsize = 10))
+
+# Step 7: Combine the plot and caption using grid.arrange()
+grid.arrange(fourth_plot, caption, ncol = 1, heights = c(10, 1))
 ```
 
 ## QQ3: "Describe a situation in which supporting friends would be more important than telling the truth."
