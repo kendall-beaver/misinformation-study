@@ -31,7 +31,7 @@ lying <- read_excel("../data/lying_data.xlsx")
 
 # Intro
 
-This report critically assessed 594 written responses that were collected from 99 participants via a questionnaire in Dr. Diana Daly's pilot study, "Design of audio ads to prebunk misinformation and promote civil discourse", where participants were asked the following qualitative questions ("QQ"):
+This report contains the assessment and critical analysis of 594 written responses that were collected from 99 participants via a questionnaire in Dr. Diana Daly's pilot study, "Design of audio ads to prebunk misinformation and promote civil discourse", where participants were asked the following qualitative questions ("QQ"):
 
 -   QQ1: What are some reasons you think people are attracted to radical groups?
 
@@ -57,7 +57,7 @@ This report is organized and presented in four main sections: I. Categorical Res
 
 ## QQ1
 
-A total of 9 common themes were identified in the responses to QQ1, which are nearly twice as long as the themes identified in QQ2 & QQ3, and this could be due to the nature of the question—trying to understand the thoughts of somebody different than the participant and why they would be interested in joining a radical group. If a theme appeared at least 3 times then it was assigned its own category, but many themes were combined together if they had an influence on one another, helping to produce a more concise list.
+A total of 9 common themes were identified in the responses for QQ1, the largest amount of themes for all QQs, and this could be due to the nature of the question—trying to understand the thoughts of somebody different than the participant and why they would be interested in joining a radical group. If a theme appeared at least 3 times then it was assigned its own category, but many themes were combined together if they had an influence on one another, helping to produce a more concise list.
 
 ### "What are some reasons you think people are attracted to radical groups?"
 
@@ -124,11 +124,23 @@ plot_control <- ggplot(control_groups, aes(x = QuestionType, y = perc, fill = Re
   theme_minimal()
 
 # Step 6: Create the caption text
-caption <- textGrob("Figure 1: Control Group (Visual & Audio) responses before and after the ad.", 
+caption <- textGrob("Figure 1: Control group (visual & audio) responses to QQ1 before and after ad.", 
                     gp = gpar(fontsize = 10))
 
 # Step 7: Combine the plot and caption using grid.arrange()
-grid.arrange(plot_control, caption, ncol = 1, heights = c(10, 1))
+#grid.arrange(plot_control, caption, ncol = 1, heights = c(10, 1))
+
+# Arrange the plot and caption
+arranged_grob <- arrangeGrob(plot_control, caption, ncol = 1, heights = c(10, 1))
+
+# Draw a border and plot the arranged grobs
+grid.newpage()
+grid.draw(
+  grobTree(
+    rectGrob(gp = gpar(fill = NA, col = "black", lwd = 2)),  # This adds the border
+    arranged_grob
+  )
+)
 ```
 
 ```{r test_group_plot, fig.width=5.5, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
@@ -150,22 +162,36 @@ plot_test <- ggplot(test_groups, aes(x = QuestionType, y = perc, fill = Response
   theme_minimal()
 
 # Step 6: Create the caption text
-caption <- textGrob("Figure 2: Test Group (Visual & Audio) responses before and after the ad.", 
+caption <- textGrob("Figure 2: Test group (visual & audio) responses to QQ1 before and after ad.", 
                     gp = gpar(fontsize = 10))
 
 # Step 7: Combine the plot and caption using grid.arrange()
-grid.arrange(plot_test, caption, ncol = 1, heights = c(10, 1))
+#grid.arrange(plot_test, caption, ncol = 1, heights = c(10, 1))
+
+# Arrange the plot and caption
+arranged_grob <- arrangeGrob(plot_test, caption, ncol = 1, heights = c(10, 1))
+
+# Draw a border and plot the arranged grobs
+grid.newpage()
+grid.draw(
+  grobTree(
+    rectGrob(gp = gpar(fill = NA, col = "black", lwd = 2)),  # This adds the border
+    arranged_grob
+  )
+)
 ```
 
 The largest category for both ad groups was Category 4 ("Confirmation bias"), which composed over 40% of all responses for participants. However, this response decreased on average by 7.07% after the control ad was presented, whereas responses increased by 28.21% on average after the test ad was presented to those participants.
 
 In the latter ad, a female character named Mel finds a group of online friends who want to storm the post office, but in the former ad a female character named Jessica doesn't say that her friends are radical in any way, only that they're "early bowlers." It's possible that the ad with radical friends could have influenced the responses, but follow-up survey data and/or interviews need to be conducted to validate this.
 
-The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") after the ad. Regarding the audio ad, Category 5 was the second largest category for the audio group while Category 3 ("Drawn to narcassists") held the same ranking for the visual group. After the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group while Categories 6 & 9 ("Other; response is too broad") equally took second place for the visual group.
+The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") after the ad.
+
+Regarding the audio ad, Category 5 was the second largest category for the audio group while Category 3 ("Drawn to narcassists") held the same ranking for the visual group. After the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group while Categories 6 & 9 ("Other; response is too broad") equally took second place for the visual group.
 
 ## QQ2
 
-6 themes were identified in this category.
+6 main themes were identified for QQ2 and appeared for all groups except for Category 4 ("Unsure"), which only appeared once for the test ad - visual group (Fig. 4).
 
 ###  "What are some reasons you think people believe false ideas circulating online?"
 
@@ -175,7 +201,7 @@ The second largest category for the control ad was Category 5 ("Believe group ca
 
 3.  Looks for ideas that confirm pre-existing beliefs.
 
-4.  Unsure. (This only appears in 1 of the 4 ads.)
+4.  Unsure.
 
 5.  Other.
 
@@ -231,12 +257,21 @@ third_plot <- ggplot(control_counts, aes(x = QuestionType, y = perc, fill = Resp
   facet_wrap(~ GROUP) +
   theme_minimal()
 
-# Step 6: Create the caption text
-caption <- textGrob("Figure 3: Control Group Responses Before and After the Ad", 
+# Create the caption text
+caption <- textGrob("Figure 3: Control group (visual & audio) responses to QQ2 before and after ad.", 
                     gp = gpar(fontsize = 10))
 
-# Step 7: Combine the plot and caption using grid.arrange()
-grid.arrange(third_plot, caption, ncol = 1, heights = c(10, 1))
+# Arrange the plot and caption
+arranged_grob <- arrangeGrob(third_plot, caption, ncol = 1, heights = c(10, 1))
+
+# Draw a border and plot the arranged grobs
+grid.newpage()
+grid.draw(
+  grobTree(
+    rectGrob(gp = gpar(fill = NA, col = "black", lwd = 2)),  # This adds the border
+    arranged_grob
+  )
+)
 ```
 
 ```{r test_group_qq2, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
@@ -281,12 +316,26 @@ fourth_plot <- ggplot(test_counts, aes(x = QuestionType, y = perc, fill = Respon
   theme_minimal()
 
 # Step 6: Create the caption text
-caption <- textGrob("Figure 4: Control Group Responses Before and After the Ad", 
+caption <- textGrob("Figure 4: Test group (visual & audio) responses to QQ2 before and after ad.", 
                     gp = gpar(fontsize = 10))
 
 # Step 7: Combine the plot and caption using grid.arrange()
-grid.arrange(fourth_plot, caption, ncol = 1, heights = c(10, 1))
+#grid.arrange(fourth_plot, caption, ncol = 1, heights = c(10, 1))
+
+# Arrange the plot and caption
+arranged_grob <- arrangeGrob(fourth_plot, caption, ncol = 1, heights = c(10, 1))
+
+# Draw a border and plot the arranged grobs
+grid.newpage()
+grid.draw(
+  grobTree(
+    rectGrob(gp = gpar(fill = NA, col = "black", lwd = 2)),  # This adds the border
+    arranged_grob
+  )
+)
 ```
+
+Consistent across all ads is the first three groups taking the top three places for all ad groups, but in different variations.
 
 ## QQ3: "Describe a situation in which supporting friends would be more important than telling the truth."
 
