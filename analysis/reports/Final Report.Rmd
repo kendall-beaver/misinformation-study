@@ -187,11 +187,11 @@ In the latter ad, a female character named Mel finds a group of online friends w
 
 The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, at 25.9% for the audio group and 20% for the visual group, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") post-ad, at 15.4% for the audio group and 18.2% for the visual group.
 
-Regarding the audio ad, Category 5 was the second largest category for the audio group while Category 3 ("Drawn to narcassists") held the same ranking for the visual group. After the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group while Categories 6 & 9 ("Other; response is too broad") equally took second place for the visual group.
+Regarding the audio ad, Category 5 was the second largest category for the audio group, at 11.1%, while Category 3 ("Drawn to narcassists") held the same ranking for the visual group, at 10%. But after the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group, at 9.7%, while Categories 6 & 9 ("Other; response is too broad") equally shared second place for the visual group, at 12.1%.
 
 ## QQ2
 
-6 main themes were identified for QQ2 and appeared for all groups except for Category 4 ("Unsure"), which only appeared once for the test ad - visual group (Fig. 4).
+6 main themes were identified for QQ2 and appeared in all groups except for Category 4 ("Unsure"), which appeared once for the test ad - visual group, as shown in Figure 4.
 
 ###  "What are some reasons you think people believe false ideas circulating online?"
 
@@ -207,7 +207,7 @@ Regarding the audio ad, Category 5 was the second largest category for the audio
 
 6.  There's too much misinformation available.
 
-Consistent across all ads is the first three groups taking the top three places for all ad groups, but in different variations.
+Categories 1, 2 & 3 consistently took the first three places across all ad groups, but in different variations.
 
 ```{r control_group_qq2, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -337,7 +337,11 @@ grid.draw(
 )
 ```
 
-## QQ3: "Describe a situation in which supporting friends would be more important than telling the truth."
+## QQ3: 
+
+### "Describe a situation in which supporting friends would be more important than telling the truth."
+
+1.  
 
 ```{r}
 
