@@ -12,6 +12,7 @@ output: pdf_document
 
 # Load libraries
 library(tidyr)
+library(grid)
 library(gridExtra)
 library(readxl)
 library(dplyr)
@@ -58,29 +59,31 @@ This report is organized and presented in four main sections: I. Categorical Res
 
 A total of 9 common themes were identified in the responses to QQ1, which are nearly twice as long as the themes identified in QQ2 & QQ3, and this could be due to the nature of the question—trying to understand the thoughts of somebody different than the participant and why they would be interested in joining a radical group. If a theme appeared at least 3 times then it was assigned its own category, but many themes were combined together if they had an influence on one another, helping to produce a more concise list.
 
-#### *"What are some reasons you think people are attracted to radical groups?"* 
+### "What are some reasons you think people are attracted to radical groups?"
 
-1.  Coerced into joining group
+1.  Coerced into joining group.
 
-2.  Influenced to join a group in a non-coercive manner
+2.  Influenced to join a group in a non-coercive manner.
 
-3.  Drawn to narcissists; to people who are passionate, confident, and charismatic
+3.  Drawn to narcissists; to people who are passionate, confident, and charismatic.
 
-4.  Confirmation bias; wanting to be part of a community of like-minded people, to not feel lonely
+4.  Confirmation bias; wanting to be part of a community of like-minded people, to not feel lonely.
 
-5.  Feeling helpless and believe in the group's cause; that they can make change and life better
+5.  Feeling helpless and believe in the group's cause; that they can make change and life better.
 
-6.  Curious about checking out the group; group seems large, powerful, different; could be fun, could gain status; to not feel bored
+6.  Curious about checking out the group; group seems large, powerful and different; could be fun, could gain status; to not feel bored.
 
-7.  Are narcissists themselves and want to influence or have power over people; enjoy expressing their views
+7.  Are narcissists themselves and want to influence or have power over people; enjoy expressing their views.
 
-8.  Unsure why people are attracted to radical groups
+8.  Unsure why people are attracted to radical groups.
 
-9.  Other; response is too broad, unclear, and/or doesn't match any other categories
+9.  Other; response is too broad, unclear, and/or doesn't match any other categories.
 
-```{r one, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+Figures 1 & 2 below show the results of a change in these categories.
 
-### STANDALONE PLOT FOR CONTROL + TEST GROUPS ###
+```{r control_group_plot, fig.width=5.5, fig.height=3.5, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+### CONTROL GROUP PLOT ###
 
 # Step 1: Reshape, include GROUP, relabel columns
 type_of_lie_long <- lying %>%
@@ -106,12 +109,9 @@ lie_counts <- type_of_lie_long %>%
 # Step 3: Set factor levels for consistent x-axis order
 lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
 
-# Step 4: Split into Control and Test groups
+# Step 4: Filter for Control Group
 control_groups <- lie_counts %>%
   filter(GROUP %in% c("Control Group (Visual)", "Control Group (Audio)"))
-
-test_groups <- lie_counts %>%
-  filter(GROUP %in% c("Test Group (Visual)", "Test Group (Audio)"))
 
 # Step 5: Create Control plot
 plot_control <- ggplot(control_groups, aes(x = QuestionType, y = perc, fill = Response)) +
@@ -119,80 +119,55 @@ plot_control <- ggplot(control_groups, aes(x = QuestionType, y = perc, fill = Re
   geom_text(aes(label = paste0(round(perc, 1), "%")),
             position = position_stack(vjust = 0.5),
             size = 3, fontface = "bold", color = "black") +
-  labs(x = "\nResponses", y = "Percentage\n", title = "Control Groups") +
+  labs(x = "\nResponses", y = "Percentage\n",) + # title = "Control Groups"
   facet_wrap(~ GROUP) +
   theme_minimal()
 
-# Step 6: Create Test plot
+# Step 6: Create the caption text
+caption <- textGrob("Figure 1: Control Group Responses Before and After the Ad", 
+                    gp = gpar(fontsize = 10))
+
+# Step 7: Combine the plot and caption using grid.arrange()
+grid.arrange(plot_control, caption, ncol = 1, heights = c(10, 1))
+```
+
+```{r test_group_plot, fig.width=5.5, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+### TEST GROUP PLOT ###
+
+# Step 4: Filter for Test Group
+test_groups <- lie_counts %>%
+  filter(GROUP %in% c("Test Group (Visual)", "Test Group (Audio)"))
+
+# Step 5: Create Test plot
 plot_test <- ggplot(test_groups, aes(x = QuestionType, y = perc, fill = Response)) +
   geom_bar(stat = "identity", position = "stack", color = "black") +
   geom_text(aes(label = paste0(round(perc, 1), "%")),
             position = position_stack(vjust = 0.5),
             size = 3, fontface = "bold", color = "black") +
-  labs(x = "\nResponses", y = "Percentage\n", title = "Test Groups") +
+  labs(x = "\nResponses", y = "Percentage\n",) + #  title = "Test Groups"
   facet_wrap(~ GROUP) +
   theme_minimal()
 
-# Step 7: Print both plots
-plot_control
-plot_test
+# Step 6: Create the caption text
+caption <- textGrob("Figure 2: Control Group Responses Before and After the Ad", 
+                    gp = gpar(fontsize = 10))
+
+# Step 7: Combine the plot and caption using grid.arrange()
+grid.arrange(plot_test, caption, ncol = 1, heights = c(10, 1))
 ```
 
-```{r categorical_data_before_and_after_all, tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+The largest category for both ad groups was Category 4 ("Confirmation bias"), which composed over 40% of all responses for participants. However, this response decreased on average by 7.07% after the control ad was presented, whereas the responses increased on average by 28.21% after the test ad was viewed and listened by those participants.
 
-### PROPORTION (%), BY AD GROUP ###
+In the latter ad, a female character named Mel finds a group of online friends who want to storm the post office, but in the former ad, a female character named Jessica doesn't say or indicate that her in-person friends are radical, just that they're early bowlers. It's possible that the ad with radical, online friends could have influenced the responses, but more data and follow-up interviews would need to be conducted to validate this claim.
 
-# Step 1: Reshape, include GROUP, relabel columns
-type_of_lie_long <- lying %>%
-  select(GROUP, QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER) %>%
-  pivot_longer(cols = c(QQ1_CATEGORY_BEFORE, QQ1_CATEGORY_AFTER),
-               names_to = "QuestionType",
-               values_to = "Response") %>%
-  drop_na() %>%
-  mutate(QuestionType = recode(QuestionType,
-                               QQ1_CATEGORY_BEFORE = "Before Ad",
-                               QQ1_CATEGORY_AFTER = "After Ad")) %>%
-  mutate(Response = str_split(Response, ";\\s*")) %>%
-  unnest(Response) %>%
-  mutate(Response = str_trim(Response))
+The second largest category for the control ad started off as Category 5 ("Believe group can make their life better"), but shared second place with Category 6 ("Group seems large, powerful and different; could be fun"). The second place for the test ad was mixed, where Categories 2, 1, 3, 6 & 9 alternated the spot for second place.
 
-# Step 2: Count and calculate percentages grouped by GROUP and QuestionType
-lie_counts <- type_of_lie_long %>%
-  group_by(GROUP, QuestionType, Response) %>%
-  summarise(n = n(), .groups = "drop") %>%
-  group_by(GROUP, QuestionType) %>%
-  mutate(perc = n / sum(n) * 100)  # Calculate percentage within each GROUP + QuestionType
+## QQ2
 
-# Step 3: Set factor levels for consistent x-axis order
-lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+6 themes were identified in this category.
 
-# Step 4: Create ONE plot, faceting by GROUP
-plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
-  geom_bar(stat = "identity", position = "stack", color = "black") +
-  
-  # Internal labels for each part of the bar (show percentages)
-  geom_text(aes(label = paste0(round(perc, 1), "%")),
-            position = position_stack(vjust = 0.5),
-            size = 3,
-            fontface = "bold",
-            color = "black") +
-  
-  labs(x = "\nResponses",
-       y = "Percentage\n") +
-  
-  facet_wrap(~ GROUP) +
-  
-  theme_minimal()
-
-# Step 5: Print the plot
-plot
-```
-
-As can be seen in Fig. 1, the largest category, 4 - "Confirmation bias" - increased in both formats of the test ad by 28.21%, on average, whereas the ad decreased by an average of 7.07% for the control ad. The test ad did have the main female character, Jessica, joining a group of online radical friends,
-
-Number 6 & 9 had some interesting trends, too.
-
-## QQ2: "What are some reasons you think people believe false ideas circulating online?"
+###  "What are some reasons you think people believe false ideas circulating online?"
 
 ```{r}
 
