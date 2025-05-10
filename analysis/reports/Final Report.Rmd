@@ -185,7 +185,7 @@ The largest category for both ad groups was Category 4 ("Confirmation bias"), wh
 
 In the latter ad, a female character named Mel finds a group of online friends who want to storm the post office, but in the former ad a female character named Jessica doesn't say that her friends are radical in any way, only that they're "early bowlers." It's possible that the ad with radical friends could have influenced the responses, but follow-up survey data and/or interviews need to be conducted to validate this.
 
-The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") after the ad.
+The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, at 25.9% for the audio group and 20% for the visual group, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") post-ad, at 15.4% for the audio group and 18.2% for the visual group.
 
 Regarding the audio ad, Category 5 was the second largest category for the audio group while Category 3 ("Drawn to narcassists") held the same ranking for the visual group. After the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group while Categories 6 & 9 ("Other; response is too broad") equally took second place for the visual group.
 
@@ -206,6 +206,8 @@ Regarding the audio ad, Category 5 was the second largest category for the audio
 5.  Other.
 
 6.  There's too much misinformation available.
+
+Consistent across all ads is the first three groups taking the top three places for all ad groups, but in different variations.
 
 ```{r control_group_qq2, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -334,8 +336,6 @@ grid.draw(
   )
 )
 ```
-
-Consistent across all ads is the first three groups taking the top three places for all ad groups, but in different variations.
 
 ## QQ3: "Describe a situation in which supporting friends would be more important than telling the truth."
 
