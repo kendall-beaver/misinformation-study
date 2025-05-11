@@ -22,6 +22,12 @@ library(ggplot2)
 library(stringr)
 library(scales)
 library(patchwork)
+library(formattable)
+library(htmltools)
+library(htmlwidgets)
+library(webshot)
+library(formattable)
+library(kableExtra)
 #library(gt)
 
 # Load datasets
@@ -428,11 +434,9 @@ grid.draw(
 )
 ```
 
-Moving onto the gender findings, it must first be noted that only females and males were included in this analysis because only 2% of participants identified with the third category, "prefer not to say", whose responses heavily skewed and shifted the data before and after an ad.
+Moving onto the gender findings, it must first be noted that only females and males were included in this analysis because only 2% of participants identified with the third category, "prefer not to say", whose responses heavily skewed and shifted the data before and after an ad. Considering these two genders, females are approximately 3.25 times more likely than men to tell the truth over supporting their friends, whereas males are approximately 44% more likely than females to protect their friends (Figure 6). Overall, each gender kept the same responses for QQ3 pre- and post-ad, and agreed to nearly the same percentage, around 70%, that it's okay to tell a white lie to protect a friend.
 
-Considering these two genders, females are approximately 3.25 times more likely than men to tell the truth over supporting their friends, whereas males are approximately 44% more likely than females to protect their friends (Figure 6). Overall, each gender kept the same responses for QQ3 pre- and post-ad, and agreed to nearly the same percentage of 70%, that it's okay to tell a white lie to protect a friend.
-
-```{r qq3_categorical_gender, fig.width=6, fig.height=3.5, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r qq3_categorical_gender, fig.width=6, fig.height=3, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 ### CONTROLLING VALUES IN LEGEND ###
 
@@ -515,17 +519,142 @@ grid.draw(
 
 # Composite Score for QQ1 - QQ3
 
-As mentioned in the Introduction, a composite score was developed for
+As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after watching or listening to an ad.
 
-```{r}
+```{r summary_table_all_50, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
+# Define the updated sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  
+  # Match sentence-ending punctuation only
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  
+  # If no punctuation but text exists, count as 1 sentence
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  
+  return(count)
+}
+
+# Simple word count function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Compute word/sentence changes and composite score for QQ1
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2_QQ1 = sapply(QQ1_AFTER, count_words),
+    
+    sentence_count_day1_QQ1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2_QQ1 = sapply(QQ1_AFTER, count_sentences),
+
+    word_count_change_QQ1 = (word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1),
+    sentence_count_change_QQ1 = (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1),
+
+    composite_diff_norm_QQ1 = (word_count_change_QQ1 + sentence_count_change_QQ1) / 2
+  )
+
+# Compute word/sentence changes and composite score for QQ2
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ2 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2_QQ2 = sapply(QQ2_AFTER, count_words),
+    
+    sentence_count_day1_QQ2 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2_QQ2 = sapply(QQ2_AFTER, count_sentences),
+
+    word_count_change_QQ2 = (word_count_day2_QQ2 - word_count_day1_QQ2) / pmax(word_count_day1_QQ2, 1),
+    sentence_count_change_QQ2 = (sentence_count_day2_QQ2 - sentence_count_day1_QQ2) / pmax(sentence_count_day1_QQ2, 1),
+
+    composite_diff_norm_QQ2 = (word_count_change_QQ2 + sentence_count_change_QQ2) / 2
+  )
+
+# Step 1: Recalculate word/sentence/composite differences for QQ3
+lying <- lying %>%
+  mutate(
+    word_count_day1_QQ3 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2_QQ3 = sapply(QQ3_AFTER, count_words),
+    
+    sentence_count_day1_QQ3 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2_QQ3 = sapply(QQ3_AFTER, count_sentences),
+
+    word_count_change_QQ3 = (word_count_day2_QQ3 - word_count_day1_QQ3) / pmax(word_count_day1_QQ3, 1),
+    sentence_count_change_QQ3 = (sentence_count_day2_QQ3 - sentence_count_day1_QQ3) / pmax(sentence_count_day1_QQ3, 1),
+
+    composite_diff_norm_QQ3 = (word_count_change_QQ3 + sentence_count_change_QQ3) / 2
+  )
+
+# Step 1: Create change buckets for QQ1, QQ2, and QQ3
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ1 >= -0.5 & composite_diff_norm_QQ1 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ1 >= 0.5 ~ ">= 50%"
+    ),
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ2 >= -0.5 & composite_diff_norm_QQ2 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ2 >= 0.5 ~ ">= 50%"
+    ),
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ3 >= -0.5 & composite_diff_norm_QQ3 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ3 >= 0.5 ~ ">= 50%"
+    )
+  )
+
+# Helper function to summarize for one QQ
+summarize_bucket <- function(df, bucket_col, bucket_name) {
+  df %>%
+    group_by(GROUP, .data[[bucket_col]]) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(GROUP) %>%
+    mutate(percentage = round(100 * count / sum(count), 1)) %>%
+    filter(.data[[bucket_col]] %in% c("< -50%", ">= 50%")) %>%
+    select(GROUP, !!bucket_col := .data[[bucket_col]], percentage) %>%
+    pivot_wider(
+      names_from = !!sym(bucket_col),
+      values_from = percentage,
+      values_fill = 0
+    ) %>%
+    rename_with(~ paste(bucket_name, ., sep = ": "), -GROUP)
+}
+
+# Create individual summaries for QQ1, QQ2, QQ3
+summary_QQ1 <- summarize_bucket(lying, "change_bucket_QQ1", "QQ1")
+summary_QQ2 <- summarize_bucket(lying, "change_bucket_QQ2", "QQ2")
+summary_QQ3 <- summarize_bucket(lying, "change_bucket_QQ3", "QQ3")
+
+# Join into one combined table
+final_combined <- summary_QQ1 %>%
+  full_join(summary_QQ2, by = "GROUP") %>%
+  full_join(summary_QQ3, by = "GROUP")
+
+# View
+#final_combined
+
+# Print table nicely
+library(knitr)
+library(kableExtra)
+
+#final_combined %>%
+#  kable(format = "latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
+#  kable_styling(latex_options = c("hold_position", "striped"))
+
+final_combined %>%
+  kable("latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
+  kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = FALSE, font_size = 8.5)
 ```
 
 # Sentiment Analysis of Ads
-
-```{r}
-
-```
 
 # Other Project?
 
