@@ -61,25 +61,25 @@ A total of 9 common themes were identified in the responses for QQ1, the largest
 
 ### "What are some reasons you think people are attracted to radical groups?"
 
-1.  Coerced into joining group.
+1.  Coerced into joining group
 
-2.  Influenced to join a group in a non-coercive manner.
+2.  Influenced to join a group in a non-coercive manner
 
-3.  Drawn to narcissists; to people who are passionate, confident, and charismatic.
+3.  Drawn to narcissists; to people who are passionate, confident, and charismatic
 
-4.  Confirmation bias; wanting to be part of a community of like-minded people, to not feel lonely.
+4.  Confirmation bias; wanting to be part of a community of like-minded people, to not feel lonely
 
-5.  Feeling helpless and believe in the group's cause; that they can make change and life better.
+5.  Feeling helpless and believe in the group's cause; that they can make change and life better
 
-6.  Curious about checking out the group; group seems large, powerful and different; could be fun, could gain status; to not feel bored.
+6.  Curious about checking out the group; group seems large, powerful and different; could be fun, could gain status; to not feel bored
 
-7.  Are narcissists themselves and want to influence or have power over people; enjoy expressing their views.
+7.  Are narcissists themselves and want to influence or have power over people; enjoy expressing their views
 
-8.  Unsure why people are attracted to radical groups.
+8.  Unsure why people are attracted to radical groups
 
-9.  Other; response is too broad, unclear, and/or doesn't match any other categories.
+9.  Other; response is too broad, unclear, and/or doesn't match any other categories
 
-Figures 1 & 2 below show the results of these categories changed after presenting an ad.
+Figures 1 & 2 below show the results of these categories changed after presenting an ad
 
 ```{r control_group_plot, fig.width=5.5, fig.height=3.5, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -119,7 +119,7 @@ plot_control <- ggplot(control_groups, aes(x = QuestionType, y = perc, fill = Re
   geom_text(aes(label = paste0(round(perc, 1), "%")),
             position = position_stack(vjust = 0.5),
             size = 3, fontface = "bold", color = "black") +
-  labs(x = "\nResponses", y = "Percentage\n",) + # title = "Control Groups"
+  labs(x = "\nResponses", y = "Percentage\n", fill = "Category") + # title = "Control Groups"
   facet_wrap(~ GROUP) +
   theme_minimal()
 
@@ -157,7 +157,7 @@ plot_test <- ggplot(test_groups, aes(x = QuestionType, y = perc, fill = Response
   geom_text(aes(label = paste0(round(perc, 1), "%")),
             position = position_stack(vjust = 0.5),
             size = 3, fontface = "bold", color = "black") +
-  labs(x = "\nResponses", y = "Percentage\n",) + #  title = "Test Groups"
+  labs(x = "\nResponses", y = "Percentage\n", fill = "Category") + #  title = "Test Groups"
   facet_wrap(~ GROUP) +
   theme_minimal()
 
@@ -185,9 +185,9 @@ The largest category for both ad groups was Category 4 ("Confirmation bias"), wh
 
 In the latter ad, a female character named Mel finds a group of online friends who want to storm the post office, but in the former ad a female character named Jessica doesn't say that her friends are radical in any way, only that they're "early bowlers." It's possible that the ad with radical friends could have influenced the responses, but follow-up survey data and/or interviews need to be conducted to validate this.
 
-The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, at 25.9% for the audio group and 20% for the visual group, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") post-ad, at 15.4% for the audio group and 18.2% for the visual group.
+The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, at 25.9% for the audio group and 20% for the visual group, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") post-ad, at 15.4% for the audio group and 18.2% for the visual group (Figure 1).
 
-Regarding the audio ad, Category 5 was the second largest category for the audio group, at 11.1%, while Category 3 ("Drawn to narcassists") held the same ranking for the visual group, at 10%. But after the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group, at 9.7%, while Categories 6 & 9 ("Other; response is too broad") equally shared second place for the visual group, at 12.1%.
+Regarding the audio ad, Category 5 was the second largest category for the audio group, at 11.1%, while Category 3 ("Drawn to narcassists") held the same ranking for the visual group, at 10%. But after the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group, at 9.7%, while Categories 6 & 9 ("Other; response is too broad") equally shared second place for the visual group, at 12.1% (Figure 2).
 
 ## QQ2
 
@@ -195,19 +195,19 @@ Regarding the audio ad, Category 5 was the second largest category for the audio
 
 ###  "What are some reasons you think people believe false ideas circulating online?"
 
-1.  Doesn't take time to fact check.
+1.  Doesn't take time to fact check
 
-2.  Believes first thing they see.
+2.  Believes first thing they see
 
-3.  Looks for ideas that confirm pre-existing beliefs.
+3.  Looks for ideas that confirm pre-existing beliefs
 
-4.  Unsure.
+4.  Unsure
 
-5.  Other.
+5.  Other
 
-6.  There's too much misinformation available.
+6.  There's too much misinformation available
 
-Categories 1, 2 & 3 consistently took the first three places across all ad groups, but in different variations.
+Categories 1 ("Doesn't take time to fact check"), 2 ("Believes first thing they see") & 3 ("Looks for ideas that confirm existing beliefs") occupied the first three places across all ad groups, but in different variations. As shown in Figure 3, Category 3 held the top spot at 32.1% for the control ad - audio group, but was replaced by Category 1 post-ad, at 33.3%. For the visual group, Categories 1 & 2 shared first place at 31%, until Category 1 became the top response post-ad, at 38.7%.
 
 ```{r control_group_qq2, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -255,7 +255,7 @@ third_plot <- ggplot(control_counts, aes(x = QuestionType, y = perc, fill = Resp
   geom_bar(stat = "identity", position = "stack", color = "black") +
   geom_text(aes(label = paste0(round(perc, 1), "%")),
             position = position_stack(vjust = 0.5), size = 3, color = "black") +
-  labs(x = "\nResponses", y = "Percentage\n", fill = "Common Themes") +
+  labs(x = "\nResponses", y = "Percentage\n", fill = "Category") +
   facet_wrap(~ GROUP) +
   theme_minimal()
 
@@ -275,6 +275,8 @@ grid.draw(
   )
 )
 ```
+
+For the test ad, Category 1 was the dominant category for the audio and visual group, at 34.4% and 43.2%, respectively, and remained in the top spot for the visual group post-ad, increasing to 47.5%, but decreased to 26.3% for the audio group post-ad and was overtaken by Category 2, which gained a slight lead of 28.9% (Figure 4).
 
 ```{r test_group_qq2, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -313,7 +315,7 @@ fourth_plot <- ggplot(test_counts, aes(x = QuestionType, y = perc, fill = Respon
   geom_bar(stat = "identity", position = "stack", color = "black") +
   geom_text(aes(label = paste0(round(perc, 1), "%")),
             position = position_stack(vjust = 0.5), size = 3, color = "black") +
-  labs(x = "\nResponses", y = "Percentage\n", fill = "Common Themes") +
+  labs(x = "\nResponses", y = "Percentage\n", fill = "Category") +
   facet_wrap(~ GROUP) +
   theme_minimal()
 
@@ -337,14 +339,176 @@ grid.draw(
 )
 ```
 
-## QQ3: 
+## QQ3
+
+This question had the least amount of categories for all QQs, yet contained the most interesting discovery when the data was split by gender instead of ad group. Before the gender findings are discussed, the 4 main categories identified in QQ3 will be discussed and presented first.
 
 ### "Describe a situation in which supporting friends would be more important than telling the truth."
 
-1.  
+1.  Protect friend from danger and/or punishment
 
-```{r}
+2.  Unsure
 
+3.  White lie
+
+4.  Would tell truth over supporting friends
+
+Unlike the previous QQs which asked open-ended questions, QQ3 asked participants to describe a scenario in which lying would be okay to support friends. All of the responses could fit into 1 of 4 categories, indicating that there isn't a variation in lying in this type of situation, and none of the answers were ambiguous or unclear, making this the only QQ to not have an "Other" category.
+
+The largest response for all groups before and after the ad was Category 3 ("White lie"), hovering overwhelmingly between 62% - 82% before the ad and 67% - 82% after the ad. Category 1 ("Protect friend from danger and/or punishment") remained the second largest category for all groups, with an average 16.63%, except for the test ad - audio group, which was held by Category 4 ("Would tell truth over supporting friends") at 14.3% pre- and post-ad.
+
+```{r figure_five, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### PLOT 3: Faceted by Group (Test vs. Control) ###
+
+# Step 1: Reshape with group
+type_of_lie_long_group <- lying %>%
+  select(GROUP, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and percentage
+lie_counts_group <- type_of_lie_long_group %>%
+  group_by(GROUP, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts_group$QuestionType <- factor(lie_counts_group$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 3b: Define mapping for legend labels with line breaks
+response_labels <- c(
+  "White Lie" = "White lie",
+  "Keeping friend from danger and/or punishment" = "Protect friend from danger\nand/or punishment",
+  "Would tell truth over supporting friends" = "Would tell truth over\nsupporting friends",
+  "Unsure" = "Unsure"
+)
+
+# Step 4: Create faceted plot
+plot_group <- ggplot(lie_counts_group, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "black") +
+  labs(#title = "QQ3 Responses Before vs. After Ad (Control vs. Test Group)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Category") +
+  facet_wrap(~ GROUP) +
+  theme_minimal() +
+  #theme(legend.position = "bottom")
+
+  # Use default colors and custom legend labels
+  scale_fill_discrete(labels = response_labels)  # <-- just map labels
+
+#plot_group
+
+# Step 6: Create the caption text
+caption <- textGrob("Figure 5: All group responses to QQ3 before and after ad.", 
+                    gp = gpar(fontsize = 10))
+
+# Step 7: Combine the plot and caption using grid.arrange()
+#grid.arrange(fourth_plot, caption, ncol = 1, heights = c(10, 1))
+
+# Arrange the plot and caption
+arranged_grob <- arrangeGrob(plot_group, caption, ncol = 1, heights = c(10, 1))
+
+# Draw a border and plot the arranged grobs
+grid.newpage()
+grid.draw(
+  grobTree(
+    rectGrob(gp = gpar(fill = NA, col = "black", lwd = 2)),  # This adds the border
+    arranged_grob
+  )
+)
+```
+
+Moving onto the gender findings, it must first be stated that only females and males were included in this analysis but the third gender category, "prefer not to say", was not included because it only made up 2% of participant identity and the few responses heavily skewed the data pre- and post-ad. The most interesting find is that females had a significantly higher tendency (325%) than men to “tell the truth over supporting friends”, while males were 44% more likely to “protect their friends” than females.
+
+```{r qq3_categorical_gender, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+
+### CONTROLLING VALUES IN LEGEND ###
+
+# Load necessary libraries
+library(tidyverse)
+
+# Step 1: Reshape, include Gender, relabel columns
+type_of_lie_long <- lying %>%
+  select(Gender, QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY) %>%
+  filter(Gender %in% c("Male", "Female")) %>%    # Filter for Male/Female
+  pivot_longer(cols = c(QQ3_TYPE_OF_LIE, QQ3_LIE_2_SUMMARY),
+               names_to = "QuestionType",
+               values_to = "Response") %>%
+  drop_na() %>%
+  mutate(QuestionType = recode(QuestionType,
+                               QQ3_TYPE_OF_LIE = "Before Ad",
+                               QQ3_LIE_2_SUMMARY = "After Ad"))
+
+# Step 2: Count and calculate percentages
+lie_counts <- type_of_lie_long %>%
+  group_by(Gender, QuestionType, Response) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Gender, QuestionType) %>%
+  mutate(perc = n / sum(n) * 100)
+
+# Step 3: Set factor levels
+lie_counts$QuestionType <- factor(lie_counts$QuestionType, levels = c("Before Ad", "After Ad"))
+
+# Step 4: Define mapping for legend labels with line breaks
+response_labels <- c(
+  "White Lie" = "White Lie",
+  "Keeping friend from danger and/or punishment" = "Protect friend from danger\nand/or punishment",
+  "Would tell truth over supporting friends" = "Would tell truth over\nsupporting friends",
+  "Unsure" = "Unsure"
+)
+
+# Step 4: Create plot, faceting by Gender, using default colors
+plot <- ggplot(lie_counts, aes(x = QuestionType, y = perc, fill = Response)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  
+  geom_text(aes(label = paste0(round(perc, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            size = 3,
+            color = "black") +
+  
+  labs(#title = "QQ3 Responses Before vs. After Ad (By Gender: Male and Female Only)",
+       x = "\nResponses",
+       y = "Percentage\n",
+       fill = "Category") +  # Legend title
+  
+  facet_wrap(~ Gender) +
+
+  # Use default colors and custom legend labels
+  scale_fill_discrete(labels = response_labels) +  # <-- just map labels
+
+  theme_minimal()
+
+# Step 5: Print the plot
+#plot
+
+# Step 6: Create the caption text
+caption <- textGrob("Figure 6: Female and male responses to QQ3 before and after ad.", 
+                    gp = gpar(fontsize = 10))
+
+# Step 7: Combine the plot and caption using grid.arrange()
+#grid.arrange(fourth_plot, caption, ncol = 1, heights = c(10, 1))
+
+# Arrange the plot and caption
+arranged_grob <- arrangeGrob(plot, caption, ncol = 1, heights = c(10, 1))
+
+# Draw a border and plot the arranged grobs
+grid.newpage()
+grid.draw(
+  grobTree(
+    rectGrob(gp = gpar(fill = NA, col = "black", lwd = 2)),  # This adds the border
+    arranged_grob
+  )
+)
 ```
 
 ## Overall Effect
@@ -369,7 +533,7 @@ grid.draw(
 
 This didn't pan out. The link is here, and is in the GitHub repository:
 
-# Limitations/Findings/Future Discussions
+# Limitations & Future Discussions
 
 ### Cut stuff:
 
