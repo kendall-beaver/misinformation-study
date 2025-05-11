@@ -51,7 +51,7 @@ $$
 
 In summary, participants' views remained mostly unchanged before and after an ad, except for QQ1, which had 9 categories (the most amount of categories for any QQ) and the largest amount of change. Additionally, the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad, and when the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question.
 
-This report is organized and presented in four main sections: I. Categorical Responses for QQ1 - QQ3; II. Composite Score for QQ1 - QQ3; III. Sentiment Analysis of Each Ad; and IV. Limitations and Future Discussions.
+This report is organized and presented in four main sections: I. Categorical Responses for QQ1 - QQ3; II. Composite Score for QQ1 - QQ3; III. Sentiment Analysis of Ads; and IV. Limitations and Future Discussions.
 
 # I. Categorical Responses for QQ1 - QQ3
 
@@ -353,9 +353,9 @@ This question had the least amount of categories for all QQs, yet contained the 
 
 4.  Would tell truth over supporting friends
 
-Unlike the previous QQs which asked open-ended questions, QQ3 asked participants to describe a scenario in which lying would be okay to support friends. All of the responses could fit into 1 of 4 categories, indicating that there isn't a variation in lying in this type of situation, and none of the answers were ambiguous or unclear, making this the only QQ to not have an "Other" category.
+Unlike the previous QQs which asked open-ended questions, QQ3 asked participants to describe a scenario in which lying would be okay to support friends. All of the responses could fit into 1 of 4 categories, indicating that there isn't a variation with lying in this type of situation, and none of the answers were ambiguous enough to create an "Other" category, making this the only QQ to not have that category.
 
-The largest response for all groups before and after the ad was Category 3 ("White lie"), hovering overwhelmingly between 62% - 82% before the ad and 67% - 82% after the ad. Category 1 ("Protect friend from danger and/or punishment") remained the second largest category for all groups, with an average 16.63%, except for the test ad - audio group, which was held by Category 4 ("Would tell truth over supporting friends") at 14.3% pre- and post-ad.
+Figure 5 shows that the largest response for all groups before and after the ad, overwhelmingly, was Category 3 ("White lie"), hovering between 62% - 82% before the ad and 67% - 82% after the ad. Category 1 ("Protect friend from danger and/or punishment") remained the second largest category for 3 out of 4 groups (control ad - audio & visual groups; test ad - visual group), ranging from 13.6% - 21.4%, while Category 4 ("Would tell truth over supporting friends") took second place for the test ad - audio group at 14.3% before the ad, and sharing this same percentage and ranking with Category 1 post-ad.
 
 ```{r figure_five, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -428,7 +428,9 @@ grid.draw(
 )
 ```
 
-Moving onto the gender findings, it must first be stated that only females and males were included in this analysis but the third gender category, "prefer not to say", was not included because it only made up 2% of participant identity and the few responses heavily skewed the data pre- and post-ad. The most interesting find is that females had a significantly higher tendency (325%) than men to “tell the truth over supporting friends”, while males were 44% more likely to “protect their friends” than females.
+Moving onto the gender findings, it must first be noted that only females and males were included in this analysis because the third category, "prefer not to say", only made up 2% of participants, and the responses heavily skewed the data.
+
+Based on these two genders, females are three times more likely than men to “tell the truth over supporting friends", as shown below in Figure 6. In constrast, males were 44% more likely than females to “protect their friends." Besides this, each gender kept the same views pre- and post-ad, to about the same percentage, that it's okay to tell a white lie to protect a friend.
 
 ```{r qq3_categorical_gender, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
@@ -523,7 +525,7 @@ grid.draw(
 
 ```
 
-# Sentiment Analysis of Each Ad
+# Sentiment Analysis of Ads
 
 ```{r}
 
