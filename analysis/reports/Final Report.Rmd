@@ -428,11 +428,11 @@ grid.draw(
 )
 ```
 
-Moving onto the gender findings, it must first be noted that only females and males were included in this analysis because the third category, "prefer not to say", only made up 2% of participants, and the responses heavily skewed the data.
+Moving onto the gender findings, it must first be noted that only females and males were included in this analysis because only 2% of participants identified with the third category, "prefer not to say", whose responses heavily skewed and shifted the data before and after an ad.
 
-Based on these two genders, females are three times more likely than men to “tell the truth over supporting friends", as shown below in Figure 6. In constrast, males were 44% more likely than females to “protect their friends." Besides this, each gender kept the same views pre- and post-ad, to about the same percentage, that it's okay to tell a white lie to protect a friend.
+Considering these two genders, females are approximately 3.25 times more likely than men to tell the truth over supporting their friends, whereas males are approximately 44% more likely than females to protect their friends (Figure 6). Overall, each gender kept the same responses for QQ3 pre- and post-ad, and agreed to nearly the same percentage of 70%, that it's okay to tell a white lie to protect a friend.
 
-```{r qq3_categorical_gender, fig.width=6, fig.height=4, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+```{r qq3_categorical_gender, fig.width=6, fig.height=3.5, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
 
 ### CONTROLLING VALUES IN LEGEND ###
 
@@ -513,13 +513,9 @@ grid.draw(
 )
 ```
 
-## Overall Effect
-
-```{r}
-
-```
-
 # Composite Score for QQ1 - QQ3
+
+As mentioned in the Introduction, a composite score was developed for
 
 ```{r}
 
