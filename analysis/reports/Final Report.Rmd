@@ -519,7 +519,11 @@ grid.draw(
 
 # Composite Score for QQ1 - QQ3
 
-As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after watching or listening to an ad.
+As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after being presented with an ad. The score was calculated for every category, for 4 groups in the first column "GROUP" in Table 1, split by QQ1 - QQ3 where each question shows responses that decreased by more than 50% and, vice-versa, increased by more than 50%.
+
+There was no correlation with the data. For responses that increased over 50%, the visual group held first place for 2 out of 3 categories; and for responses that decreased over 50%, the audio group took 2 out of 3 categories, with the visual group taking one place. The initial thought was that the visual ads may have imprinted responses on people.
+
+However, when filtering the data for
 
 ```{r summary_table_all_50, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -619,6 +623,75 @@ summarize_bucket <- function(df, bucket_col, bucket_name) {
     group_by(GROUP) %>%
     mutate(percentage = round(100 * count / sum(count), 1)) %>%
     filter(.data[[bucket_col]] %in% c("< -50%", ">= 50%")) %>%
+    select(GROUP, !!bucket_col := .data[[bucket_col]], percentage) %>%
+    pivot_wider(
+      names_from = !!sym(bucket_col),
+      values_from = percentage,
+      values_fill = 0
+    ) %>%
+    rename_with(~ paste(bucket_name, ., sep = ": "), -GROUP)
+}
+
+# Create individual summaries for QQ1, QQ2, QQ3
+summary_QQ1 <- summarize_bucket(lying, "change_bucket_QQ1", "QQ1")
+summary_QQ2 <- summarize_bucket(lying, "change_bucket_QQ2", "QQ2")
+summary_QQ3 <- summarize_bucket(lying, "change_bucket_QQ3", "QQ3")
+
+# Join into one combined table
+final_combined <- summary_QQ1 %>%
+  full_join(summary_QQ2, by = "GROUP") %>%
+  full_join(summary_QQ3, by = "GROUP")
+
+# View
+#final_combined
+
+# Print table nicely
+library(knitr)
+library(kableExtra)
+
+#final_combined %>%
+#  kable(format = "latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
+#  kable_styling(latex_options = c("hold_position", "striped"))
+
+final_combined %>%
+  kable("latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
+  kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = FALSE, font_size = 8.5)
+```
+
+```{r summary_table_all_200, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+# Step 1: Create change buckets for QQ1, QQ2, and QQ3 (with 200% threshold)
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -2 ~ "< -200%",
+      composite_diff_norm_QQ1 >= -2 & composite_diff_norm_QQ1 < 0 ~ "-200% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 2 ~ "0% to 199%",
+      composite_diff_norm_QQ1 >= 2 ~ ">= 200%"
+    ),
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -2 ~ "< -200%",
+      composite_diff_norm_QQ2 >= -2 & composite_diff_norm_QQ2 < 0 ~ "-200% to 0%",
+      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 2 ~ "0% to 199%",
+      composite_diff_norm_QQ2 >= 2 ~ ">= 200%"
+    ),
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -2 ~ "< -200%",
+      composite_diff_norm_QQ3 >= -2 & composite_diff_norm_QQ3 < 0 ~ "-200% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 2 ~ "0% to 199%",
+      composite_diff_norm_QQ3 >= 2 ~ ">= 200%"
+    )
+  )
+
+
+# Helper function to summarize for one QQ
+summarize_bucket <- function(df, bucket_col, bucket_name) {
+  df %>%
+    group_by(GROUP, .data[[bucket_col]]) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(GROUP) %>%
+    mutate(percentage = round(100 * count / sum(count), 1)) %>%
+    filter(.data[[bucket_col]] %in% c("< -200%", ">= 200%")) %>%
     select(GROUP, !!bucket_col := .data[[bucket_col]], percentage) %>%
     pivot_wider(
       names_from = !!sym(bucket_col),
