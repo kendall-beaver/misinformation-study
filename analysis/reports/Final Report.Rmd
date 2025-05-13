@@ -1022,20 +1022,10 @@ It's possible that the participants in the audio format groups may have had a pr
 
 # Future Work
 
-Many of the limitations of the analysis have been discussed on those relevant sections. This section will focus on how these results can help future studies in collecting qualitative data. First, to easily quantify people's general beliefs about the QQs, a drop-down menu can be formed from the categories that have been identified here. To not overwhelm participants, the categories in QQ1 should be reduced from 9 categories to somewhere around 5 categories, which will align and be more uniform of the categories from QQs 2 & 3 that have 6 and 4 categories, respectively.
+The categories that were created in the main sections throughout this report can be used to form categorical responses of questions that ask similar themes, although the 9 categories in QQ1 should be reduced to the same number of QQs 2 & 3, which had 6 and 4 categories, respectively.
 
-But it must be noted that unless an advertisement has a more direct message, then it may not influence people's responses to these types of QQs.
+One of the limitations of the categories presented here is that they were determined by one person, although with great consideration and critical thought, but at least one more annotator should assess and form categories and have the results compared to have a more objective list of categorical responses.
 
-The github repo where this report and all accompanying data can be found is located at
+Even if the optimal amount of categories are identified and responses chosen for those categories, the ad may not have an impact on the responses unless a more direct message is conveyed through the dialogue. (If a different advertisement was presented to participants then the views may or may not change based on the emotional impact an ad may have.) Otherwise, the categorical responses will best be served as preliminary questions in the survey to collect thoughts and ideas of information literacy prior to being presented with an ad.
 
-Additionally, if a different advertisement was presented to participants then the views may or may not change based on the emotional impact an ad may have. The thematic analysis is also the views, as objective as possible, of just one person.
-
-This will be good to create categories for quicker analysis, especially if multiple studies want to be ran at once, and scaled up to occur more frequently. This pilot is a starting point, and additional comments can be left.
-
-In summary, no correlation was found between the type of ad and categorical responses changing, although the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad. When the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question, but overall, participants' views remained mostly unchanged before and after an ad.
-
-Many themes were combined together that have some type of relationship and influence on one another. For example,
-
-the categories in QQ1 have been combined that has some influence on each other. For example, with the largest category, 4 - Confirmation bias, people want to seek a community of like-minded people, "confirmation bias" means they're seeking people and sources that match their views. In other words, misinformation usually isn't objective and factual, but information that has been filtered subjectively or completely made up and seems real.
-
-This question asked people their views on relationships, specifically how people form social bonds with radical people, therefore it's possible that many themes appeared to explain this complex, multi-faceted dynamic.
+The original R markdown file of this report and all of its code to produce the graphs are located <https://github.com/kendall-beaver/misinformation-study>, along with all data pertaining to the original study, which the PI and undergraduate researcher only have access to. I would also like to express my gratitude to these two people for guiding me and making this project possible. My information literacy and knowledge about the topic has significantly improved because of their guidance throughout this interesting project, and I'm grateful for such a unique experience.
