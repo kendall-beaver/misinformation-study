@@ -193,7 +193,7 @@ In the latter ad, a female character named Mel finds a group of online friends w
 
 The second largest category for the control ad was Category 5 ("Believe group can make their life better") before the ad, at 25.9% for the audio group and 20% for the visual group, then was tied and shared equally with Category 6 ("Group seems large, powerful and different; could be fun") post-ad, at 15.4% for the audio group and 18.2% for the visual group (Figure 1).
 
-Regarding the audio ad, Category 5 was the second largest category for the audio group, at 11.1%, while Category 3 ("Drawn to narcassists") held the same ranking for the visual group, at 10%. But after the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group, at 9.7%, while Categories 6 & 9 ("Other; response is too broad") equally shared second place for the visual group, at 12.1% (Figure 2).
+Regarding the audio ad, Category 5 was the second largest category for the audio group, at 11.1%, while Category 3 ("Drawn to narcissists") held the same ranking for the visual group, at 10%. But after the ad was presented, Category 1 ("Coerced into joining group") took second place for the audio group, at 9.7%, while Categories 6 & 9 ("Other; response is too broad") equally shared second place for the visual group, at 12.1% (Figure 2).
 
 ## QQ2
 
@@ -519,9 +519,9 @@ grid.draw(
 
 # II. Composite Score for QQ1 - QQ3
 
-As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after being presented with an ad. This score was first used to quantify how much a response remained the same, in which an arbitrary range from -25% to 25% was chosen to encapsulate a participant keeping the same amount of thoughts with some flexibility, because it's impractible to expect someone to memorize and use the exact number of words and sentences as before the ad.
+As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after being presented with an ad. This score was first used to quantify how much a response remained the same, in which an arbitrary range from -25% to 25% was chosen to encapsulate a participant keeping the same number of thoughts with some flexibility, because it's impractical to expect someone to memorize and use the exact number of words and sentences as before the ad.
 
-These results are presented in Table 1, where the ad that appears to have little affect on changing the responses was the control ad - audio group for QQ2, where 76.2% of responses remained unchanged. In contrast, the most amount pf responses that had the least amount of change was the for same ad, but for the visual group in QQ3, where 31.8% of the responses remained unchanged.
+These results are presented in Table 1, where the ad that appears to have little effect on changing the responses was the control ad - audio group for QQ2, where 76.2% of responses remained unchanged. In contrast, the most amount of responses that had the least amount of change was the for same ad, but for the visual group in QQ3, where 31.8% of the responses remained unchanged.
 
 ```{r summary_table_all_50, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -1026,6 +1026,8 @@ The categories that were created for QQs 1-3 can be used as a template to form a
 
 Additionally, it is recommended that QQ1 be reduced from 9 categories to around 5 categories so as not to overwhelm a participant, which aligns with the number of categories for QQs 2 & 3, 6 and 4 categories, respectively. But even in this case, the ad may never influence a response from pre- to post-ad, and so the categorical responses may best serve as survey preliminary questions only.
 
+One thing not included in this report is a section regarding the evaluation of GPT-2 to help with Dr. Daly's recent study, "From libraries to 'truth factories': Epistemic performance in prebunking sketches with AI chatbots," as discussed in the project proposal. I recommended using GPT-2 because it is open-source and has many parameters that can be adjusted by a user, which I thought could adjust the level of humor and produce a more comedic, GenAI-created scripts for advertisements, compared to GTP-4 which is not open-source and incapable of receiving any input for how responses are produced. However, after running many tests, GPT-2 performed horrendously, creating scripts that were composed of random words and formed no logic in the narrative, even after adjusting and testing different values for the parameters. This analysis therefore was quickly discarded and not included in this final report.
+
 The original R markdown file and code for this report, plus relevant data and files are located [*https://github.com/kendall-beaver/misinformation-study*](https://github.com/kendall-beaver/misinformation-study)*,* which the people involved in this study only have access to.
 
-I would like to express my gratitude to Dr. Diana Daly and her undergraduate research assistant Kainan Jarrett for allowing me to be a part of their project, post-study, which was more interesting and fun than I ever expected. Because of their research and guidaince, I not only increased my information literacy and skepticism for misinformation, but I've become a better qualitative researcher for life. I am more than grateful for this unique, eye-opening, and insightful learning experience.
+I would like to express my gratitude to Dr. Diana Daly and her undergraduate research assistant Kainan Jarrett for allowing me to be a part of their project, post-study, which was more interesting and fun than I ever expected. Because of their research and guidance, I not only increased my information literacy and skepticism for misinformation, but I've become a better qualitative researcher for life. I am more than grateful for this unique, eye-opening, and insightful learning exp
