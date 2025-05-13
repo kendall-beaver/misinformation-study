@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: pdf_document
 ---
 
+Even if the optimal amount of categories are identified and responses chosen for those categories, the ad may not have an impact on the responses unless a more direct message is conveyed through the dialogue. (If a different advertisement was presented to participants then the views may or may not change based on the emotional impact an ad may have.) Otherwise, the
+
 Many of the limitations of the analysis have been discussed on those relevant sections. This section will focus on how these results can help future studies in collecting qualitative data. First, to easily quantify people's general beliefs about the QQs, a drop-down menu can be formed from the categories that have been identified here. To not overwhelm participants, the categories in QQ1 should be reduced from 9 categories to somewhere around 5 categories, which will align and be more uniform of the categories from QQs 2 & 3 that have 6 and 4 categories, respectively.
 
 But it must be noted that unless an advertisement has a more direct message, then it may not influence people's responses to these types of QQs.

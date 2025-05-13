@@ -57,7 +57,7 @@ $$
 
 In summary, participants' views remained mostly unchanged before and after an ad, except for QQ1, which had 9 categories (the most amount of categories for any QQ) and the largest amount of change. Additionally, the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad, and when the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question.
 
-This report is organized and presented in four main sections: I. Categorical Responses for QQ1 - QQ3; II. Composite Score for QQ1 - QQ3; III. Sentiment Analysis of Ads; and IV. Future Work.
+This report is organized and presented in four main sections: I. Categorical Responses for QQ1 - QQ3; II. Composite Score for QQ1 - QQ3; III. Sentiment Analysis of Ads; and IV. Future Work & Acknowledgment.
 
 # I. Categorical Responses for QQ1 - QQ3
 
@@ -517,7 +517,7 @@ grid.draw(
 )
 ```
 
-# Composite Score for QQ1 - QQ3
+# II. Composite Score for QQ1 - QQ3
 
 As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after being presented with an ad. This score was first used to quantify how much a response remained the same, in which an arbitrary range from -25% to 25% was chosen to encapsulate a participant keeping the same amount of thoughts with some flexibility, because it's impractible to expect someone to memorize and use the exact number of words and sentences as before the ad.
 
@@ -935,7 +935,7 @@ final_combined %>%
 
 The results from these tables show many inconsistences, where certain formats performed well with a certain group but then performed poorly with the same group for the same QQ. A good example of this is for QQ2 (Tables 2 & 3) where the test ad - visual group had the highest proportion of responses (14.3%) for increasing responses at least over 100%, but it also had the greatest decrease in response length by at least over 50% (14.3%). However, there are many factors that could have influence how long a participant made their response post-ad, such as a long delay between answering the QQs or using GenAI to help form their answers, and therefore, additional data is needed to make more conclusive inferences.
 
-# Sentiment Analysis of Ads
+# III. Sentiment Analysis of Ads
 
 The following analysis was conducted by analyzing the responses from the Ad Response Questions (ARQs) in the survey:
 
@@ -1020,12 +1020,12 @@ In contrast, the test ad - visual group reported the highest positive sentiment,
 
 It's possible that the participants in the audio format groups may have had a preconceived negative view towards audio ads if podcast listeners skip them at a very high rate, while participants could have a preconceived positive view towards visuals ad due to "Shorts" videos that appear on social media platforms, the same format as the visual ads where words of dialogue appear across the screen, and therefore feels more familiar. But a follow-up survey and/or interview would need to be conducted to verify such claims.
 
-# Future Work
+# IV. Future Work & Acknowledgment
 
-The categories that were created in the main sections throughout this report can be used to form categorical responses of questions that ask similar themes, although the 9 categories in QQ1 should be reduced to the same number of QQs 2 & 3, which had 6 and 4 categories, respectively.
+The categories that were created for QQs 1-3 can be used as a template to form a drop-down list of responses that a participant can choose from, selecting the category that best aligns with their thoughts instead of writing out a response, saving time for the participant and allowing the researcher to perform a quick, quantitative analysis on the data. However, the limitation of using these categories as-is is that they were determined by one person, although done so with great consideration and critical thought, but at least one more annotator should assess and form categories of their own, then compare both lists to form a more objective list.
 
-One of the limitations of the categories presented here is that they were determined by one person, although with great consideration and critical thought, but at least one more annotator should assess and form categories and have the results compared to have a more objective list of categorical responses.
+Additionally, it is recommended that QQ1 be reduced from 9 categories to around 5 categories so as not to overwhelm a participant, which aligns with the number of categories for QQs 2 & 3, 6 and 4 categories, respectively. But even in this case, the ad may never influence a response from pre- to post-ad, and so the categorical responses may best serve as survey preliminary questions only.
 
-Even if the optimal amount of categories are identified and responses chosen for those categories, the ad may not have an impact on the responses unless a more direct message is conveyed through the dialogue. (If a different advertisement was presented to participants then the views may or may not change based on the emotional impact an ad may have.) Otherwise, the categorical responses will best be served as preliminary questions in the survey to collect thoughts and ideas of information literacy prior to being presented with an ad.
+The original R markdown file and code for this report, plus relevant data and files are located [*https://github.com/kendall-beaver/misinformation-study*](https://github.com/kendall-beaver/misinformation-study)*,* which the people involved in this study only have access to.
 
-The original R markdown file of this report and all of its code to produce the graphs are located <https://github.com/kendall-beaver/misinformation-study>, along with all data pertaining to the original study, which the PI and undergraduate researcher only have access to. I would also like to express my gratitude to these two people for guiding me and making this project possible. My information literacy and knowledge about the topic has significantly improved because of their guidance throughout this interesting project, and I'm grateful for such a unique experience.
+I would like to express my gratitude to Dr. Diana Daly and her undergraduate research assistant Kainan Jarrett for allowing me to be a part of their project, post-study, which was more interesting and fun than I ever expected. Because of their research and guidaince, I not only increased my information literacy and skepticism for misinformation, but I've become a better qualitative researcher for life. I am more than grateful for this unique, eye-opening, and insightful learning experience.
