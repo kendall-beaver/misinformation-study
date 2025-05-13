@@ -519,11 +519,9 @@ grid.draw(
 
 # Composite Score for QQ1 - QQ3
 
-As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after being presented with an ad. The score was calculated for every category, for 4 groups in the first column "GROUP" in Table 1, split by QQ1 - QQ3 where each question shows responses that decreased by more than 50% and, vice-versa, increased by more than 50%.
+As mentioned in the Introduction, a composite score was developed to objectively measure how much a participant's response increased or decreased after being presented with an ad. This score was first used to quantify how much a response remained the same, in which an arbitrary range from -25% to 25% was chosen to encapsulate a participant keeping the same amount of thoughts with some flexibility, because it's impractible to expect someone to memorize and use the exact number of words and sentences as before the ad.
 
-There was no correlation with the data. For responses that increased over 50%, the visual group held first place for 2 out of 3 categories; and for responses that decreased over 50%, the audio group took 2 out of 3 categories, with the visual group taking one place. The initial thought was that the visual ads may have imprinted responses on people.
-
-However, when filtering the data for
+These results are presented in Table 1, where the ad that appears to have little affect on changing the responses was the control ad - audio group for QQ2, where 76.2% of responses remained unchanged. In contrast, the most amount pf responses that had the least amount of change was the for same ad, but for the visual group in QQ3, where 31.8% of the responses remained unchanged.
 
 ```{r summary_table_all_50, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -649,49 +647,264 @@ final_combined <- summary_QQ1 %>%
 library(knitr)
 library(kableExtra)
 
+### ORIGINAL FORMAT
 #final_combined %>%
 #  kable(format = "latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
 #  kable_styling(latex_options = c("hold_position", "striped"))
 
-final_combined %>%
-  kable("latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
-  kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = FALSE, font_size = 8.5)
+### FORMAT FOR KNITTING TO PDF
+#final_combined %>%
+#  kable("latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
+#  kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = TRUE, font_size = 8.5)
 ```
 
-```{r summary_table_all_200, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+```{r summary_table_positive_25, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
-# Step 1: Create change buckets for QQ1, QQ2, and QQ3 (with 200% threshold)
+
+# Define the updated sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  
+  # Match sentence-ending punctuation only
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  
+  # If no punctuation but text exists, count as 1 sentence
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  
+  return(count)
+}
+
+# Simple word count function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Threshold = 0.25
 lying <- lying %>%
   mutate(
     change_bucket_QQ1 = case_when(
-      composite_diff_norm_QQ1 < -2 ~ "< -200%",
-      composite_diff_norm_QQ1 >= -2 & composite_diff_norm_QQ1 < 0 ~ "-200% to 0%",
-      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 2 ~ "0% to 199%",
-      composite_diff_norm_QQ1 >= 2 ~ ">= 200%"
+      composite_diff_norm_QQ1 < -0.25 ~ "< -25%",
+      composite_diff_norm_QQ1 >= -0.25 & composite_diff_norm_QQ1 < 0 ~ "-25% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 0.25 ~ "0% to 25%",
+      composite_diff_norm_QQ1 >= 0.25 ~ ">= 25%"
     ),
     change_bucket_QQ2 = case_when(
-      composite_diff_norm_QQ2 < -2 ~ "< -200%",
-      composite_diff_norm_QQ2 >= -2 & composite_diff_norm_QQ2 < 0 ~ "-200% to 0%",
-      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 2 ~ "0% to 199%",
-      composite_diff_norm_QQ2 >= 2 ~ ">= 200%"
+      composite_diff_norm_QQ2 < -0.25 ~ "< -25%",
+      composite_diff_norm_QQ2 >= -0.25 & composite_diff_norm_QQ2 < 0 ~ "-25% to 0%",
+      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 0.25 ~ "0% to 25%",
+      composite_diff_norm_QQ2 >= 0.25 ~ ">= 25%"
     ),
     change_bucket_QQ3 = case_when(
-      composite_diff_norm_QQ3 < -2 ~ "< -200%",
-      composite_diff_norm_QQ3 >= -2 & composite_diff_norm_QQ3 < 0 ~ "-200% to 0%",
-      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 2 ~ "0% to 199%",
-      composite_diff_norm_QQ3 >= 2 ~ ">= 200%"
+      composite_diff_norm_QQ3 < -0.25 ~ "< -25%",
+      composite_diff_norm_QQ3 >= -0.25 & composite_diff_norm_QQ3 < 0 ~ "-25% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 0.25 ~ "0% to 25%",
+      composite_diff_norm_QQ3 >= 0.25 ~ ">= 25%"
     )
   )
 
-
-# Helper function to summarize for one QQ
+# Updated summarize_bucket function for 25% threshold
 summarize_bucket <- function(df, bucket_col, bucket_name) {
   df %>%
     group_by(GROUP, .data[[bucket_col]]) %>%
     summarise(count = n(), .groups = "drop") %>%
     group_by(GROUP) %>%
     mutate(percentage = round(100 * count / sum(count), 1)) %>%
-    filter(.data[[bucket_col]] %in% c("< -200%", ">= 200%")) %>%
+    filter(.data[[bucket_col]] %in% c("< -25%", ">= 25%")) %>%
+    select(GROUP, !!bucket_col := .data[[bucket_col]], percentage) %>%
+    pivot_wider(
+      names_from = !!sym(bucket_col),
+      values_from = percentage,
+      values_fill = 0
+    ) %>%
+    rename_at(vars(-GROUP), ~paste(bucket_name, ., sep = ": "))
+}
+
+# Create individual summaries for QQ1, QQ2, QQ3
+summary_QQ1 <- summarize_bucket(lying, "change_bucket_QQ1", "QQ1")
+summary_QQ2 <- summarize_bucket(lying, "change_bucket_QQ2", "QQ2")
+summary_QQ3 <- summarize_bucket(lying, "change_bucket_QQ3", "QQ3")
+
+# Now combine the first two columns for each QQ group and remove the original columns
+combine_and_remove_columns <- function(df, qq_col_prefix) {
+  df %>%
+    mutate(
+      # Create combined columns by summing the first two columns
+      combined = .data[[paste(qq_col_prefix, "< -25%", sep = ": ")]] + .data[[paste(qq_col_prefix, ">= 25%", sep = ": ")]]
+    ) %>%
+    select(-contains(paste(qq_col_prefix, "< -25%", sep = ": ")), 
+            -contains(paste(qq_col_prefix, ">= 25%", sep = ": "))) %>%
+    # Rename the combined column for better readability
+    rename(!!paste(qq_col_prefix, "", sep = "") := combined)
+}
+
+# Combine columns for QQ1, QQ2, and QQ3
+summary_QQ1_combined <- combine_and_remove_columns(summary_QQ1, "QQ1")
+summary_QQ2_combined <- combine_and_remove_columns(summary_QQ2, "QQ2")
+summary_QQ3_combined <- combine_and_remove_columns(summary_QQ3, "QQ3")
+
+# Join into one combined table
+final_combined <- summary_QQ1_combined %>%
+  full_join(summary_QQ2_combined, by = "GROUP") %>%
+  full_join(summary_QQ3_combined, by = "GROUP")
+
+# Print table nicely
+library(knitr)
+library(kableExtra)
+
+final_combined %>%
+  kable("latex", booktabs = TRUE, digits = 1, caption = "Responses post-ad that remained the same, between {-}25\\% to 25\\%.") %>%
+  kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = TRUE, font_size = 8.5)
+
+```
+
+To see the percentage of responses that decreased over 50%, Table 2 was created. The test ad - audio group had the highest percentages for both QQ1 and QQ3, with 21.4% and 10.7%, respectively. Additionally, the same ad was correlated with the visual group for having the highest percentage for QQ2, with 14.3%. Overall, the test ad - audio group consistently was one of the worse influences in preventing the responses from significantly decreasing for all three QQs.
+
+```{r summary_table_under_50_only, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+# Define sentence-counting function
+count_sentences <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  sentence_endings <- gregexpr("[.!?]+", text)
+  count <- sum(sapply(sentence_endings, function(x) ifelse(x[1] == -1, 0, length(x))))
+  if (count == 0 && nchar(trimws(text)) > 0) return(1)
+  return(count)
+}
+
+# Define word-counting function
+count_words <- function(text) {
+  if (is.na(text) || trimws(text) == "") return(0)
+  return(length(unlist(strsplit(text, "\\s+"))))
+}
+
+# Composite change calculations for QQ1–QQ3
+lying <- lying %>%
+  mutate(
+    # QQ1
+    word_count_day1_QQ1 = sapply(QQ1_BEFORE, count_words),
+    word_count_day2_QQ1 = sapply(QQ1_AFTER, count_words),
+    sentence_count_day1_QQ1 = sapply(QQ1_BEFORE, count_sentences),
+    sentence_count_day2_QQ1 = sapply(QQ1_AFTER, count_sentences),
+    word_count_change_QQ1 = (word_count_day2_QQ1 - word_count_day1_QQ1) / pmax(word_count_day1_QQ1, 1),
+    sentence_count_change_QQ1 = (sentence_count_day2_QQ1 - sentence_count_day1_QQ1) / pmax(sentence_count_day1_QQ1, 1),
+    composite_diff_norm_QQ1 = (word_count_change_QQ1 + sentence_count_change_QQ1) / 2,
+    
+    # QQ2
+    word_count_day1_QQ2 = sapply(QQ2_BEFORE, count_words),
+    word_count_day2_QQ2 = sapply(QQ2_AFTER, count_words),
+    sentence_count_day1_QQ2 = sapply(QQ2_BEFORE, count_sentences),
+    sentence_count_day2_QQ2 = sapply(QQ2_AFTER, count_sentences),
+    word_count_change_QQ2 = (word_count_day2_QQ2 - word_count_day1_QQ2) / pmax(word_count_day1_QQ2, 1),
+    sentence_count_change_QQ2 = (sentence_count_day2_QQ2 - sentence_count_day1_QQ2) / pmax(sentence_count_day1_QQ2, 1),
+    composite_diff_norm_QQ2 = (word_count_change_QQ2 + sentence_count_change_QQ2) / 2,
+
+    # QQ3
+    word_count_day1_QQ3 = sapply(QQ3_BEFORE, count_words),
+    word_count_day2_QQ3 = sapply(QQ3_AFTER, count_words),
+    sentence_count_day1_QQ3 = sapply(QQ3_BEFORE, count_sentences),
+    sentence_count_day2_QQ3 = sapply(QQ3_AFTER, count_sentences),
+    word_count_change_QQ3 = (word_count_day2_QQ3 - word_count_day1_QQ3) / pmax(word_count_day1_QQ3, 1),
+    sentence_count_change_QQ3 = (sentence_count_day2_QQ3 - sentence_count_day1_QQ3) / pmax(sentence_count_day1_QQ3, 1),
+    composite_diff_norm_QQ3 = (word_count_change_QQ3 + sentence_count_change_QQ3) / 2
+  )
+
+# Assign change buckets
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ1 >= -0.5 & composite_diff_norm_QQ1 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ1 >= 0.5 ~ ">= 50%"
+    ),
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ2 >= -0.5 & composite_diff_norm_QQ2 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ2 >= 0.5 ~ ">= 50%"
+    ),
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -0.5 ~ "< -50%",
+      composite_diff_norm_QQ3 >= -0.5 & composite_diff_norm_QQ3 < 0 ~ "-50% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 0.5 ~ "0% to 49%",
+      composite_diff_norm_QQ3 >= 0.5 ~ ">= 50%"
+    )
+  )
+
+# Summarize only < -50% changes
+summarize_bucket <- function(df, bucket_col, bucket_name) {
+  df %>%
+    group_by(GROUP, .data[[bucket_col]]) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(GROUP) %>%
+    mutate(percentage = round(100 * count / sum(count), 1)) %>%
+    filter(.data[[bucket_col]] == "< -50%") %>%
+    select(GROUP, !!bucket_col := .data[[bucket_col]], percentage) %>%
+    pivot_wider(
+      names_from = !!sym(bucket_col),
+      values_from = percentage,
+      values_fill = 0
+    ) %>%
+    rename_with(~ paste(bucket_name, ., sep = ": "), -GROUP)
+}
+
+# Generate summaries
+summary_QQ1 <- summarize_bucket(lying, "change_bucket_QQ1", "QQ1")
+summary_QQ2 <- summarize_bucket(lying, "change_bucket_QQ2", "QQ2")
+summary_QQ3 <- summarize_bucket(lying, "change_bucket_QQ3", "QQ3")
+
+# Merge into final summary
+final_combined <- summary_QQ1 %>%
+  full_join(summary_QQ2, by = "GROUP") %>%
+  full_join(summary_QQ3, by = "GROUP")
+
+# Print LaTeX table
+library(knitr)
+library(kableExtra)
+
+final_combined %>%
+  kable("latex", booktabs = TRUE, digits = 1,
+        caption = "Responses post-ad with a decrease greater than -50\\%.") %>%
+  kable_styling(latex_options = c("hold_position", "striped"),
+                position = "center", full_width = TRUE, font_size = 8.5)
+```
+
+Lastly, to see which score had a significant impact on double the responses to at least over 100%, Table 3 was created for such analysis. The control ad - test group showed the greatest proportion for QQ1, at 27.3%, while the test ad - visual group had the highest proportion for QQ2, at 14.3%, and both the test ad - audio and visuals group tied for the highest proportion of responses in QQ3, at 7.1%.
+
+```{r summary_table_positive_100, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+# Threshold = 1.0
+lying <- lying %>%
+  mutate(
+    change_bucket_QQ1 = case_when(
+      composite_diff_norm_QQ1 < -1 ~ "< -100%",
+      composite_diff_norm_QQ1 >= -1 & composite_diff_norm_QQ1 < 0 ~ "-100% to 0%",
+      composite_diff_norm_QQ1 >= 0 & composite_diff_norm_QQ1 < 1 ~ "0% to 99%",
+      composite_diff_norm_QQ1 >= 1 ~ ">= 100%"
+    ),
+    change_bucket_QQ2 = case_when(
+      composite_diff_norm_QQ2 < -1 ~ "< -100%",
+      composite_diff_norm_QQ2 >= -1 & composite_diff_norm_QQ2 < 0 ~ "-100% to 0%",
+      composite_diff_norm_QQ2 >= 0 & composite_diff_norm_QQ2 < 1 ~ "0% to 99%",
+      composite_diff_norm_QQ2 >= 1 ~ ">= 100%"
+    ),
+    change_bucket_QQ3 = case_when(
+      composite_diff_norm_QQ3 < -1 ~ "< -100%",
+      composite_diff_norm_QQ3 >= -1 & composite_diff_norm_QQ3 < 0 ~ "-100% to 0%",
+      composite_diff_norm_QQ3 >= 0 & composite_diff_norm_QQ3 < 1 ~ "0% to 99%",
+      composite_diff_norm_QQ3 >= 1 ~ ">= 100%"
+    )
+  )
+
+# Updated summarize_bucket function for 100% threshold
+summarize_bucket <- function(df, bucket_col, bucket_name) {
+  df %>%
+    group_by(GROUP, .data[[bucket_col]]) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(GROUP) %>%
+    mutate(percentage = round(100 * count / sum(count), 1)) %>%
+    filter(.data[[bucket_col]] %in% c("< -100%", ">= 100%")) %>%
     select(GROUP, !!bucket_col := .data[[bucket_col]], percentage) %>%
     pivot_wider(
       names_from = !!sym(bucket_col),
@@ -711,21 +924,16 @@ final_combined <- summary_QQ1 %>%
   full_join(summary_QQ2, by = "GROUP") %>%
   full_join(summary_QQ3, by = "GROUP")
 
-# View
-#final_combined
-
 # Print table nicely
 library(knitr)
 library(kableExtra)
 
-#final_combined %>%
-#  kable(format = "latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
-#  kable_styling(latex_options = c("hold_position", "striped"))
-
 final_combined %>%
-  kable("latex", booktabs = TRUE, digits = 1, caption = "Summary of Changes by Group and Question") %>%
-  kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = FALSE, font_size = 8.5)
+  kable("latex", booktabs = TRUE, digits = 1, caption = "Responses post-ad that increase by 100\\% or more.") %>%
+  kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = TRUE, font_size = 8.5)
 ```
+
+The results from all of these tables indicate that certain formats with certain groups performed well with certain groups but that they also performed poorly with the same groups (test ad - visual group for QQ2 in Tables 2 & 3), and that there were no consistent trends with a format performing the same across all QQs. There are many factors that could have influence the length of a participant's response, such as a long delay between answering questions or using GenAI to help form their answers; and therefore, additional data is needed to make inferences into how much the ad may have influenced the length of the responses.
 
 # Sentiment Analysis of Ads
 
