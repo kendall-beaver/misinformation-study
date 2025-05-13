@@ -937,6 +937,87 @@ The results from these tables show many inconsistences, where certain formats pe
 
 # Sentiment Analysis of Ads
 
+The following analysis was conducted by analyzing the responses from the Ad Response Questions (ARQs) in the survey:
+
+-   ARQ 1: What did you like most about the ad you just watched?
+-   ARQ 2: What did you like least about the ad you just watched?
+-   ARQ 3: Which words or phrases, if any, in the ad that you just watched made you feel particularly good or bad?
+-   ARQ 4: Please tell us any other thoughts you have about the ad you just watched.
+
+ARQs 1 & 2 was easy to determine the sentiment that a participant felt because the question poses that sentiment from the participant, while ARQs 3 & 4 could express any sentiment, therefore these latter two required the most consideration and critical analysis to determine the sentiment. A new category called "SENTIMENT" was created that categorized the overall sentiment that expressed most frequently from ARQs 1-4, and was composed of 3 categories: Positive, Neutral, and Negative.
+
+The categories have been plotted in Figure 7 and reveal that the control audio ad performed the worse out of all ad groups, 19.05%, followed by the test audio ad at 14.29%. This aligns with an additional analysis that looked at how many participants listen to podcast and skip past ads: Less than half of participants (47.5%) listen to at least one podcast and out of those listeners, 71.8% always skip the ads vs. 1.4% who say they never skip ads. It could be that participants in the audio format groups already had a bias and predisposition of wanting to skip past those ads.
+
+```{r sentiment, fig.width=5.5, fig.height=4, fig.align="center", fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+### STACKED BAR CHART ###
+
+# Prepare the data
+data_for_plot <- lying %>%
+  group_by(GROUP, SENTIMENT) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(GROUP) %>%
+  mutate(
+    prop = n / sum(n),
+    percent_label = percent(prop)
+  )
+
+# Create the stacked bar plot with custom colors
+fifth_plot <- ggplot(data_for_plot, aes(x = GROUP, y = prop, fill = SENTIMENT)) +
+  geom_bar(stat = "identity", color = "black") +
+  
+  geom_text(aes(label = percent_label),
+            position = position_stack(vjust = 0.5),
+            color = "black",
+            size = 3,
+            fontface = "bold") +
+  
+  labs(
+    #title = "Sentiment Towards Ad by Group\n",
+    x = "\nGroup",  # Add line break before "Group"
+    y = "Proportion\n",  # Add line break after "Proportion"
+    fill = "Sentiment"
+  ) +
+  
+  scale_fill_manual(
+    values = c(
+      "Negative" = "#E15759",          # Keep Negative red
+      "Neutral" = "#76B7B2",           # Make Neutral BLUE
+      "Positive" = "#59A14F"           # Make Positive GREEN
+    )
+  ) +
+  
+  scale_x_discrete(labels = c(
+    "Control Group (Audio)" = "Control Group\n(Audio)",
+    "Control Group (Visual)" = "Control Group\n(Visual)",
+    "Test Group (Audio)" = "Test Group\n(Audio)",
+    "Test Group (Visual)" = "Test Group\n(Visual)"
+  )) +
+  
+  theme_minimal()
+
+# Step 6: Create the caption text
+caption <- textGrob("Figure 7: Sentiment towards ad based on group.", 
+                    gp = gpar(fontsize = 10))
+
+# Step 7: Combine the plot and caption using grid.arrange()
+#grid.arrange(fourth_plot, caption, ncol = 1, heights = c(10, 1))
+
+# Arrange the plot and caption
+arranged_grob <- arrangeGrob(fifth_plot, caption, ncol = 1, heights = c(10, 1))
+
+# Draw a border and plot the arranged grobs
+grid.newpage()
+grid.draw(
+  grobTree(
+    rectGrob(gp = gpar(fill = NA, col = "black", lwd = 2)),  # This adds the border
+    arranged_grob
+  )
+)
+```
+
+In contrast, the test visual ad performed was reported to have the highest positive sentiment, with 82.14%, and in second place, the control visual ad had a 77.27% positive sentiment associated with it. The control audio ad received about half of the positive sentiment, 38.10%, indicating that participants strongly prefer visual over audio ads.
+
 # Other Project?
 
 This didn't pan out. The link is here, and is in the GitHub repository:
@@ -944,6 +1025,12 @@ This didn't pan out. The link is here, and is in the GitHub repository:
 # Limitations & Future Discussions
 
 ### Cut stuff:
+
+Many of the limitations of the analysis have been discussed on those relevant sections. This section will focus on how these results can help future studies in collecting qualitative data. First, to easily quantify people's general beliefs about the QQs, a drop-down menu can be formed from the categories that have been identified here. To not overwhelm participants, the categories in QQ1 should be reduced from 9 categories to somewhere around 5 categories, which will align and be more uniform of the categories from QQs 2 & 3 that have 6 and 4 categories, respectively.
+
+But it must be noted that unless an advertisement has a more direct message, then it may not influence people's responses to these types of QQs.
+
+The github repo where this report and all accompanying data can be found is located at
 
 Additionally, if a different advertisement was presented to participants then the views may or may not change based on the emotional impact an ad may have. The thematic analysis is also the views, as objective as possible, of just one person.
 
