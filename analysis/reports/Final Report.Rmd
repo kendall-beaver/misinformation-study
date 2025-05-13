@@ -759,7 +759,7 @@ final_combined %>%
 
 ```
 
-To see the percentage of responses that decreased over 50%, Table 2 was created. The test ad - audio group had the highest percentages for both QQ1 and QQ3, with 21.4% and 10.7%, respectively. Additionally, the same ad was correlated with the visual group for having the highest percentage for QQ2, with 14.3%. Overall, the test ad - audio group consistently was one of the worse influences in preventing the responses from significantly decreasing for all three QQs.
+To see the percentage of responses that decreased over 50%, Table 2 was created. The test ad - audio group had the highest percentages for both QQ1 and QQ3, with 21.4% and 10.7%, respectively. Additionally, the same ad was correlated with the visual group for having the highest percentage for QQ2, with 14.3%.
 
 ```{r summary_table_under_50_only, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -870,7 +870,7 @@ final_combined %>%
                 position = "center", full_width = TRUE, font_size = 8.5)
 ```
 
-Lastly, to see which score had a significant impact on double the responses to at least over 100%, Table 3 was created for such analysis. The control ad - test group showed the greatest proportion for QQ1, at 27.3%, while the test ad - visual group had the highest proportion for QQ2, at 14.3%, and both the test ad - audio and visuals group tied for the highest proportion of responses in QQ3, at 7.1%.
+Lastly, to see which score had a significant impact on double the responses to at least over 100%, Table 3 was created for such an analysis. The control ad - test group showed the greatest proportion for QQ1, at 27.3%, while the test ad - visual group had the highest proportion for QQ2, at 14.3%, and both the test ad - audio and visuals group tied for the highest proportion of responses in QQ3, at 7.1%.
 
 ```{r summary_table_positive_100, fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -933,7 +933,7 @@ final_combined %>%
   kable_styling(latex_options = c("hold_position", "striped"), position = "center", full_width = TRUE, font_size = 8.5)
 ```
 
-The results from all of these tables indicate that certain formats with certain groups performed well with certain groups but that they also performed poorly with the same groups (test ad - visual group for QQ2 in Tables 2 & 3), and that there were no consistent trends with a format performing the same across all QQs. There are many factors that could have influence the length of a participant's response, such as a long delay between answering questions or using GenAI to help form their answers; and therefore, additional data is needed to make inferences into how much the ad may have influenced the length of the responses.
+The results from these tables show many inconsistences, where certain formats performed well with a certain group but then performed poorly with the same group for the same QQ. A good example of this is for QQ2 (Tables 2 & 3) where the test ad - visual group had the highest proportion of responses (14.3%) for increasing responses at least over 100%, but it also had the greatest decrease in response length by at least over 50% (14.3%). However, there are many factors that could have influence how long a participant made their response post-ad, such as a long delay between answering the QQs or using GenAI to help form their answers, and therefore, additional data is needed to make more conclusive inferences.
 
 # Sentiment Analysis of Ads
 
