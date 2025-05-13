@@ -57,7 +57,7 @@ $$
 
 In summary, participants' views remained mostly unchanged before and after an ad, except for QQ1, which had 9 categories (the most amount of categories for any QQ) and the largest amount of change. Additionally, the composite score always increased whenever participants were show an audio-visual ad, whether a control or test ad, and when the data was analyzed based on gender instead of ad group, there were slight contrasting views in how males and females answered a question.
 
-This report is organized and presented in four main sections: I. Categorical Responses for QQ1 - QQ3; II. Composite Score for QQ1 - QQ3; III. Sentiment Analysis of Ads; and IV. Limitations and Future Discussions.
+This report is organized and presented in four main sections: I. Categorical Responses for QQ1 - QQ3; II. Composite Score for QQ1 - QQ3; III. Sentiment Analysis of Ads; and IV. Future Work.
 
 # I. Categorical Responses for QQ1 - QQ3
 
@@ -944,9 +944,7 @@ The following analysis was conducted by analyzing the responses from the Ad Resp
 -   ARQ 3: Which words or phrases, if any, in the ad that you just watched made you feel particularly good or bad?
 -   ARQ 4: Please tell us any other thoughts you have about the ad you just watched.
 
-ARQs 1 & 2 was easy to determine the sentiment that a participant felt because the question poses that sentiment from the participant, while ARQs 3 & 4 could express any sentiment, therefore these latter two required the most consideration and critical analysis to determine the sentiment. A new category called "SENTIMENT" was created that categorized the overall sentiment that expressed most frequently from ARQs 1-4, and was composed of 3 categories: Positive, Neutral, and Negative.
-
-The categories have been plotted in Figure 7 and reveal that the control audio ad performed the worse out of all ad groups, 19.05%, followed by the test audio ad at 14.29%. This aligns with an additional analysis that looked at how many participants listen to podcast and skip past ads: Less than half of participants (47.5%) listen to at least one podcast and out of those listeners, 71.8% always skip the ads vs. 1.4% who say they never skip ads. It could be that participants in the audio format groups already had a bias and predisposition of wanting to skip past those ads.
+ARQs 1 & 2 was easy to determine the sentiment that a participant felt because the question poses a participant to feel a certain sentiment, while ARQs 3 & 4 could express any sentiment; these latter two required the most consideration and analysis to determine and fully understand the sentiment they were feeling. A new category called "SENTIMENT" was created that categorized the overall sentiment that was expressed most frequently between ARQs 1-4, and was identified as 1 of 3 categories: Positive, Neutral, or Negative.
 
 ```{r sentiment, fig.width=5.5, fig.height=4, fig.align="center", fig.align="center", tidy=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 
@@ -1016,15 +1014,13 @@ grid.draw(
 )
 ```
 
-In contrast, the test visual ad performed was reported to have the highest positive sentiment, with 82.14%, and in second place, the control visual ad had a 77.27% positive sentiment associated with it. The control audio ad received about half of the positive sentiment, 38.10%, indicating that participants strongly prefer visual over audio ads.
+The overall sentiment categories have been plotted in Figure 7, revealing that the control ad - audio group performed the worse out of all groups, 19.05%, followed by the test ad - audio group at 14.29%. This dislike for audio ads aligned with the behavior discovered from podcast listeners: Less than half of all participants, 47.5%, reported listening to at least one podcast, and out of those listeners, 71.8% always skip the ads compared to 1.4% who claimed to never skip ads.
 
-# Other Project?
+In contrast, the test ad - visual group reported the highest positive sentiment, 82.14%, followed by the control ad - visual group, 77.27%, where the former group was the only group to report no negative sentiment towards the test ad in its visual-audio format.
 
-This didn't pan out. The link is here, and is in the GitHub repository:
+It's possible that the participants in the audio format groups may have had a preconceived negative view towards audio ads if podcast listeners skip them at a very high rate, while participants could have a preconceived positive view towards visuals ad due to "Shorts" videos that appear on social media platforms, the same format as the visual ads where words of dialogue appear across the screen, and therefore feels more familiar. But a follow-up survey and/or interview would need to be conducted to verify such claims.
 
-# Limitations & Future Discussions
-
-### Cut stuff:
+# Future Work
 
 Many of the limitations of the analysis have been discussed on those relevant sections. This section will focus on how these results can help future studies in collecting qualitative data. First, to easily quantify people's general beliefs about the QQs, a drop-down menu can be formed from the categories that have been identified here. To not overwhelm participants, the categories in QQ1 should be reduced from 9 categories to somewhere around 5 categories, which will align and be more uniform of the categories from QQs 2 & 3 that have 6 and 4 categories, respectively.
 
